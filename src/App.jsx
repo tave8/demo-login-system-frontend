@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 // pages
 import LoginPage from "./components/pages/LoginPage"
 import HomePage from "./components/pages/HomePage"
+import SignupPage from "./components/pages/SignupPage"
 // components
 import MyNav from "./components/MyNav"
 import MyFooter from "./components/MyFooter"
@@ -21,6 +22,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
           {/* <Route path="*" element={<NotFound />} /> */}
         </Routes>
       </main>
