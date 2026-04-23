@@ -24,86 +24,92 @@ const SignupPage = () => {
               </Col>
             </Row>
             {/* firstname */}
-            <Row>
-              <Col>
-                <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                  <Form.Label>Firstname</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="My firstname"
-                    onChange={(event) => {
-                      setFormValues({
-                        ...formValues,
-                        firstname: event.target.value,
-                      })
+            <Form>
+              <Row>
+                <Col>
+                  <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                    <Form.Label>Firstname</Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="My firstname"
+                      onChange={(event) => {
+                        setFormValues({
+                          ...formValues,
+                          firstname: event.target.value,
+                        })
+                      }}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              {/* lastname */}
+              <Row>
+                <Col>
+                  <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                    <Form.Label>Lastname</Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="My lastname"
+                      onChange={(event) => {
+                        setFormValues({
+                          ...formValues,
+                          lastname: event.target.value,
+                        })
+                      }}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              {/* email */}
+              <Row>
+                <Col>
+                  <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                    <Form.Label>Email</Form.Label>
+                    <Form.Control
+                      type="email"
+                      placeholder="name@example.com"
+                      onChange={(event) => {
+                        setFormValues({
+                          ...formValues,
+                          email: event.target.value,
+                        })
+                      }}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              {/* password */}
+              <Row>
+                <Col>
+                  <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control
+                      type="password"
+                      placeholder="Your password"
+                      onChange={(event) => {
+                        setFormValues({
+                          ...formValues,
+                          password: event.target.value,
+                        })
+                      }}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              {/* submit */}
+              <Row>
+                <Col className="text-center">
+                  <Button
+                    variant="primary"
+                    onClick={(event) => {
+                      handleSignup({ formValues })
                     }}
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            {/* lastname */}
-            <Row>
-              <Col>
-                <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                  <Form.Label>Lastname</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="My lastname"
-                    onChange={(event) => {
-                      setFormValues({
-                        ...formValues,
-                        lastname: event.target.value,
-                      })
-                    }}
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            {/* email */}
-            <Row>
-              <Col>
-                <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                  <Form.Label>Email</Form.Label>
-                  <Form.Control
-                    type="email"
-                    placeholder="name@example.com"
-                    onChange={(event) => {
-                      setFormValues({
-                        ...formValues,
-                        email: event.target.value,
-                      })
-                    }}
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            {/* password */}
-            <Col>
-              <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                  type="password"
-                  placeholder="Your password"
-                  onChange={(event) => {
-                    setFormValues({
-                      ...formValues,
-                      password: event.target.value,
-                    })
-                  }}
-                />
-              </Form.Group>
-            </Col>
-            {/* submit */}
-            <Col className="text-center">
-              <Button
-                variant="primary"
-                onClick={(event) => {
-                  handleSignup({ formValues })
-                }}
-              >
-                Sign up
-              </Button>
-            </Col>
+                  >
+                    Sign up
+                  </Button>
+                </Col>
+              </Row>
+            </Form>
           </Col>
         </Row>
       </Container>
