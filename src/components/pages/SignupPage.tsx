@@ -1,12 +1,12 @@
-import { Component } from "react"
-import { Container, Row, Col, Nav, Navbar, NavDropdown, Image, Dropdown, Form, InputGroup, Button } from "react-bootstrap"
-import { Search, BellFill } from "react-bootstrap-icons"
-import { Link } from "react-router-dom"
+// import { Component } from "react"
+import { Container, Row, Col, Form, Button } from "react-bootstrap"
+// import { Search, BellFill } from "react-bootstrap-icons"
+// import { Link } from "react-router-dom"
 import { useState } from "react"
 import AuthAPI from "../../js/AuthAPI"
-import { SignupData } from "../../js/my_types"
+import { SignupForAPI } from "../../js/my_types"
 
-const initialFormValues: SignupData = {
+const initialFormValues: SignupForAPI = {
   firstname: "",
   lastname: "",
   email: "",
@@ -125,10 +125,18 @@ const SignupPage = () => {
   )
 }
 
-const handleSignup = (formValues: SignupData) => {
-  console.log(formValues)
+const handleSignup = async (formValues: SignupForAPI) => {
+  const authAPI = new AuthAPI()
 
-  // const authAPI = new AuthAPI()
+  authAPI
+    .signup(formValues)
+    .then((userData) => {
+      console.log(userData)
+    })
+    .catch((err) => {
+      console.info("Error during signup")
+      console.error(err)
+    })
 }
 
 export default SignupPage
