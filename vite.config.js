@@ -7,5 +7,6 @@ export default defineConfig({
   plugins: [react(), babel({ presets: [reactCompilerPreset()] })],
   server: {
     port: 5001,
+    open: true,
   },
 })
