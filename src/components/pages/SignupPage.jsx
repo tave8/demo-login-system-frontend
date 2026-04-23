@@ -2,8 +2,16 @@ import { Component } from "react"
 import { Container, Row, Col, Nav, Navbar, NavDropdown, Image, Dropdown, Form, InputGroup, Button } from "react-bootstrap"
 import { Search, BellFill } from "react-bootstrap-icons"
 import { Link } from "react-router-dom"
+import { useState } from "react"
 
 const SignupPage = () => {
+  const [formValues, setFormValues] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    password: "",
+  })
+
   return (
     <>
       <Container fluid>
@@ -20,7 +28,16 @@ const SignupPage = () => {
               <Col>
                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                   <Form.Label>Firstname</Form.Label>
-                  <Form.Control type="text" placeholder="My firstname" />
+                  <Form.Control
+                    type="text"
+                    placeholder="My firstname"
+                    onChange={(event) => {
+                      setFormValues({
+                        ...formValues,
+                        firstname: event.target.value,
+                      })
+                    }}
+                  />
                 </Form.Group>
               </Col>
             </Row>
@@ -29,7 +46,16 @@ const SignupPage = () => {
               <Col>
                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                   <Form.Label>Lastname</Form.Label>
-                  <Form.Control type="text" placeholder="My lastname" />
+                  <Form.Control
+                    type="text"
+                    placeholder="My lastname"
+                    onChange={(event) => {
+                      setFormValues({
+                        ...formValues,
+                        lastname: event.target.value,
+                      })
+                    }}
+                  />
                 </Form.Group>
               </Col>
             </Row>
@@ -38,7 +64,16 @@ const SignupPage = () => {
               <Col>
                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                   <Form.Label>Email</Form.Label>
-                  <Form.Control type="email" placeholder="name@example.com" />
+                  <Form.Control
+                    type="email"
+                    placeholder="name@example.com"
+                    onChange={(event) => {
+                      setFormValues({
+                        ...formValues,
+                        email: event.target.value,
+                      })
+                    }}
+                  />
                 </Form.Group>
               </Col>
             </Row>
@@ -46,18 +81,38 @@ const SignupPage = () => {
             <Col>
               <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
                 <Form.Label>Password</Form.Label>
-                <Form.Control type="password" placeholder="Your password" />
+                <Form.Control
+                  type="password"
+                  placeholder="Your password"
+                  onChange={(event) => {
+                    setFormValues({
+                      ...formValues,
+                      password: event.target.value,
+                    })
+                  }}
+                />
               </Form.Group>
             </Col>
             {/* submit */}
             <Col className="text-center">
-              <Button variant="primary">Sign up</Button>
+              <Button
+                variant="primary"
+                onClick={(event) => {
+                  handleSignup({ formValues })
+                }}
+              >
+                Sign up
+              </Button>
             </Col>
           </Col>
         </Row>
       </Container>
     </>
   )
+}
+
+const handleSignup = ({ formValues }) => {
+  console.log(formValues)
 }
 
 export default SignupPage

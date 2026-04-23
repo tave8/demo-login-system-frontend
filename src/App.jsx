@@ -23,6 +23,8 @@ function App() {
       <main className={"d-flex flex-column"}>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          {/* <Route path="/feed" element={<HomePage />} /> */}
+          {/* <Route path="/articles/add" element={<HomePage />} /> */}
           <Route path="/me" element={<SeeMyProfilePage />} />
           <Route path="/me/edit" element={<EditMyProfilePage />} />
           <Route path="/login" element={<LoginPage />} />
