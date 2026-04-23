@@ -19,6 +19,9 @@ const SeeMyProfilePage = () => {
             <Row>
               <Col>
                 <p>my profile info is here</p>
+                <Link to="/me/edit" className="btn btn-primary">
+                  Edit my profile
+                </Link>
               </Col>
             </Row>
           </Col>

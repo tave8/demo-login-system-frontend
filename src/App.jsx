@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 
 // pages
 import SeeMyProfilePage from "./components/pages/SeeMyProfilePage"
+import EditMyProfilePage from "./components/pages/EditMyProfilePage"
 import LoginPage from "./components/pages/LoginPage"
 import HomePage from "./components/pages/HomePage"
 import SignupPage from "./components/pages/SignupPage"
@@ -23,6 +24,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/me" element={<SeeMyProfilePage />} />
+          <Route path="/me/edit" element={<EditMyProfilePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           {/* <Route path="*" element={<NotFound />} /> */}
