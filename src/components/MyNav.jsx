@@ -19,6 +19,9 @@ const MyNav = () => {
             <Link to="/" className="nav-item nav-link">
               Home
             </Link>
+            <Link to="/me" className="nav-item nav-link">
+              My profile
+            </Link>
             <Link to="/login" className="nav-item nav-link">
               Login
             </Link>

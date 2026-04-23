@@ -5,6 +5,7 @@ import "./App.css"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 
 // pages
+import SeeMyProfilePage from "./components/pages/SeeMyProfilePage"
 import LoginPage from "./components/pages/LoginPage"
 import HomePage from "./components/pages/HomePage"
 import SignupPage from "./components/pages/SignupPage"
@@ -21,6 +22,7 @@ function App() {
       <main className={"d-flex flex-column"}>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/me" element={<SeeMyProfilePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           {/* <Route path="*" element={<NotFound />} /> */}
