@@ -3,6 +3,8 @@ import { Container, Row, Col, Nav, Navbar, NavDropdown, Image, Dropdown, Form, I
 import { Search, BellFill } from "react-bootstrap-icons"
 import { Link } from "react-router-dom"
 import { useState } from "react"
+import AuthAPI from "../../js/AuthAPI"
+import SignupData from "../../js/SignupData"
 
 const SignupPage = () => {
   const [formValues, setFormValues] = useState({
@@ -123,6 +125,12 @@ const SignupPage = () => {
 
 const handleSignup = ({ formValues }) => {
   console.log(formValues)
+
+
+  const authAPI = new AuthAPI()
+
+  authAPI.signup(new SignupData(formValues))
+
 }
 
 export default SignupPage
