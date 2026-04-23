@@ -4,6 +4,8 @@ import APIHelper from "./APIHelper"
 import BaseAPI from "./BaseAPI"
 import { SignupFromAPI, SignupForAPI } from "./my_types"
 
+console.log(APIHelper.getAPIUrl())
+
 export default class AuthAPI extends BaseAPI {
   constructor() {
     // call new BaseAPI()
