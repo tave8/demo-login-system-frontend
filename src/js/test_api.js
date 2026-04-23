@@ -1,3 +1,7 @@
+const apiUrl = import.meta.env.VITE_API_URL
+
+console.log(apiUrl)
+
 // fetch("https://api.demo-login-system.giuseppetavella.com/auth/register", {
 //     method: "POST",
 //     headers: {
