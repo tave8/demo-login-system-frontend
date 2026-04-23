@@ -23,8 +23,8 @@ const SignupPage = () => {
                 <h1 className="text-center">Sign up</h1>
               </Col>
             </Row>
-            {/* firstname */}
             <Form>
+              {/* firstname */}
               <Row>
                 <Col>
                   <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
@@ -32,6 +32,7 @@ const SignupPage = () => {
                     <Form.Control
                       type="text"
                       placeholder="My firstname"
+                      value={formValues.firstname}
                       onChange={(event) => {
                         setFormValues({
                           ...formValues,
@@ -50,6 +51,7 @@ const SignupPage = () => {
                     <Form.Control
                       type="text"
                       placeholder="My lastname"
+                      value={formValues.lastname}
                       onChange={(event) => {
                         setFormValues({
                           ...formValues,
@@ -68,6 +70,7 @@ const SignupPage = () => {
                     <Form.Control
                       type="email"
                       placeholder="name@example.com"
+                      value={formValues.email}
                       onChange={(event) => {
                         setFormValues({
                           ...formValues,
@@ -86,6 +89,7 @@ const SignupPage = () => {
                     <Form.Control
                       type="password"
                       placeholder="Your password"
+                      value={formValues.password}
                       onChange={(event) => {
                         setFormValues({
                           ...formValues,
@@ -101,7 +105,7 @@ const SignupPage = () => {
                 <Col className="text-center">
                   <Button
                     variant="primary"
-                    onClick={(event) => {
+                    onClick={() => {
                       handleSignup({ formValues })
                     }}
                   >
