@@ -5,14 +5,14 @@ import "./App.css"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 
 // pages
-import SeeMyProfilePage from "./components/pages/SeeMyProfilePage"
-import EditMyProfilePage from "./components/pages/EditMyProfilePage"
-import LoginPage from "./components/pages/LoginPage"
-import HomePage from "./components/pages/HomePage"
-import SignupPage from "./components/pages/SignupPage"
+import SeeMyProfilePage from "./components/pages/SeeMyProfilePage.tsx"
+import EditMyProfilePage from "./components/pages/EditMyProfilePage.tsx"
+import LoginPage from "./components/pages/LoginPage.tsx"
+import HomePage from "./components/pages/HomePage.tsx"
+import SignupPage from "./components/pages/SignupPage.tsx"
 // components
-import MyNav from "./components/MyNav"
-import MyFooter from "./components/MyFooter"
+import MyNav from "./components/MyNav.tsx"
+import MyFooter from "./components/MyFooter.tsx"
 
 function App() {
   return (

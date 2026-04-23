@@ -1,6 +1,6 @@
 // sign up
 
-import SignupData from "./SignupData"
+import { SignupData } from "./my_types"
 
 export default class AuthAPI {
   constructor() {}

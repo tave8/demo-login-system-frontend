@@ -4,15 +4,17 @@ import { Search, BellFill } from "react-bootstrap-icons"
 import { Link } from "react-router-dom"
 import { useState } from "react"
 import AuthAPI from "../../js/AuthAPI"
-import SignupData from "../../js/SignupData"
+import { SignupData } from "../../js/my_types"
+
+const initialFormValues: SignupData = {
+  firstname: "",
+  lastname: "",
+  email: "",
+  password: "",
+}
 
 const SignupPage = () => {
-  const [formValues, setFormValues] = useState({
-    firstname: "",
-    lastname: "",
-    email: "",
-    password: "",
-  })
+  const [formValues, setFormValues] = useState(initialFormValues)
 
   return (
     <>
@@ -108,7 +110,7 @@ const SignupPage = () => {
                   <Button
                     variant="primary"
                     onClick={() => {
-                      handleSignup({ formValues })
+                      handleSignup(formValues)
                     }}
                   >
                     Sign up
@@ -123,14 +125,10 @@ const SignupPage = () => {
   )
 }
 
-const handleSignup = ({ formValues }) => {
+const handleSignup = (formValues: SignupData) => {
   console.log(formValues)
 
-
-  const authAPI = new AuthAPI()
-
-  authAPI.signup(new SignupData(formValues))
-
+  // const authAPI = new AuthAPI()
 }
 
 export default SignupPage
