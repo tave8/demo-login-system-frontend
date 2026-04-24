@@ -2,6 +2,15 @@ import { useState } from "react"
 import { Container, Row, Col, Form, Button } from "react-bootstrap"
 import type { LoginForAPI } from "../../js/my_types"
 import AuthAPI from "../../js/AuthAPI"
+import { useAuth } from "../../auth/AuthContext"
+import { useNavigate, NavigateFunction } from "react-router-dom"
+
+interface handleLoginParams {
+  login: (token: string) => void
+  logout: () => void
+  authenticated: boolean
+  navigate: NavigateFunction
+}
 
 const initialFormValues: LoginForAPI = {
   email: "",
@@ -10,6 +19,10 @@ const initialFormValues: LoginForAPI = {
 
 const LoginPage = () => {
   const [formValues, setFormValues] = useState(initialFormValues)
+
+  const { login, logout, authenticated } = useAuth()
+
+  const navigate = useNavigate()
 
   return (
     <>
@@ -63,7 +76,7 @@ const LoginPage = () => {
               <Button
                 variant="primary"
                 onClick={() => {
-                  handleLogin(formValues)
+                  handleLogin(formValues)({ login, logout, authenticated, navigate })
                 }}
               >
                 Login
@@ -76,19 +89,37 @@ const LoginPage = () => {
   )
 }
 
-const handleLogin = async (formValues: LoginForAPI) => {
-  // console.log(formValues)
-  const authAPI = new AuthAPI()
+const handleLogin = (formValues: LoginForAPI) => {
+  return async (params: handleLoginParams) => {
+    const { login, logout, authenticated, navigate } = params
 
-  authAPI
-    .login(formValues)
-    .then((userData) => {
-      console.log(userData)
-    })
-    .catch((err) => {
-      console.info("Error during login")
-      console.error(err)
-    })
+    // console.log("about to login")
+
+    // if (authenticated) {
+    //   logout()
+    // } else {
+    //   login("mytoken")
+    // }
+
+    // console.log(authenticated)
+
+    // console.log(formValues)
+    const authAPI = new AuthAPI()
+
+    authAPI
+      .login(formValues)
+      .then((loginInfo) => {
+        console.log("logged in successfully")
+        const { accessToken } = loginInfo
+        login(accessToken)
+        navigate("/me")
+        // console.log(loginInfo)
+      })
+      .catch((err) => {
+        console.info("Error during login")
+        console.error(err)
+      })
+  }
 }
 
 export default LoginPage
