@@ -5,6 +5,11 @@ import { Container, Row, Col, Form, Button } from "react-bootstrap"
 import { useState } from "react"
 import AuthAPI from "../../js/AuthAPI"
 import type { SignupForAPI } from "../../js/my_types"
+import { NavigateFunction, useNavigate } from "react-router-dom"
+
+interface handleSignupParams {
+  navigate: NavigateFunction
+}
 
 const initialFormValues: SignupForAPI = {
   firstname: "",
@@ -15,6 +20,8 @@ const initialFormValues: SignupForAPI = {
 
 const SignupPage = () => {
   const [formValues, setFormValues] = useState(initialFormValues)
+
+  const navigate = useNavigate()
 
   return (
     <>
@@ -110,7 +117,7 @@ const SignupPage = () => {
                   <Button
                     variant="primary"
                     onClick={() => {
-                      handleSignup(formValues)
+                      handleSignup(formValues)({ navigate })
                     }}
                   >
                     Sign up
@@ -125,18 +132,23 @@ const SignupPage = () => {
   )
 }
 
-const handleSignup = async (formValues: SignupForAPI) => {
-  const authAPI = new AuthAPI()
+const handleSignup = (formValues: SignupForAPI) => {
+  return async (params: handleSignupParams) => {
+    const { navigate } = params
 
-  authAPI
-    .signup(formValues)
-    .then((userData) => {
-      console.log(userData)
-    })
-    .catch((err) => {
-      console.info("Error during signup")
-      console.error(err)
-    })
+    const authAPI = new AuthAPI()
+
+    authAPI
+      .signup(formValues)
+      .then((userData) => {
+        console.log("successful signup, navigating to login page")
+        navigate("/login")
+      })
+      .catch((err) => {
+        console.info("Error during signup")
+        console.error(err)
+      })
+  }
 }
 
 export default SignupPage
