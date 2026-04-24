@@ -3,6 +3,8 @@ import "./App.css"
 
 // import { useState, useEffect } from "react"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { ProtectedRoute } from "./auth/ProtectedRoute.tsx"
+import { PublicOnlyRoute } from "./auth/PublicOnlyRoute.tsx"
 
 // pages
 import SeeMyProfilePage from "./components/pages/SeeMyProfilePage.tsx"
@@ -23,12 +25,44 @@ function App() {
       <main className={"d-flex flex-column"}>
         <Routes>
           <Route path="/" element={<HomePage />} />
+
           {/* <Route path="/feed" element={<HomePage />} /> */}
           {/* <Route path="/articles/add" element={<HomePage />} /> */}
-          <Route path="/me" element={<SeeMyProfilePage />} />
-          <Route path="/me/edit" element={<EditMyProfilePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
+          <Route
+            path="/me"
+            element={
+              <ProtectedRoute>
+                <SeeMyProfilePage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/me/edit"
+            element={
+              <ProtectedRoute>
+                <EditMyProfilePage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/login"
+            element={
+              <PublicOnlyRoute>
+                <LoginPage />
+              </PublicOnlyRoute>
+            }
+          />
+
+          <Route
+            path="/signup"
+            element={
+              <PublicOnlyRoute>
+                <SignupPage />
+              </PublicOnlyRoute>
+            }
+          />
           {/* <Route path="*" element={<NotFound />} /> */}
         </Routes>
       </main>

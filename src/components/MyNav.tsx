@@ -1,9 +1,21 @@
 import { Component } from "react"
 import { Container, Row, Col, Nav, Navbar, NavDropdown, Image, Dropdown } from "react-bootstrap"
 import { Search, BellFill } from "react-bootstrap-icons"
-import { Link } from "react-router-dom"
+import { Link, useNavigate, NavigateFunction } from "react-router-dom"
+import { useAuth } from "../auth/AuthContext"
+
+interface handleLogoutParams {
+  login: (token: string) => void
+  logout: () => void
+  authenticated: boolean
+  navigate: NavigateFunction
+}
 
 const MyNav = () => {
+  const navigate = useNavigate()
+
+  const { login, logout, authenticated } = useAuth()
+
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container fluid>
@@ -19,15 +31,40 @@ const MyNav = () => {
             <Link to="/" className="nav-item nav-link">
               Home
             </Link>
-            <Link to="/me" className="nav-item nav-link">
-              My profile
-            </Link>
-            <Link to="/login" className="nav-item nav-link">
-              Login
-            </Link>
-            <Link to="signup" className="nav-item nav-link">
-              Sign up
-            </Link>
+
+            {/* MY PROFILE */}
+            {authenticated && (
+              <Link to="/me" className="nav-item nav-link">
+                My profile
+              </Link>
+            )}
+
+            {/* LOGIN */}
+            {!authenticated && (
+              <Link to="/login" className="nav-item nav-link">
+                Login
+              </Link>
+            )}
+
+            {/* SIGN UP */}
+            {!authenticated && (
+              <Link to="/signup" className="nav-item nav-link">
+                Sign up
+              </Link>
+            )}
+
+            {/* LOGOUT */}
+            {authenticated && (
+              <span
+                className="nav-item nav-link"
+                onClick={() => {
+                  handleLogout()({ login, logout, authenticated, navigate })
+                }}
+                style={{ cursor: "pointer" }}
+              >
+                Logout
+              </span>
+            )}
 
             {/* <Nav.Link href="#home">Home</Nav.Link> */}
 
@@ -44,6 +81,17 @@ const MyNav = () => {
       </Container>
     </Navbar>
   )
+}
+
+const handleLogout = () => {
+  return (params: handleLogoutParams) => {
+    const { login, logout, authenticated, navigate } = params
+    console.log("logging out..")
+    console.log("is logged in: " + authenticated)
+
+    logout()
+    navigate("/login")
+  }
 }
 
 export default MyNav
