@@ -141,7 +141,9 @@ const handleSignup = (formValues: SignupForAPI) => {
     authAPI
       .signup(formValues)
       .then((userData) => {
-        console.log("successful signup, navigating to login page")
+        alert("successful signup")
+
+        // console.log("successful signup, navigating to login page")
         navigate("/login")
       })
       .catch((err) => {

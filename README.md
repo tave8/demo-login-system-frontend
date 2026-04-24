@@ -1,3 +1,78 @@
+## Front-end Authentication
+
+```
+
+===========================================================================
+AUTHENTICATION FLOW
+===========================================================================
+
+SIGNUP
+
+---
+
+User fills form → POST /auth/signup → redirect to /login
+
+LOGIN
+
+---
+
+User fills form → POST /auth/login → save JWT to localStorage
+→ authenticated = true
+→ redirect to /me
+
+LOGOUT
+
+---
+
+User clicks logout → remove JWT from localStorage
+→ authenticated = false
+→ redirect to /login
+
+ROUTE PROTECTION
+
+---
+
+/me, /me/edit (protected)
+┌─────────────────────────────────────────────────────┐
+│ ProtectedRoute │
+│ authenticated? ──── yes ──→ render page │
+│ └─── no ──→ redirect to /login │
+└─────────────────────────────────────────────────────┘
+
+/login, /signup (public only)
+┌─────────────────────────────────────────────────────┐
+│ PublicOnlyRoute │
+│ authenticated? ──── yes ──→ redirect to /me │
+│ └─── no ──→ render page │
+└─────────────────────────────────────────────────────┘
+
+TOKEN VALIDATION (on every route change)
+
+---
+
+┌─────────────────────────────────────────────────────┐
+│ AuthGuard │
+│ token expired? ──── yes ──→ logout() │
+│ → redirect to /login │
+│ └─── no ──→ do nothing │
+└─────────────────────────────────────────────────────┘
+
+GLOBAL STATE (AuthContext)
+
+---
+
+AuthProvider (wraps entire app)
+│
+├── authenticated: boolean
+├── login(token) → save token to localStorage
+│ → authenticated = true
+└── logout() → remove token from localStorage
+→ authenticated = false
+
+===========================================================================
+
+```
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

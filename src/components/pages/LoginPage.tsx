@@ -109,7 +109,8 @@ const handleLogin = (formValues: LoginForAPI) => {
     authAPI
       .login(formValues)
       .then((loginInfo) => {
-        console.log("logged in successfully")
+        alert("successful login")
+        // console.log("logged in successfully")
         const { accessToken } = loginInfo
         login(accessToken)
         navigate("/me")
