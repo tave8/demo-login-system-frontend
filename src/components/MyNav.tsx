@@ -86,9 +86,9 @@ const MyNav = () => {
 const handleLogout = () => {
   return (params: handleLogoutParams) => {
     const { login, logout, authenticated, navigate } = params
-    console.log("logging out..")
-    console.log("is logged in: " + authenticated)
-
+    // console.log("logging out..")
+    // console.log("is logged in: " + authenticated)
+    alert("successful logout")
     logout()
     navigate("/login")
   }
