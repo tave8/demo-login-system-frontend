@@ -4,7 +4,7 @@ import { Container, Row, Col, Form, Button } from "react-bootstrap"
 // import { Link } from "react-router-dom"
 import { useState } from "react"
 import AuthAPI from "../../js/AuthAPI"
-import { SignupForAPI } from "../../js/my_types"
+import type { SignupForAPI } from "../../js/my_types"
 
 const initialFormValues: SignupForAPI = {
   firstname: "",

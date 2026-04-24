@@ -1,6 +1,10 @@
-import BaseAPI from "./BaseAPI"
+let API_URL: string
 
-const API_URL = import.meta.env.VITE_API_URL
+try {
+  API_URL = import.meta.env.VITE_API_URL
+} catch (err) {
+  throw new Error("error loading env var 'VITE_API_URL'; are you sure it exists?")
+}
 
 /**
  * API helper.
@@ -12,5 +16,19 @@ export default class APIHelper {
    */
   static getAPIUrl(): string {
     return API_URL
+  }
+
+  /**
+   * Is the API server ok?
+   */
+  static async APIServerIsOk(): Promise<Boolean> {
+    const url = APIHelper.getAPIUrl()
+
+    try {
+      await fetch(url)
+      return true
+    } catch (err) {
+      return false
+    }
   }
 }
