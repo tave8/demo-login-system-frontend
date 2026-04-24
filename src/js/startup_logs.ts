@@ -3,7 +3,7 @@ import APIHelper from "./APIHelper"
 const main = async () => {
   console.log("**** START LOGS ON APP LOAD ****")
 
-  console.log("> API Server: " + APIHelper.getAPIUrl())
+  console.log("> API Server URL: " + APIHelper.getAPIUrl())
 
   const isServerOk = await APIHelper.APIServerIsOk()
 

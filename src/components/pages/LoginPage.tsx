@@ -1,9 +1,16 @@
-import { Component } from "react"
-import { Container, Row, Col, Nav, Navbar, NavDropdown, Image, Dropdown, Form, InputGroup, Button } from "react-bootstrap"
-import { Search, BellFill } from "react-bootstrap-icons"
-import { Link } from "react-router-dom"
+import { useState } from "react"
+import { Container, Row, Col, Form, Button } from "react-bootstrap"
+import type { LoginForAPI } from "../../js/my_types"
+import AuthAPI from "../../js/AuthAPI"
+
+const initialFormValues: LoginForAPI = {
+  email: "",
+  password: "",
+}
 
 const LoginPage = () => {
+  const [formValues, setFormValues] = useState(initialFormValues)
+
   return (
     <>
       <Container fluid>
@@ -20,7 +27,17 @@ const LoginPage = () => {
               <Col>
                 <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                   <Form.Label>Email</Form.Label>
-                  <Form.Control type="email" placeholder="name@example.com" />
+                  <Form.Control
+                    type="email"
+                    placeholder="name@example.com"
+                    value={formValues.email}
+                    onChange={(event) => {
+                      setFormValues({
+                        ...formValues,
+                        email: event.target.value,
+                      })
+                    }}
+                  />
                 </Form.Group>
               </Col>
             </Row>
@@ -28,18 +45,50 @@ const LoginPage = () => {
             <Col>
               <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
                 <Form.Label>Password</Form.Label>
-                <Form.Control type="password" placeholder="Your password" />
+                <Form.Control
+                  type="password"
+                  placeholder="Your password"
+                  value={formValues.password}
+                  onChange={(event) => {
+                    setFormValues({
+                      ...formValues,
+                      password: event.target.value,
+                    })
+                  }}
+                />
               </Form.Group>
             </Col>
             {/* submit */}
             <Col className="text-center">
-              <Button variant="primary">Login</Button>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  handleLogin(formValues)
+                }}
+              >
+                Login
+              </Button>
             </Col>
           </Col>
         </Row>
       </Container>
     </>
   )
+}
+
+const handleLogin = async (formValues: LoginForAPI) => {
+  // console.log(formValues)
+  const authAPI = new AuthAPI()
+
+  authAPI
+    .login(formValues)
+    .then((userData) => {
+      console.log(userData)
+    })
+    .catch((err) => {
+      console.info("Error during login")
+      console.error(err)
+    })
 }
 
 export default LoginPage
