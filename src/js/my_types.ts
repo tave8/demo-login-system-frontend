@@ -1,4 +1,3 @@
-
 // PAGINATION
 
 interface PaginationSort {
@@ -69,6 +68,11 @@ export interface UserFromAPI {
 // ARTICLES
 
 export interface ArticleToAPI {
+  title: string
+  content: string
+}
+
+export interface UpdatedArticleToAPI {
   title: string
   content: string
 }

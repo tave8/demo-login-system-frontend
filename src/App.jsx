@@ -16,15 +16,15 @@ import SignupPage from "./components/pages/SignupPage.tsx"
 import AddMyArticlePage from "./components/pages/AddMyArticlePage.tsx"
 import SeeMyArticlesPage from "./components/pages/SeeMyArticlesPage.tsx"
 // components
-import MyNav from "./components/MyNav.tsx"
-import MyFooter from "./components/MyFooter.tsx"
+import AppNav from "./components/AppNav.tsx"
+import AppFooter from "./components/AppFooter.tsx"
 
 function App() {
   return (
     <BrowserRouter>
       <AuthGuard>
         <header>
-          <MyNav />
+          <AppNav />
         </header>
         <main className={"d-flex flex-column"}>
           <Routes>
@@ -90,7 +90,7 @@ function App() {
           </Routes>
         </main>
         <footer>
-          <MyFooter />
+          <AppFooter />
         </footer>
       </AuthGuard>
     </BrowserRouter>
