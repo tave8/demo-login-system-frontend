@@ -4,6 +4,7 @@ import { Search, BellFill } from "react-bootstrap-icons"
 import { Link } from "react-router-dom"
 import { ArticleToAPI, ArticleFromAPI } from "../../js/my_types"
 import UsersAPI from "../../js/UsersAPI"
+import ArticlesAPI from "../../js/ArticlesAPI"
 
 interface handleAddArticleParams {}
 
@@ -109,21 +110,20 @@ const AddArticlePage = () => {
   )
 }
 
-const handleAddArticle = (articleData: ArticleToAPI) => {
+const handleAddArticle = (newArticleData: ArticleToAPI) => {
   return async () => {
-    console.log(articleData)
-    // const usersAPI = new UsersAPI<UpdatedUserToAPI, UserFromAPI>()
-
-    // usersAPI
-    //   .updateMyInfo(updatedUserData)
-    //   .then((userData) => {
-    //     console.log(userData)
-    //     alert("successfully update my info")
-    //   })
-    //   .catch((err) => {
-    //     console.info("Error during login")
-    //     console.error(err)
-    //   })
+    const articlesAPI = new ArticlesAPI<ArticleToAPI, ArticleFromAPI>()
+    
+    articlesAPI
+      .addMyArticle(newArticleData)
+      .then((articleData) => {
+        console.log(articleData)
+        alert("successfully added article")
+      })
+      .catch((err) => {
+        console.info("Error during login")
+        console.error(err)
+      })
   }
 }
 
