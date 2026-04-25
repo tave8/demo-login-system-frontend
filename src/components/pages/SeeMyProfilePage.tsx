@@ -20,7 +20,7 @@ const SeeMyProfilePage = () => {
   // fetch user data each time
   // the component is rendered
   useState(() => {
-    const usersAPI = new UsersAPI<unknown, UserFromAPI>()
+    const usersAPI = new UsersAPI<any, UserFromAPI>()
 
     setIsLoading(true)
     setIsError(false)

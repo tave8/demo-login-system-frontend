@@ -1,33 +1,28 @@
 import { useEffect, useState } from "react"
-import { Container, Row, Col, Nav, Navbar, NavDropdown, Image, Dropdown, Form, InputGroup, Button, Spinner, Alert } from "react-bootstrap"
-import { Search, BellFill } from "react-bootstrap-icons"
-import { Link } from "react-router-dom"
-import { ArticleFromAPI, ArticleToAPI, ArticlesPageFromAPI } from "../../js/my_types"
-import UsersAPI from "../../js/UsersAPI"
+import { Container, Row, Col, Spinner, Alert } from "react-bootstrap"
+import { EnrichedArticleFromAPI } from "../../js/my_types"
 import ArticlesAPI from "../../js/ArticlesAPI"
 
 const SeeMyArticlesPage = () => {
-  const [articles, setArticles] = useState<ArticleFromAPI[]>([])
+  const [articles, setArticles] = useState<EnrichedArticleFromAPI[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
 
   //   load my articles
   useEffect(() => {
-    const articlesAPI = new ArticlesAPI<any, ArticlesPageFromAPI>()
+    const articlesAPI = new ArticlesAPI()
 
     setIsLoading(true)
     setIsError(false)
     articlesAPI
-      .getMyArticles()
-      .then((articlesPageFromAPI) => {
+      .getMyArticlesEnriched()
+      .then((articlesPage) => {
         setIsLoading(false)
         setIsError(false)
 
-        console.log(articlesPageFromAPI)
+        // console.log(articlesPage)
 
-        const newArticles = articlesPageFromAPI.content
-
-        setArticles(newArticles)
+        setArticles(articlesPage.content)
 
         // alert("successfully added article")
       })
@@ -43,7 +38,7 @@ const SeeMyArticlesPage = () => {
     <>
       <Container fluid>
         <Row className="d-flex justify-content-center">
-          <Col xs={12} md={9}>
+          <Col xs={12} lg={9}>
             {/* page's title */}
             <Row className="mb-3">
               <Col>
@@ -56,17 +51,27 @@ const SeeMyArticlesPage = () => {
                 !isError &&
                 articles.map((article) => {
                   return (
-                    <Col xs={12} md={6} key={article.articleId} className="border border-secondary">
-                      <Row>
-                        {/* article's title */}
-                        <Col xs={12}>
-                          <p>{article.title}</p>
-                        </Col>
-                        {/* article's content */}
-                        <Col xs={12}>
-                          <p>{article.content}</p>
-                        </Col>
-                      </Row>
+                    // each col represents an article
+                    <Col xs={12} md={6} key={article.articleId}>
+                      {/* this div is for internal spacing, 
+                        without affecting the spacing at the layout level  */}
+                      <div className="border border-secondary-subtle rounded-1 p-3">
+                        {/* each col inside this row, should represent 
+                            an horizontal space (row) */}
+                        <Row>
+                          <Col xs={12}>
+                            <span>{article.relativeTimeFormatted}</span>
+                          </Col>
+                          {/* article's title */}
+                          <Col xs={12}>
+                            <p className="fs-3">{article.title}</p>
+                          </Col>
+                          {/* article's content */}
+                          <Col xs={12}>
+                            <p>{article.content}</p>
+                          </Col>
+                        </Row>
+                      </div>
                     </Col>
                   )
                 })}

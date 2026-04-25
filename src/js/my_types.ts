@@ -1,3 +1,4 @@
+
 // PAGINATION
 
 interface PaginationSort {
@@ -80,7 +81,13 @@ export interface ArticleFromAPI {
   createdAt: string
 }
 
+export interface EnrichedArticleFromAPI extends ArticleFromAPI {
+  relativeTimeFormatted: string
+}
+
 export interface ArticlesPageFromAPI extends Pagination<ArticleFromAPI> {}
+
+export interface EnrichedArticlesPageFromAPI extends Pagination<EnrichedArticleFromAPI> {}
 
 // FETCH CONFIG TYPES
 
