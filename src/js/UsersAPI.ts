@@ -15,7 +15,7 @@ export default class UsersAPI<T_TO_API extends object | unknown, T_FROM_API exte
    * logged in user.
    */
   public async getMyInfo(): Promise<T_FROM_API> {
-    const config: FetchConfigType = APIHelper.getFetchConfigFor(RequestMethod.GET, true)
+    const config = APIHelper.getFetchConfigFor(RequestMethod.GET, true)
 
     // server url
     const url = APIHelper.getAPIUrlAt("/users/me")

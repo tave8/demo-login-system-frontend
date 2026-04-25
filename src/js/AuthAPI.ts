@@ -14,7 +14,7 @@ export default class AuthAPI<T_TO_API extends object, T_FROM_API extends object>
    * Logins a user.
    */
   async login(loginData: T_TO_API): Promise<T_FROM_API> {
-    const config: FetchConfigType = APIHelper.getFetchConfigFor(RequestMethod.POST, false, loginData)
+    const config = APIHelper.getFetchConfigFor(RequestMethod.POST, false, loginData)
 
     // server url
     const url = APIHelper.getAPIUrlAt("/auth/login")

@@ -133,7 +133,7 @@ export default class APIHelper {
 
     try {
       // try to parse the response body
-      const data: T = await resp.json()
+      const data: T_FROM_API = await resp.json()
       return data
     } catch (err) {
       throw new Error(
@@ -163,7 +163,7 @@ export default class APIHelper {
    *
    * @param method the request method (GET, POST etc.)
    */
-  public static getFetchConfigFor(method: RequestMethod): FetchConfigType
+  public static getFetchConfigFor(method: RequestMethod): RequestInit
   /**
    * Custom authentication, no body.
    *
@@ -171,7 +171,7 @@ export default class APIHelper {
    * @param requireLogin whether you require the user to be authenticated/logged in.
    *  this will add an Authorization: Bearer xyz header to the request
    */
-  public static getFetchConfigFor(method: RequestMethod, requireLogin: boolean): FetchConfigType
+  public static getFetchConfigFor(method: RequestMethod, requireLogin: boolean): RequestInit
   /**
    * Custom authentication, custom body.
    *
@@ -180,14 +180,14 @@ export default class APIHelper {
    *  this will add an Authorization: Bearer xyz header to the request
    * @param body valid JS object
    */
-  public static getFetchConfigFor(method: RequestMethod, requireLogin: boolean, body: object): FetchConfigType
+  public static getFetchConfigFor(method: RequestMethod, requireLogin: boolean, body: object): RequestInit
   /**
    * Get a default configuration object to
    * pass directly to the fetch function,
    * based on request method (GET, POST etc.).
    * Avoids having to pass fetch config manually.
    */
-  public static getFetchConfigFor(method: RequestMethod, requireLogin: boolean = false, body: object | null = null): FetchConfigType {
+  public static getFetchConfigFor(method: RequestMethod, requireLogin: boolean = false, body: object | null = null): RequestInit {
     // does this request method require a JSON body?
     const methodRequiresJSONBody: boolean = APIHelper.requestMethodRequiresJSONBody(method)
     // does this request method NOT require a JSON body?
@@ -253,7 +253,22 @@ export default class APIHelper {
       config.headers.authorization = APIHelper.getAuthorizationHeaderValue()
     }
 
-    return config
+    // *********************
+    // ADAPT TO BUILT-IN REQUEST INIT
+    // *********************
+
+    const headers: HeadersInit = {
+      ...config.headers
+    }
+
+    let requestInit: RequestInit = {
+      method,
+      headers,
+      body: methodRequiresJSONBody ? config.body : null 
+    }
+
+    return requestInit
+
   }
 
   /**
