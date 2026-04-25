@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Container, Row, Col, Form, Button } from "react-bootstrap"
-import type { LoginToAPI } from "../../js/my_types"
+import { AppRoutes, type LoginToAPI } from "../../js/my_types"
 import AuthAPI from "../../js/AuthAPI"
 import { useAuth } from "../../auth/AuthContext"
 import { useNavigate, NavigateFunction } from "react-router-dom"
@@ -113,7 +113,7 @@ const handleLogin = (formValues: LoginToAPI) => {
         // console.log("logged in successfully")
         const { accessToken } = loginInfo
         login(accessToken)
-        navigate("/me")
+        navigate(AppRoutes.myProfile)
         // console.log(loginInfo)
       })
       .catch((err) => {

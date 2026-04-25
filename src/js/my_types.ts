@@ -1,3 +1,17 @@
+// ROUTES
+
+export const AppRoutes = {
+  login: "/login",
+  signup: "/signup",
+  home: "/",
+  myProfile: "/me",
+  editMyProfile: "/me/edit",
+  myArticles: "/my-articles",
+  addMyArticle: "/my-articles/add",
+  editMyArticle: "/my-articles/:articleId/edit",
+  editMyArticleWith: (articleId: string) => `/my-articles/${articleId}/edit`,
+} as const
+
 // PAGINATION
 
 interface PaginationSort {

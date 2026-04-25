@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { ProtectedRoute } from "./auth/ProtectedRoute.tsx"
 import { PublicOnlyRoute } from "./auth/PublicOnlyRoute.tsx"
 import { AuthGuard } from "./auth/AuthGuard.tsx"
+import { AppRoutes } from "./js/my_types.ts"
 
 // pages
 import SeeMyProfilePage from "./components/pages/SeeMyProfilePage.tsx"
@@ -36,7 +37,7 @@ function App() {
             {/* <Route path="/articles/add" element={<HomePage />} /> */}
 
             <Route
-              path="/me"
+              path={AppRoutes.myProfile}
               element={
                 <ProtectedRoute>
                   <SeeMyProfilePage />
@@ -45,7 +46,7 @@ function App() {
             />
 
             <Route
-              path="/me/edit"
+              path={AppRoutes.editMyProfile}
               element={
                 <ProtectedRoute>
                   <EditMyProfilePage />
@@ -54,7 +55,16 @@ function App() {
             />
 
             <Route
-              path="/my-articles/add"
+              path={AppRoutes.myArticles}
+              element={
+                <ProtectedRoute>
+                  <SeeMyArticlesPage />
+                </ProtectedRoute>
+              }
+            />
+            
+            <Route
+              path={AppRoutes.addMyArticle}
               element={
                 <ProtectedRoute>
                   <AddMyArticlePage />
@@ -63,16 +73,7 @@ function App() {
             />
 
             <Route
-              path="/my-articles/see"
-              element={
-                <ProtectedRoute>
-                  <SeeMyArticlesPage />
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path="/my-articles/:articleId/edit"
+              path={AppRoutes.editMyArticle}
               element={
                 <ProtectedRoute>
                   <EditMyArticlePage />
@@ -81,7 +82,7 @@ function App() {
             />
 
             <Route
-              path="/login"
+              path={AppRoutes.login}
               element={
                 <PublicOnlyRoute>
                   <LoginPage />
@@ -90,7 +91,7 @@ function App() {
             />
 
             <Route
-              path="/signup"
+              path={AppRoutes.signup}
               element={
                 <PublicOnlyRoute>
                   <SignupPage />

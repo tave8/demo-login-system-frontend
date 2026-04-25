@@ -1,5 +1,6 @@
 import { Navigate } from "react-router-dom"
 import { useAuth } from "./AuthContext"
+import { AppRoutes } from "../js/my_types"
 
 /**
  * Wrapper for components/routes that must not be protected by login.
@@ -9,5 +10,5 @@ import { useAuth } from "./AuthContext"
  */
 export function PublicOnlyRoute({ children }: { children: React.ReactNode }) {
   const { authenticated } = useAuth()
-  return authenticated ? <Navigate to="/me" /> : children
+  return authenticated ? <Navigate to={AppRoutes.myProfile} /> : children
 }

@@ -3,6 +3,7 @@ import { Container, Row, Col, Nav, Navbar, NavDropdown, Image, Dropdown } from "
 import { Search, BellFill } from "react-bootstrap-icons"
 import { Link, useNavigate, NavigateFunction } from "react-router-dom"
 import { useAuth } from "../auth/AuthContext"
+import { AppRoutes } from "../js/my_types"
 
 interface handleLogoutParams {
   login: (token: string) => void
@@ -19,7 +20,7 @@ const MyNav = () => {
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container fluid>
-        <Link to="/" className="nav-item navbar-brand">
+        <Link to={AppRoutes.home} className="nav-item navbar-brand">
           Demo Login System
         </Link>
         {/* <Navbar.Brand href="#home">Weather app</Navbar.Brand>
@@ -28,41 +29,41 @@ const MyNav = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Link to="/" className="nav-item nav-link">
+            {/* <Link to={AppRoutes.home} className="nav-item nav-link">
               Home
-            </Link>
+            </Link> */}
 
             {/* MY ARTICLES - SEE */}
             {authenticated && (
-              <Link to="/my-articles/see" className="nav-item nav-link">
+              <Link to={AppRoutes.myArticles} className="nav-item nav-link">
                 My articles
               </Link>
             )}
 
             {/* MY ARTICLES - ADD */}
             {authenticated && (
-              <Link to="/my-articles/add" className="nav-item nav-link">
+              <Link to={AppRoutes.addMyArticle} className="nav-item nav-link">
                 Add article
               </Link>
             )}
 
             {/* MY PROFILE */}
             {authenticated && (
-              <Link to="/me" className="nav-item nav-link">
+              <Link to={AppRoutes.myProfile} className="nav-item nav-link">
                 My profile
               </Link>
             )}
 
             {/* LOGIN */}
             {!authenticated && (
-              <Link to="/login" className="nav-item nav-link">
+              <Link to={AppRoutes.login} className="nav-item nav-link">
                 Login
               </Link>
             )}
 
             {/* SIGN UP */}
             {!authenticated && (
-              <Link to="/signup" className="nav-item nav-link">
+              <Link to={AppRoutes.signup} className="nav-item nav-link">
                 Sign up
               </Link>
             )}
@@ -104,7 +105,7 @@ const handleLogout = () => {
     // console.log("is logged in: " + authenticated)
     alert("successful logout")
     logout()
-    navigate("/login")
+    navigate(AppRoutes.login)
   }
 }
 

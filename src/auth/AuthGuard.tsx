@@ -2,6 +2,7 @@ import { useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useAuth } from "./AuthContext"
 import { isLoggedIn } from "./isLoggedIn"
+import { AppRoutes } from "../js/my_types"
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const location = useLocation()
@@ -17,7 +18,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     if (authenticated && !isLoggedIn()) {
       alert("You've been logged out")
       logout()
-      navigate("/login")
+      navigate(AppRoutes.login)
     }
   }, [location])
 

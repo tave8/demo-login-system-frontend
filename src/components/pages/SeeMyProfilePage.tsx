@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Container, Row, Col, Nav, Navbar, NavDropdown, Image, Dropdown, Form, InputGroup, Button, Spinner, Alert } from "react-bootstrap"
 import { Search, BellFill } from "react-bootstrap-icons"
 import { Link } from "react-router-dom"
-import type { UserFromAPI } from "../../js/my_types"
+import { AppRoutes, type UserFromAPI } from "../../js/my_types"
 import UsersAPI from "../../js/UsersAPI"
 
 const initialUserData: UserFromAPI = {
@@ -70,7 +70,7 @@ const SeeMyProfilePage = () => {
                 </Row>
                 <Row className="mt-2">
                   <Col xs={12} className="text-center">
-                    <Link to="/me/edit" className="btn btn-primary">
+                    <Link to={AppRoutes.editMyProfile} className="btn btn-primary">
                       Edit my profile
                     </Link>
                   </Col>

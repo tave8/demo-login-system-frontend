@@ -1,47 +1,36 @@
 import { useState } from "react"
-import { Container, Row, Col, Nav, Navbar, NavDropdown, Image, Dropdown, Form, InputGroup, Button, Spinner, Alert } from "react-bootstrap"
-import { Search, BellFill } from "react-bootstrap-icons"
-import { Link, useParams } from "react-router-dom"
-import { UpdatedUserToAPI, UserFromAPI } from "../../js/my_types"
-import UsersAPI from "../../js/UsersAPI"
+import { Container, Row, Col, Form, Button, Spinner, Alert } from "react-bootstrap"
+import { useNavigate, useParams } from "react-router-dom"
+import { ArticleFromAPI, ArticleToAPI } from "../../js/my_types"
 
 // interface handleLoginParams {}
 
-// const initialUserData: UserFromAPI = {
-//   firstname: "",
-//   lastname: "",
-//   email: "",
-//   avatarUrl: "",
-// }
+type RouteURLParams = {
+    articleId: string 
+}
+
+const initialArticle: ArticleToAPI = {
+  title: "",
+  content: "",
+}
 
 const EditMyArticlePage = () => {
-  //   const [userData, setUserData] = useState(initialUserData)
-  //   const [isLoading, setIsLoading] = useState(true)
-  //   const [isError, setIsError] = useState(false)
+  const [article, setArticle] = useState(initialArticle)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isError, setIsError] = useState(false)
 
-  const params = useParams()
+  const params = useParams<RouteURLParams>()
+  const navigate = useNavigate()
 
-  // fetch user data each time
+  // fetch the article each time
   // the component is rendered
   useState(() => {
-    console.log(params)
-    // const usersAPI = new UsersAPI<UpdatedUserToAPI, UserFromAPI>()
-    // setIsLoading(true)
-    // setIsError(false)
-    // usersAPI
-    //   .getMyInfo()
-    //   .then((userData) => {
-    //     setIsLoading(false)
-    //     setIsError(false)
-    //     setUserData(userData)
-    //     // console.log(userData)
-    //   })
-    //   .catch((err) => {
-    //     setIsLoading(false)
-    //     setIsError(true)
-    //     console.info("Error during getting user info")
-    //     console.error(err)
-    //   })
+    // if no articleId was found
+    if(!params.articleId) {
+        navigate()
+        return 
+    }
+    // get the article ID
   }, [])
 
   return (

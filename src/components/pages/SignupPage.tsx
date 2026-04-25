@@ -4,7 +4,7 @@ import { Container, Row, Col, Form, Button } from "react-bootstrap"
 // import { Link } from "react-router-dom"
 import { useState } from "react"
 import AuthAPI from "../../js/AuthAPI"
-import { SignupToAPI } from "../../js/my_types"
+import { AppRoutes, SignupToAPI } from "../../js/my_types"
 import { NavigateFunction, useNavigate } from "react-router-dom"
 
 interface handleSignupParams {
@@ -144,7 +144,7 @@ const handleSignup = (formValues: SignupToAPI) => {
         alert("successful signup")
 
         // console.log("successful signup, navigating to login page")
-        navigate("/login")
+        navigate(AppRoutes.login)
       })
       .catch((err) => {
         console.info("Error during signup")

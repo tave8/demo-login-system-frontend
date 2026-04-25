@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Container, Row, Col, Spinner, Alert, Button } from "react-bootstrap"
-import { EnrichedArticleFromAPI } from "../../js/my_types"
+import { AppRoutes, EnrichedArticleFromAPI } from "../../js/my_types"
 import ArticlesAPI from "../../js/ArticlesAPI"
 import { Link } from "react-router-dom"
 
@@ -66,7 +66,7 @@ const SeeMyArticlesPage = () => {
                                 <span>{article.relativeTimeFormatted}</span>
                               </Col>
                               <Col className="text-end">
-                                <Link className="btn btn-primary" to={`/my-articles/${article.articleId}/edit`}>
+                                <Link className="btn btn-primary" to={AppRoutes.editMyArticleWith(article.articleId)}>
                                   Edit
                                 </Link>
                               </Col>
