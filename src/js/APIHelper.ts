@@ -212,7 +212,8 @@ export default class APIHelper {
         throw new Error(
           `The given method '${method}' requires a request body, ` +
             `which should be passed as a valid, plain JS object, ` +
-            `however an invalid object was given, or the object is not a plain JS object. Input object was: ${body}`,
+            `however an invalid object was given, or the object is not a plain JS object. ` +
+            `Input object was of type '${typeof body}' with value '${body}'`,
         )
       }
     }

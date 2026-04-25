@@ -5,6 +5,8 @@ import { Link } from "react-router-dom"
 import { UpdatedUserToAPI, UserFromAPI } from "../../js/my_types"
 import UsersAPI from "../../js/UsersAPI"
 
+interface handleLoginParams {}
+
 const initialUserData: UserFromAPI = {
   firstname: "",
   lastname: "",
@@ -93,9 +95,14 @@ const EditMyProfilePage = () => {
                 </Row>
                 <Row className="mt-2">
                   <Col xs={12} className="text-center">
-                    <Link to="/me/edit" className="btn btn-primary">
+                    <Button
+                      className="btn btn-primary"
+                      onClick={() => {
+                        handleEditProfile(userData)()
+                      }}
+                    >
                       Edit my profile
-                    </Link>
+                    </Button>
                   </Col>
                 </Row>
               </>
@@ -115,6 +122,23 @@ const EditMyProfilePage = () => {
       </Container>
     </>
   )
+}
+
+const handleEditProfile = (updatedUserData: UpdatedUserToAPI) => {
+  return async () => {
+    const usersAPI = new UsersAPI<UpdatedUserToAPI, UserFromAPI>()
+
+    usersAPI
+      .updateMyInfo(updatedUserData)
+      .then((userData) => {
+        console.log(userData)
+        alert("successfully update my info")
+      })
+      .catch((err) => {
+        console.info("Error during login")
+        console.error(err)
+      })
+  }
 }
 
 export default EditMyProfilePage
