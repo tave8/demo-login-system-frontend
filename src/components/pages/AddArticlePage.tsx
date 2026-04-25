@@ -5,118 +5,105 @@ import { Link } from "react-router-dom"
 import { UpdatedUserToAPI, UserFromAPI } from "../../js/my_types"
 import UsersAPI from "../../js/UsersAPI"
 
-interface handleLoginParams {}
+// interface handleLoginParams {}
 
-const initialUserData: UserFromAPI = {
-  firstname: "",
-  lastname: "",
-  email: "",
-  avatarUrl: "",
-}
+// const initialUserData: UserFromAPI = {
+//   firstname: "",
+//   lastname: "",
+//   email: "",
+//   avatarUrl: "",
+// }
 
 const AddArticlePage = () => {
-  const [userData, setUserData] = useState(initialUserData)
-  const [isLoading, setIsLoading] = useState(true)
-  const [isError, setIsError] = useState(false)
+  //   const [userData, setUserData] = useState(initialUserData)
+  //   const [isLoading, setIsLoading] = useState(true)
+  //   const [isError, setIsError] = useState(false)
 
   // fetch user data each time
   // the component is rendered
   useState(() => {
-    const usersAPI = new UsersAPI<UpdatedUserToAPI, UserFromAPI>()
-
-    setIsLoading(true)
-    setIsError(false)
-    usersAPI
-      .getMyInfo()
-      .then((userData) => {
-        setIsLoading(false)
-        setIsError(false)
-        setUserData(userData)
-        // console.log(userData)
-      })
-      .catch((err) => {
-        setIsLoading(false)
-        setIsError(true)
-        console.info("Error during getting user info")
-        console.error(err)
-      })
+    // const usersAPI = new UsersAPI<UpdatedUserToAPI, UserFromAPI>()
+    // setIsLoading(true)
+    // setIsError(false)
+    // usersAPI
+    //   .getMyInfo()
+    //   .then((userData) => {
+    //     setIsLoading(false)
+    //     setIsError(false)
+    //     setUserData(userData)
+    //     // console.log(userData)
+    //   })
+    //   .catch((err) => {
+    //     setIsLoading(false)
+    //     setIsError(true)
+    //     console.info("Error during getting user info")
+    //     console.error(err)
+    //   })
   }, [])
 
   return (
     <>
       <Container fluid>
         <Row className="d-flex justify-content-center">
-          <Col xs={12} md={9} lg={6}>
-            {/* title */}
+          <Col xs={12} md={6}>
+            {/* page's title */}
             <Row className="mb-3">
               <Col>
-                <h1 className="text-center">Edit my profile</h1>
+                <h1 className="text-center">Add article</h1>
               </Col>
             </Row>
-
-            {/* my profile info */}
-
-            {!isLoading && !isError && (
-              <>
-                <Row className="g-3">
-                  <Col xs={12} md={3} className="text-center">
-                    {/* <Image src={userData.avatarUrl} /> */}
-                  </Col>
-                  <Col md={9}>
-                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                      <Form.Label>Firstname</Form.Label>
-                      <Form.Control
-                        type="text"
-                        placeholder="My firstname"
-                        value={userData.firstname}
-                        onChange={(event) => {
-                          setUserData({
-                            ...userData,
-                            firstname: event.target.value,
-                          })
-                        }}
-                      />
-                    </Form.Group>
-                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                      <Form.Label>Lastname</Form.Label>
-                      <Form.Control
-                        type="text"
-                        placeholder="My lastname"
-                        value={userData.lastname}
-                        onChange={(event) => {
-                          setUserData({
-                            ...userData,
-                            lastname: event.target.value,
-                          })
-                        }}
-                      />
-                    </Form.Group>
-                  </Col>
-                </Row>
-                <Row className="mt-2">
-                  <Col xs={12} className="text-center">
-                    <Button
-                      className="btn btn-primary"
-                      onClick={() => {
-                        handleEditProfile(userData)()
-                      }}
-                    >
-                      Edit my profile
-                    </Button>
-                  </Col>
-                </Row>
-              </>
-            )}
-
-            {/* is loading */}
-            {isLoading && (
-              <Spinner animation="border" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </Spinner>
-            )}
-
-            {/* is error */}
-            {isError && <Alert variant="danger">Something went wrong.</Alert>}
+            {/* article's title */}
+            <Row>
+              <Col>
+                <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                  <Form.Label>Title</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Type the article's title"
+                    // value={userData.firstname}
+                    // onChange={(event) => {
+                    //   setUserData({
+                    //     ...userData,
+                    //     firstname: event.target.value,
+                    //   })
+                    // }}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            {/* article's content */}
+            <Row>
+              <Col>
+                <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                  <Form.Label>Content</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows={5}
+                    placeholder="Type the article's content"
+                    // value={userData.firstname}
+                    // onChange={(event) => {
+                    //   setUserData({
+                    //     ...userData,
+                    //     firstname: event.target.value,
+                    //   })
+                    // }}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            {/* submit/add article */}
+            <Row>
+              <Col className="text-center">
+                <Button
+                  className="btn btn-primary"
+                  onClick={() => {
+                    // handleEditProfile(userData)()
+                  }}
+                >
+                  Add article
+                </Button>
+              </Col>
+            </Row>
           </Col>
         </Row>
       </Container>
@@ -124,21 +111,21 @@ const AddArticlePage = () => {
   )
 }
 
-const handleEditProfile = (updatedUserData: UpdatedUserToAPI) => {
-  return async () => {
-    const usersAPI = new UsersAPI<UpdatedUserToAPI, UserFromAPI>()
+// const handleAddArticle = (updatedUserData: UpdatedUserToAPI) => {
+//   return async () => {
+//     const usersAPI = new UsersAPI<UpdatedUserToAPI, UserFromAPI>()
 
-    usersAPI
-      .updateMyInfo(updatedUserData)
-      .then((userData) => {
-        console.log(userData)
-        alert("successfully update my info")
-      })
-      .catch((err) => {
-        console.info("Error during login")
-        console.error(err)
-      })
-  }
-}
+//     usersAPI
+//       .updateMyInfo(updatedUserData)
+//       .then((userData) => {
+//         console.log(userData)
+//         alert("successfully update my info")
+//       })
+//       .catch((err) => {
+//         console.info("Error during login")
+//         console.error(err)
+//       })
+//   }
+// }
 
 export default AddArticlePage
