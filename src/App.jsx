@@ -14,7 +14,9 @@ import LoginPage from "./components/pages/LoginPage.tsx"
 import HomePage from "./components/pages/HomePage.tsx"
 import SignupPage from "./components/pages/SignupPage.tsx"
 import AddMyArticlePage from "./components/pages/AddMyArticlePage.tsx"
+import EditMyArticlePage from "./components/pages/EditMyArticlePage.tsx"
 import SeeMyArticlesPage from "./components/pages/SeeMyArticlesPage.tsx"
+import NotFoundPage from "./components/pages/NotFoundPage.jsx"
 // components
 import AppNav from "./components/AppNav.tsx"
 import AppFooter from "./components/AppFooter.tsx"
@@ -70,6 +72,15 @@ function App() {
             />
 
             <Route
+              path="/my-articles/:articleId/edit"
+              element={
+                <ProtectedRoute>
+                  <EditMyArticlePage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
               path="/login"
               element={
                 <PublicOnlyRoute>
@@ -86,7 +97,7 @@ function App() {
                 </PublicOnlyRoute>
               }
             />
-            {/* <Route path="*" element={<NotFound />} /> */}
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </main>
         <footer>

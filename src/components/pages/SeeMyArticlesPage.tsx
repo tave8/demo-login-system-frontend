@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react"
-import { Container, Row, Col, Spinner, Alert } from "react-bootstrap"
+import { Container, Row, Col, Spinner, Alert, Button } from "react-bootstrap"
 import { EnrichedArticleFromAPI } from "../../js/my_types"
 import ArticlesAPI from "../../js/ArticlesAPI"
+import { Link } from "react-router-dom"
 
 const SeeMyArticlesPage = () => {
   const [articles, setArticles] = useState<EnrichedArticleFromAPI[]>([])
@@ -60,7 +61,16 @@ const SeeMyArticlesPage = () => {
                             an horizontal space (row) */}
                         <Row>
                           <Col xs={12}>
-                            <span>{article.relativeTimeFormatted}</span>
+                            <Row>
+                              <Col xs={9}>
+                                <span>{article.relativeTimeFormatted}</span>
+                              </Col>
+                              <Col className="text-end">
+                                <Link className="btn btn-primary" to={`/my-articles/${article.articleId}/edit`}>
+                                  Edit
+                                </Link>
+                              </Col>
+                            </Row>
                           </Col>
                           {/* article's title */}
                           <Col xs={12}>
