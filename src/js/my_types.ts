@@ -27,17 +27,25 @@ export interface UserDataType {
 
 // FETCH CONFIG TYPES
 
-export type FetchMethodType = "GET" | "POST" | "PUT" | "PATCH" | "DELETE"
+export enum FetchMethod {
+  GET = "GET",
+  POST = "POST",
+  PUT = "PUT",
+  PATCH = "PATCH",
+  DELETE = "DELETE",
+}
 
-export type FetchHeaderContentTypeType = "application/json"
+export enum FetchHeaderContentType {
+  APPLICATION_JSON = "application/json",
+}
 
 export interface FetchHeadersType {
   authorization?: string
-  "content-type": FetchHeaderContentTypeType
+  "content-type"?: FetchHeaderContentType
 }
 
 export interface FetchConfigType {
-  method: FetchMethodType
+  method: FetchMethod
   headers: FetchHeadersType
   body?: object
 }

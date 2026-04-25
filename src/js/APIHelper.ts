@@ -1,4 +1,5 @@
 import { isLoggedIn } from "../auth/isLoggedIn"
+import { FetchConfigType, FetchHeaderContentType, FetchMethod } from "./my_types"
 
 let API_URL: string
 
@@ -151,5 +152,34 @@ export default class APIHelper {
     } catch (err) {
       return false
     }
+  }
+
+  /**
+   * Get a default configuration object to
+   * pass directly to the fetch function,
+   * based on request method (GET, POST etc.).
+   * Avoids having to pass fetch config manually.
+   */
+  public static getFetchConfigFor(fetchMethod: FetchMethod): FetchConfigType {
+    // fetch config for GET method
+    if (fetchMethod == FetchMethod.GET) {
+      return {
+        method: FetchMethod.GET,
+        headers: {
+          authorization: APIHelper.getAuthorizationHeaderValue(),
+        },
+      }
+    }
+
+    // if (fetchMethod == FetchMethod.POST) {
+
+    // }
+
+    // no default fetch config for the given fetch method
+    throw new Error(
+      `while getting the default fetch config for input fetch method '${fetchMethod}', ` +
+        `no default config was found. maybe check whether this ` +
+        `fetch method should also be mapped to a default config.`,
+    )
   }
 }
