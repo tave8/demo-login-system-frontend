@@ -1,12 +1,13 @@
 import { useState } from "react"
 import { Container, Row, Col, Form, Button, Spinner, Alert } from "react-bootstrap"
 import { useNavigate, useParams } from "react-router-dom"
-import { ArticleFromAPI, ArticleToAPI } from "../../js/my_types"
+import { AppRoutes, ArticleFromAPI, ArticleToAPI } from "../../js/my_types"
+import ArticlesAPI from "../../js/ArticlesAPI"
 
 // interface handleLoginParams {}
 
 type RouteURLParams = {
-    articleId: string 
+  articleId: string
 }
 
 const initialArticle: ArticleToAPI = {
@@ -25,11 +26,37 @@ const EditMyArticlePage = () => {
   // fetch the article each time
   // the component is rendered
   useState(() => {
+    const articleId = params.articleId
     // if no articleId was found
-    if(!params.articleId) {
-        navigate()
-        return 
+    if (!articleId) {
+      navigate(AppRoutes.myArticles)
+      return
     }
+    const articlesAPI = new ArticlesAPI()
+
+    setIsLoading(true)
+    setIsError(false)
+    articlesAPI
+      .getMyArticleByIdEnriched(articleId)
+      .then((articleFromAPI) => {
+        setIsLoading(false)
+        setIsError(false)
+
+        console.log(articleFromAPI)
+
+        // console.log(articlesPage)
+
+        // setArticles(articlesPage.content)
+
+        // alert("successfully added article")
+      })
+      .catch((err) => {
+        setIsLoading(false)
+        setIsError(true)
+        console.info("Error while getting article")
+        console.error(err)
+      })
+
     // get the article ID
   }, [])
 
@@ -41,7 +68,7 @@ const EditMyArticlePage = () => {
             {/* title */}
             <Row className="mb-3">
               <Col>
-                <h1 className="text-center">Edit my profile</h1>
+                <h1 className="text-center">Edit article</h1>
               </Col>
             </Row>
 

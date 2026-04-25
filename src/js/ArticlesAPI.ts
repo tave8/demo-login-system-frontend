@@ -27,14 +27,14 @@ export default class ArticlesAPI extends BaseAPI {
   }
 
   private enrichItems(items: ITEM_FROM_API[]): ENRICHED_ITEM_FROM_API[] {
-    return items.map((item) => this.enrich(item))
+    return items.map((item) => this.enrichItem(item))
   }
 
   /**
    * Enriches an article coming from the API.
    * It only adds new fields.
    */
-  private enrich(item: ITEM_FROM_API): ENRICHED_ITEM_FROM_API {
+  private enrichItem(item: ITEM_FROM_API): ENRICHED_ITEM_FROM_API {
     return {
       ...item,
       relativeTimeFormatted: TimeHelper.toRelativeTime(item.createdAt),
@@ -67,6 +67,29 @@ export default class ArticlesAPI extends BaseAPI {
     const data = await APIHelper.parseJSON<PAGE_FROM_API>(resp)
 
     return data
+  }
+
+  /**
+   * Get article by ID of the currently
+   * logged in user.
+   */
+  public async getMyArticleById(articleId: string): Promise<ITEM_FROM_API> {
+    const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
+
+    const resp: Response = await APIHelper.doFetchAt(`/articles/${articleId}`, config)
+
+    const data = await APIHelper.parseJSON<ITEM_FROM_API>(resp)
+
+    return data
+  }
+
+  /**
+   * Get article by ID of the currently
+   * logged in user.
+   */
+  public async getMyArticleByIdEnriched(articleId: string): Promise<ENRICHED_ITEM_FROM_API> {
+      const item = await this.getMyArticleById(articleId)
+      return this.enrichItem(item)
   }
 
   /**
