@@ -24,7 +24,7 @@ export default class UsersAPI extends BaseAPI {
     const finalConfig = { ...defaultConfig, ...moreConfig }
 
     // server url
-    const url = APIHelper.getAPIUrl() + "/users/me"
+    const url = APIHelper.getAPIUrlAt("/users/me")
 
     let resp: Response
 

@@ -21,8 +21,46 @@ export default class APIHelper {
   }
 
   /**
-   * 
-   * @returns value of the Authorization header, 
+   * Get the API url plus whatever endpoint.
+   * Example of return value:
+   * https://api.giuseppetavella.com/my/custom/endpoint
+   */
+  public static getAPIUrlAt(endpoint: string = ""): string {
+    const trimmed = endpoint.trim()
+
+    // if root endpoint
+    if (trimmed === "") {
+      return APIHelper.getAPIUrl()
+    }
+
+    // if endpoint does not start with /
+    if (!trimmed.startsWith("/")) {
+      throw new Error(`Endpoint must start with '/'. Got: '${endpoint}'`)
+    }
+
+    // the second character must not be another slash,
+    // only if the endpoint length is > 0 (so at least 2 chars)
+    if (trimmed.length > 0 && trimmed) {
+      if (trimmed.charAt(1) == "/") {
+        throw new Error(
+          "Invalid endpoint. If it starts with one slash, " + "it cannot start with more than one slash. " + "Input endpoint was: '" + trimmed + "'",
+        )
+      }
+    }
+
+    // Let the URL parser decide if it's valid
+    try {
+      new URL(trimmed, APIHelper.getAPIUrl())
+    } catch {
+      throw new Error(`Malformed endpoint: '${endpoint}'`)
+    }
+
+    return APIHelper.getAPIUrl() + trimmed
+  }
+
+  /**
+   *
+   * @returns value of the Authorization header,
    *  thus a string prefixed with "Bearer " + access token
    */
   public static getAuthorizationHeaderValue(): string {
