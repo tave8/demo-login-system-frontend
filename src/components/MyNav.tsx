@@ -32,9 +32,16 @@ const MyNav = () => {
               Home
             </Link>
 
-            {/* ADD ARTICLE */}
+            {/* MY ARTICLES - SEE */}
             {authenticated && (
-              <Link to="/articles/add" className="nav-item nav-link">
+              <Link to="/my-articles/see" className="nav-item nav-link">
+                My articles
+              </Link>
+            )}
+
+            {/* MY ARTICLES - ADD */}
+            {authenticated && (
+              <Link to="/my-articles/add" className="nav-item nav-link">
                 Add article
               </Link>
             )}

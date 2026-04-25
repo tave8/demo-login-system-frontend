@@ -13,7 +13,8 @@ import EditMyProfilePage from "./components/pages/EditMyProfilePage.tsx"
 import LoginPage from "./components/pages/LoginPage.tsx"
 import HomePage from "./components/pages/HomePage.tsx"
 import SignupPage from "./components/pages/SignupPage.tsx"
-import AddArticlePage from "./components/pages/AddArticlePage.tsx"
+import AddMyArticlePage from "./components/pages/AddMyArticlePage.tsx"
+import SeeMyArticlesPage from "./components/pages/SeeMyArticlesPage.tsx"
 // components
 import MyNav from "./components/MyNav.tsx"
 import MyFooter from "./components/MyFooter.tsx"
@@ -51,10 +52,19 @@ function App() {
             />
 
             <Route
-              path="/articles/add"
+              path="/my-articles/add"
               element={
                 <ProtectedRoute>
-                  <AddArticlePage />
+                  <AddMyArticlePage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/my-articles/see"
+              element={
+                <ProtectedRoute>
+                  <SeeMyArticlesPage />
                 </ProtectedRoute>
               }
             />

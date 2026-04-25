@@ -13,32 +13,12 @@ const initialArticleData: ArticleToAPI = {
   content: "",
 }
 
-const AddArticlePage = () => {
+const AddMyArticlePage = () => {
   const [articleData, setArticleData] = useState(initialArticleData)
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
 
-  // fetch user data each time
-  // the component is rendered
-  useState(() => {
-    // const usersAPI = new UsersAPI<UpdatedUserToAPI, UserFromAPI>()
-    // setIsLoading(true)
-    // setIsError(false)
-    // usersAPI
-    //   .getMyInfo()
-    //   .then((userData) => {
-    //     setIsLoading(false)
-    //     setIsError(false)
-    //     setUserData(userData)
-    //     // console.log(userData)
-    //   })
-    //   .catch((err) => {
-    //     setIsLoading(false)
-    //     setIsError(true)
-    //     console.info("Error during getting user info")
-    //     console.error(err)
-    //   })
-  }, [])
+  useState(() => {}, [])
 
   return (
     <>
@@ -113,7 +93,7 @@ const AddArticlePage = () => {
 const handleAddArticle = (newArticleData: ArticleToAPI) => {
   return async () => {
     const articlesAPI = new ArticlesAPI<ArticleToAPI, ArticleFromAPI>()
-    
+
     articlesAPI
       .addMyArticle(newArticleData)
       .then((articleData) => {
@@ -127,4 +107,4 @@ const handleAddArticle = (newArticleData: ArticleToAPI) => {
   }
 }
 
-export default AddArticlePage
+export default AddMyArticlePage
