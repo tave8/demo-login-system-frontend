@@ -2,7 +2,7 @@
 
 import APIHelper from "./APIHelper"
 import BaseAPI from "./BaseAPI"
-import { FetchConfigType, UserDataType, FetchMethod } from "./my_types"
+import { FetchConfigType, UserDataType, RequestMethod } from "./my_types"
 
 export default class UsersAPI extends BaseAPI {
   constructor() {
@@ -15,7 +15,7 @@ export default class UsersAPI extends BaseAPI {
    * logged in user.
    */
   public async getMyInfo(): Promise<UserDataType> {
-    const config: FetchConfigType = APIHelper.getFetchConfigFor(FetchMethod.GET)
+    const config: FetchConfigType = APIHelper.getFetchConfigFor(RequestMethod.GET, true)
 
     console.log(config)
 

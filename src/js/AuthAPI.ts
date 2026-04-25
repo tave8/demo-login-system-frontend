@@ -2,7 +2,7 @@
 
 import APIHelper from "./APIHelper"
 import BaseAPI from "./BaseAPI"
-import { SignupFromAPI, SignupForAPI, LoginForAPI, LoginFromAPI } from "./my_types"
+import { SignupFromAPI, SignupForAPI, LoginForAPI, LoginFromAPI, FetchConfigType, RequestMethod } from "./my_types"
 
 export default class AuthAPI extends BaseAPI {
   constructor() {
@@ -14,23 +14,15 @@ export default class AuthAPI extends BaseAPI {
    * Logins a user.
    */
   async login(loginData: LoginForAPI): Promise<LoginFromAPI> {
-    const defaultConfig = {
-      headers: {
-        "content-type": "application/json",
-      },
-      method: "POST",
-      body: JSON.stringify(loginData),
-    }
-    const moreConfig = {}
-    const finalConfig = { ...defaultConfig, ...moreConfig }
+    const config: FetchConfigType = APIHelper.getFetchConfigFor(RequestMethod.POST, false, loginData)
 
     // server url
-    const url = APIHelper.getAPIUrl() + "/auth/login"
+    const url = APIHelper.getAPIUrlAt("/auth/login")
 
     let resp: Response
 
     try {
-      resp = await fetch(url, finalConfig)
+      resp = await fetch(url, config)
     } catch (err) {
       throw new Error(`Error DURING fetch. Details: ${err}`)
     }

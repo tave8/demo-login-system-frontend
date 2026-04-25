@@ -27,7 +27,7 @@ export interface UserDataType {
 
 // FETCH CONFIG TYPES
 
-export enum FetchMethod {
+export enum RequestMethod {
   GET = "GET",
   POST = "POST",
   PUT = "PUT",
@@ -35,17 +35,17 @@ export enum FetchMethod {
   DELETE = "DELETE",
 }
 
-export enum FetchHeaderContentType {
+export enum RequestHeaderContentType {
   APPLICATION_JSON = "application/json",
 }
 
 export interface FetchHeadersType {
   authorization?: string
-  "content-type"?: FetchHeaderContentType
+  "content-type"?: RequestHeaderContentType
 }
 
 export interface FetchConfigType {
-  method: FetchMethod
+  method: RequestMethod
   headers: FetchHeadersType
-  body?: object
+  body?: string
 }

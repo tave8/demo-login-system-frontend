@@ -1,5 +1,5 @@
 import { isLoggedIn } from "../auth/isLoggedIn"
-import { FetchConfigType, FetchHeaderContentType, FetchMethod } from "./my_types"
+import { FetchConfigType, RequestHeaderContentType, RequestMethod } from "./my_types"
 
 let API_URL: string
 
@@ -80,7 +80,11 @@ export default class APIHelper {
     // access token missing
     if (!accessToken) {
       throw new Error(
-        "while getting access token from local storage, " + "access token was supposed to be there, but it's not." + "got value " + accessToken + " instead.",
+        `while trying to get access token from local storage, ` +
+          `it was assumed that access token was there, but it's not. ` +
+          `got value '${accessToken}' instead. ` +
+          `are you sure you needed the access token for this operation ` +
+          `(and therefore authentication), and you assumed it was there?`,
       )
     }
     // if the user is not logged in, or for some reason,
@@ -155,31 +159,141 @@ export default class APIHelper {
   }
 
   /**
+   * No body, no authentication.
+   *
+   * @param method the request method (GET, POST etc.)
+   */
+  public static getFetchConfigFor(method: RequestMethod): FetchConfigType
+  /**
+   * Custom authentication, no body.
+   *
+   * @param method the request method (GET, POST etc.)
+   * @param requireLogin whether you require the user to be authenticated/logged in.
+   *  this will add an Authorization: Bearer xyz header to the request
+   */
+  public static getFetchConfigFor(method: RequestMethod, requireLogin: boolean): FetchConfigType
+  /**
+   * Custom authentication, custom body.
+   *
+   * @param method the request method (GET, POST etc.)
+   * @param requireLogin whether you require the user to be authenticated/logged in.
+   *  this will add an Authorization: Bearer xyz header to the request
+   * @param body valid JS object
+   */
+  public static getFetchConfigFor(method: RequestMethod, requireLogin: boolean, body: object): FetchConfigType
+  /**
    * Get a default configuration object to
    * pass directly to the fetch function,
    * based on request method (GET, POST etc.).
    * Avoids having to pass fetch config manually.
    */
-  public static getFetchConfigFor(fetchMethod: FetchMethod): FetchConfigType {
-    // fetch config for GET method
-    if (fetchMethod == FetchMethod.GET) {
-      return {
-        method: FetchMethod.GET,
-        headers: {
-          authorization: APIHelper.getAuthorizationHeaderValue(),
-        },
+  public static getFetchConfigFor(method: RequestMethod, requireLogin: boolean = false, body: object | null = null): FetchConfigType {
+    // does this request method require a JSON body?
+    const methodRequiresJSONBody: boolean = APIHelper.requestMethodRequiresJSONBody(method)
+    // does this request method NOT require a JSON body?
+    const methodNotRequiresJSONBody: boolean = APIHelper.requestMethodNotRequiresJSONBody(method)
+    // is this a valid, plain JS object?
+    const isBodyAPlainObject = APIHelper.isPlainObject(body)
+    const isNullBody = body == null
+
+    // ****************************
+    // CHECKS
+    // ****************************
+
+    // if the method is not GET or DELETE, then it must have a body
+    // and the body must be a valid javascript object
+    if (methodRequiresJSONBody) {
+      if (!isBodyAPlainObject) {
+        throw new Error(
+          `The given method '${method}' requires a request body, ` +
+            `which should be passed as a valid, plain JS object, ` +
+            `however an invalid object was given, or the object is not a plain JS object. Input object was: ${body}`,
+        )
       }
     }
 
-    // if (fetchMethod == FetchMethod.POST) {
+    // if the method is GET or DELETE, it certainly cannot have a body,
+    // whatever that body is and regardless whether that's a valid object or not
+    if (methodNotRequiresJSONBody) {
+      if (!isNullBody) {
+        throw new Error(`The given method '${method}' does NOT require a body, ` + `therefore it does not make sense to pass an object to be the request body.`)
+      }
+    }
 
-    // }
+    // ************************
+    // BUILD THE CUSTOM FETCH CONFIG
+    // ************************
 
-    // no default fetch config for the given fetch method
-    throw new Error(
-      `while getting the default fetch config for input fetch method '${fetchMethod}', ` +
-        `no default config was found. maybe check whether this ` +
-        `fetch method should also be mapped to a default config.`,
-    )
+    const config: FetchConfigType = {
+      method: method,
+      headers: {},
+    }
+
+    if (methodRequiresJSONBody) {
+      config.headers["content-type"] = RequestHeaderContentType.APPLICATION_JSON
+      // try to parse the given body (a valid, plain JS object)
+      // into a JSON string
+      // no error should occur, however we try/catch it nonetheless
+      try {
+        const bodyAsJSONStr = JSON.stringify(body)
+        config.body = bodyAsJSONStr
+      } catch (err) {
+        throw new Error(
+          `While building the fetch config for a method, ` +
+            `an error was thrown by built-in method 'JSON.stringify' while parsing ` +
+            `what seemed to be a valid and plain JS object. Maybe this object to parsed into a JSON string, ` +
+            `was not a valid JS object? Or maybe the internal validation steps were not accurate enough? ` +
+            `Input object to be parsed into a JSON string was: ${body}`,
+        )
+      }
+    }
+
+    // if authentication/login is required
+    if (requireLogin) {
+      config.headers.authorization = APIHelper.getAuthorizationHeaderValue()
+    }
+
+    return config
+  }
+
+  /**
+   * Is the given value a plain JS object?
+   * Literally something like {x: 2}
+   *
+   * Therefore we cannot have objects that are instantiated
+   * from a custom class. For example we cannot have something like
+   * new MyClass()
+   */
+  public static isPlainObject(value: unknown): boolean {
+    if (value == null || value == undefined) {
+      return false
+    }
+    return Object.getPrototypeOf(value) === Object.prototype
+  }
+
+  /**
+   * Does the given request method (GET, POST etc)
+   * requires a JSON body?
+   *
+   * Methods allowed to have a JSON body: POST, PUT, PATCH
+   */
+  public static requestMethodRequiresJSONBody(method: RequestMethod): boolean {
+    if (method == null || method == undefined) {
+      throw new Error(`A fetch method cannot be nully. ` + `Make sure the caller is passing an actual RequestMethod enum type.`)
+    }
+    return method == RequestMethod.POST || method == RequestMethod.PUT || method == RequestMethod.PATCH
+  }
+
+  /**
+   * Does the given request method (GET, POST etc)
+   * NOT require a JSON body?
+   *
+   * Methods NOT allowed to have a JSON body: GET, DELETE
+   */
+  public static requestMethodNotRequiresJSONBody(method: RequestMethod): boolean {
+    if (method == null || method == undefined) {
+      throw new Error(`A fetch method cannot be nully. ` + `Make sure the caller is passing an actual RequestMethod enum type.`)
+    }
+    return method == RequestMethod.GET || method == RequestMethod.DELETE
   }
 }
