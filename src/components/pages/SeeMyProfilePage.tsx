@@ -1,4 +1,4 @@
-import { Component, useState } from "react"
+import { useState } from "react"
 import { Container, Row, Col, Nav, Navbar, NavDropdown, Image, Dropdown, Form, InputGroup, Button, Spinner, Alert } from "react-bootstrap"
 import { Search, BellFill } from "react-bootstrap-icons"
 import { Link } from "react-router-dom"
