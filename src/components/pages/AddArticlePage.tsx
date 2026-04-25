@@ -2,22 +2,20 @@ import { useState } from "react"
 import { Container, Row, Col, Nav, Navbar, NavDropdown, Image, Dropdown, Form, InputGroup, Button, Spinner, Alert } from "react-bootstrap"
 import { Search, BellFill } from "react-bootstrap-icons"
 import { Link } from "react-router-dom"
-import { UpdatedUserToAPI, UserFromAPI } from "../../js/my_types"
+import { ArticleToAPI, ArticleFromAPI } from "../../js/my_types"
 import UsersAPI from "../../js/UsersAPI"
 
-// interface handleLoginParams {}
+interface handleAddArticleParams {}
 
-// const initialUserData: UserFromAPI = {
-//   firstname: "",
-//   lastname: "",
-//   email: "",
-//   avatarUrl: "",
-// }
+const initialArticleData: ArticleToAPI = {
+  title: "",
+  content: "",
+}
 
 const AddArticlePage = () => {
-  //   const [userData, setUserData] = useState(initialUserData)
-  //   const [isLoading, setIsLoading] = useState(true)
-  //   const [isError, setIsError] = useState(false)
+  const [articleData, setArticleData] = useState(initialArticleData)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isError, setIsError] = useState(false)
 
   // fetch user data each time
   // the component is rendered
@@ -60,13 +58,13 @@ const AddArticlePage = () => {
                   <Form.Control
                     type="text"
                     placeholder="Type the article's title"
-                    // value={userData.firstname}
-                    // onChange={(event) => {
-                    //   setUserData({
-                    //     ...userData,
-                    //     firstname: event.target.value,
-                    //   })
-                    // }}
+                    value={articleData.title}
+                    onChange={(event) => {
+                      setArticleData({
+                        ...articleData,
+                        title: event.target.value,
+                      })
+                    }}
                   />
                 </Form.Group>
               </Col>
@@ -80,13 +78,13 @@ const AddArticlePage = () => {
                     as="textarea"
                     rows={5}
                     placeholder="Type the article's content"
-                    // value={userData.firstname}
-                    // onChange={(event) => {
-                    //   setUserData({
-                    //     ...userData,
-                    //     firstname: event.target.value,
-                    //   })
-                    // }}
+                    value={articleData.content}
+                    onChange={(event) => {
+                      setArticleData({
+                        ...articleData,
+                        content: event.target.value,
+                      })
+                    }}
                   />
                 </Form.Group>
               </Col>
@@ -97,7 +95,7 @@ const AddArticlePage = () => {
                 <Button
                   className="btn btn-primary"
                   onClick={() => {
-                    // handleEditProfile(userData)()
+                    handleAddArticle(articleData)()
                   }}
                 >
                   Add article
@@ -111,21 +109,22 @@ const AddArticlePage = () => {
   )
 }
 
-// const handleAddArticle = (updatedUserData: UpdatedUserToAPI) => {
-//   return async () => {
-//     const usersAPI = new UsersAPI<UpdatedUserToAPI, UserFromAPI>()
+const handleAddArticle = (articleData: ArticleToAPI) => {
+  return async () => {
+    console.log(articleData)
+    // const usersAPI = new UsersAPI<UpdatedUserToAPI, UserFromAPI>()
 
-//     usersAPI
-//       .updateMyInfo(updatedUserData)
-//       .then((userData) => {
-//         console.log(userData)
-//         alert("successfully update my info")
-//       })
-//       .catch((err) => {
-//         console.info("Error during login")
-//         console.error(err)
-//       })
-//   }
-// }
+    // usersAPI
+    //   .updateMyInfo(updatedUserData)
+    //   .then((userData) => {
+    //     console.log(userData)
+    //     alert("successfully update my info")
+    //   })
+    //   .catch((err) => {
+    //     console.info("Error during login")
+    //     console.error(err)
+    //   })
+  }
+}
 
 export default AddArticlePage

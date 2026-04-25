@@ -30,6 +30,19 @@ export interface UserFromAPI {
   avatarUrl: string
 }
 
+export interface ArticleToAPI {
+  title: string
+  content: string
+}
+
+export interface ArticleFromAPI {
+  articleId: string
+  title: string 
+  content: string 
+  coverUrl: string 
+  createdAt: string 
+}
+
 // FETCH CONFIG TYPES
 
 export const RequireLogin = {
