@@ -39,14 +39,9 @@ export default class APIHelper {
       throw new Error(`Endpoint must start with '/'. Got: '${endpoint}'`)
     }
 
-    // the second character must not be another slash,
-    // only if the endpoint length is > 0 (so at least 2 chars)
-    if (trimmed.length > 0 && trimmed) {
-      if (trimmed.charAt(1) == "/") {
-        throw new Error(
-          "Invalid endpoint. If it starts with one slash, " + "it cannot start with more than one slash. " + "Input endpoint was: '" + trimmed + "'",
-        )
-      }
+    // endpoint cannot contain consecutive backslashes
+    if (trimmed.includes("//")) {
+      throw new Error(`Endpoint must not contain consecutive slashes. Got: '${endpoint}'`)
     }
 
     // Let the URL parser decide if it's valid
@@ -278,6 +273,48 @@ export default class APIHelper {
     }
 
     return requestInit
+  }
+
+  /**
+   * Do a fetch request to a (relative) endpoint,
+   * providing a fetch configuration object.
+   *
+   * A relative endpoint is simply the relative URL,
+   * starting from the root domain.
+   *
+   * Example of relative URL = endpoint:
+   *
+   *    /auth/login
+   *    /users/me
+   *
+   */
+  public static async doFetchAt(relativeURLPath: string, config: RequestInit): Promise<Response> {
+    const absoluteURL = APIHelper.getAPIUrlAt(relativeURLPath)
+    return APIHelper.doFetch(absoluteURL, config)
+  }
+
+  /**
+   * Do a fetch request to a complete/absolute URL,
+   * providing a fetch configuration object.
+   */
+  public static async doFetch(absoluteURL: string, config: RequestInit): Promise<Response> {
+    let resp: Response
+
+    try {
+      resp = await fetch(absoluteURL, config)
+    } catch (err) {
+      throw new Error(`Error DURING fetch. Details: ${err}`)
+    }
+
+    try {
+      if (!resp.ok) {
+        throw new Error(`Error AFTER fetch. Response status code: ${resp.status}`)
+      }
+    } catch (err) {
+      throw err
+    }
+
+    return resp
   }
 
   /**
