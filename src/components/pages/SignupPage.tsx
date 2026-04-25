@@ -4,14 +4,14 @@ import { Container, Row, Col, Form, Button } from "react-bootstrap"
 // import { Link } from "react-router-dom"
 import { useState } from "react"
 import AuthAPI from "../../js/AuthAPI"
-import type { SignupForAPI } from "../../js/my_types"
+import { SignupToAPI } from "../../js/my_types"
 import { NavigateFunction, useNavigate } from "react-router-dom"
 
 interface handleSignupParams {
   navigate: NavigateFunction
 }
 
-const initialFormValues: SignupForAPI = {
+const initialFormValues: SignupToAPI = {
   firstname: "",
   lastname: "",
   email: "",
@@ -132,7 +132,7 @@ const SignupPage = () => {
   )
 }
 
-const handleSignup = (formValues: SignupForAPI) => {
+const handleSignup = (formValues: SignupToAPI) => {
   return async (params: handleSignupParams) => {
     const { navigate } = params
 

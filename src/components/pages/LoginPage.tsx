@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Container, Row, Col, Form, Button } from "react-bootstrap"
-import type { LoginToAPI, LoginFromAPI } from "../../js/my_types"
+import type { LoginToAPI } from "../../js/my_types"
 import AuthAPI from "../../js/AuthAPI"
 import { useAuth } from "../../auth/AuthContext"
 import { useNavigate, NavigateFunction } from "react-router-dom"
@@ -104,7 +104,7 @@ const handleLogin = (formValues: LoginToAPI) => {
     // console.log(authenticated)
 
     // console.log(formValues)
-    const authAPI = new AuthAPI<LoginToAPI, LoginFromAPI>()
+    const authAPI = new AuthAPI()
 
     authAPI
       .login(formValues)

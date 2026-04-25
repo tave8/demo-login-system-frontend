@@ -1,9 +1,6 @@
 import { useState } from "react"
-import { Container, Row, Col, Nav, Navbar, NavDropdown, Image, Dropdown, Form, InputGroup, Button, Spinner, Alert } from "react-bootstrap"
-import { Search, BellFill } from "react-bootstrap-icons"
-import { Link } from "react-router-dom"
-import { ArticleToAPI, ArticleFromAPI } from "../../js/my_types"
-import UsersAPI from "../../js/UsersAPI"
+import { Container, Row, Col, Form, Button } from "react-bootstrap"
+import { ArticleToAPI } from "../../js/my_types"
 import ArticlesAPI from "../../js/ArticlesAPI"
 
 interface handleAddArticleParams {}
@@ -92,12 +89,12 @@ const AddMyArticlePage = () => {
 
 const handleAddArticle = (newArticleData: ArticleToAPI) => {
   return async () => {
-    const articlesAPI = new ArticlesAPI<ArticleToAPI, ArticleFromAPI>()
+    const articlesAPI = new ArticlesAPI()
 
     articlesAPI
       .addMyArticle(newArticleData)
       .then((articleData) => {
-        console.log(articleData)
+        // console.log(articleData)
         alert("successfully added article")
       })
       .catch((err) => {

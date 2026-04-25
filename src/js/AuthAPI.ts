@@ -2,9 +2,9 @@
 
 import APIHelper from "./APIHelper"
 import BaseAPI from "./BaseAPI"
-import { FetchConfigType, RequestMethod, RequireLogin } from "./my_types"
+import { RequestMethod, RequireLogin, SignupToAPI, SignupFromAPI, LoginToAPI, LoginFromAPI } from "./my_types"
 
-export default class AuthAPI<T_TO_API extends object, T_FROM_API extends object> extends BaseAPI {
+export default class AuthAPI extends BaseAPI {
   constructor() {
     // call new BaseAPI()
     super()
@@ -13,7 +13,7 @@ export default class AuthAPI<T_TO_API extends object, T_FROM_API extends object>
   /**
    * Logins a user.
    */
-  async login(loginData: T_TO_API): Promise<T_FROM_API> {
+  async login(loginData: LoginToAPI): Promise<LoginFromAPI> {
     const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.NO, loginData)
 
     // server url
@@ -35,7 +35,7 @@ export default class AuthAPI<T_TO_API extends object, T_FROM_API extends object>
       throw err
     }
 
-    const data = await APIHelper.parseJSON<T_FROM_API>(resp)
+    const data = await APIHelper.parseJSON<LoginFromAPI>(resp)
 
     return data
   }
@@ -43,7 +43,7 @@ export default class AuthAPI<T_TO_API extends object, T_FROM_API extends object>
   /**
    * Signs up a user.
    */
-  async signup(signupData: T_TO_API): Promise<T_FROM_API> {
+  async signup(signupData: SignupToAPI): Promise<SignupFromAPI> {
     const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.NO, signupData)
 
     // server url
@@ -65,7 +65,7 @@ export default class AuthAPI<T_TO_API extends object, T_FROM_API extends object>
       throw err
     }
 
-    const data = await APIHelper.parseJSON<T_FROM_API>(resp)
+    const data = await APIHelper.parseJSON<SignupFromAPI>(resp)
 
     return data
   }
