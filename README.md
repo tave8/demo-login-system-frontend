@@ -1,3 +1,16 @@
+## Working with Cloudflare Pages
+
+After installing Wrangler and being logged in, run the following command to access the latest N deployments
+of a specific Cloudflare Pages project:
+
+```
+
+wrangler pages deployment list --project-name demo-login-system-frontend --json | jq '.[0:1]'
+
+```
+
+With that command, I get all the info about the latest deployment of the Cloudflare Pages project named `demo-login-system-frontend`. Make sure you also have `jq` installed.
+
 ## Front-end Authentication
 
 ```
