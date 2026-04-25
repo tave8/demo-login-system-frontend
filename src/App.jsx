@@ -13,6 +13,7 @@ import EditMyProfilePage from "./components/pages/EditMyProfilePage.tsx"
 import LoginPage from "./components/pages/LoginPage.tsx"
 import HomePage from "./components/pages/HomePage.tsx"
 import SignupPage from "./components/pages/SignupPage.tsx"
+import AddArticlePage from "./components/pages/AddArticlePage.tsx"
 // components
 import MyNav from "./components/MyNav.tsx"
 import MyFooter from "./components/MyFooter.tsx"
@@ -30,6 +31,7 @@ function App() {
 
             {/* <Route path="/feed" element={<HomePage />} /> */}
             {/* <Route path="/articles/add" element={<HomePage />} /> */}
+
             <Route
               path="/me"
               element={
@@ -44,6 +46,15 @@ function App() {
               element={
                 <ProtectedRoute>
                   <EditMyProfilePage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/articles/add"
+              element={
+                <ProtectedRoute>
+                  <AddArticlePage />
                 </ProtectedRoute>
               }
             />

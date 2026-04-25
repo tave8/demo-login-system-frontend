@@ -32,6 +32,13 @@ const MyNav = () => {
               Home
             </Link>
 
+            {/* ADD ARTICLE */}
+            {authenticated && (
+              <Link to="/articles/add" className="nav-item nav-link">
+                Add article
+              </Link>
+            )}
+
             {/* MY PROFILE */}
             {authenticated && (
               <Link to="/me" className="nav-item nav-link">
