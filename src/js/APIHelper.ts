@@ -108,7 +108,7 @@ export default class APIHelper {
    * sends a valid JSON body in its response, else
    * this function will throw an error.
    */
-  public static async parseJSON<T>(resp: Response): Promise<T> {
+  public static async parseJSON<T_FROM_API>(resp: Response): Promise<T_FROM_API> {
     // the url the request was made to
     const url: string = resp.url
 

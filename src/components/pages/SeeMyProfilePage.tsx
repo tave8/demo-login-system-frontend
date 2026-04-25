@@ -2,10 +2,10 @@ import { Component, useState } from "react"
 import { Container, Row, Col, Nav, Navbar, NavDropdown, Image, Dropdown, Form, InputGroup, Button, Spinner, Alert } from "react-bootstrap"
 import { Search, BellFill } from "react-bootstrap-icons"
 import { Link } from "react-router-dom"
-import type { UserDataType } from "../../js/my_types"
+import type { UserFromAPI } from "../../js/my_types"
 import UsersAPI from "../../js/UsersAPI"
 
-const initialUserData: UserDataType = {
+const initialUserData: UserFromAPI = {
   firstname: "",
   lastname: "",
   email: "",
@@ -20,7 +20,7 @@ const SeeMyProfilePage = () => {
   // fetch user data each time
   // the component is rendered
   useState(() => {
-    const usersAPI = new UsersAPI()
+    const usersAPI = new UsersAPI<unknown, UserFromAPI>()
 
     setIsLoading(true)
     setIsError(false)
@@ -30,7 +30,7 @@ const SeeMyProfilePage = () => {
         setIsLoading(false)
         setIsError(false)
         setUserData(userData)
-        console.log(userData)
+        // console.log(userData)
       })
       .catch((err) => {
         setIsLoading(false)

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Container, Row, Col, Form, Button } from "react-bootstrap"
-import type { LoginForAPI } from "../../js/my_types"
+import type { LoginToAPI, LoginFromAPI } from "../../js/my_types"
 import AuthAPI from "../../js/AuthAPI"
 import { useAuth } from "../../auth/AuthContext"
 import { useNavigate, NavigateFunction } from "react-router-dom"
@@ -12,7 +12,7 @@ interface handleLoginParams {
   navigate: NavigateFunction
 }
 
-const initialFormValues: LoginForAPI = {
+const initialFormValues: LoginToAPI = {
   email: "",
   password: "",
 }
@@ -89,7 +89,7 @@ const LoginPage = () => {
   )
 }
 
-const handleLogin = (formValues: LoginForAPI) => {
+const handleLogin = (formValues: LoginToAPI) => {
   return async (params: handleLoginParams) => {
     const { login, logout, authenticated, navigate } = params
 
@@ -104,7 +104,7 @@ const handleLogin = (formValues: LoginForAPI) => {
     // console.log(authenticated)
 
     // console.log(formValues)
-    const authAPI = new AuthAPI()
+    const authAPI = new AuthAPI<LoginToAPI, LoginFromAPI>()
 
     authAPI
       .login(formValues)

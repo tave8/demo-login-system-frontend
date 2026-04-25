@@ -1,4 +1,4 @@
-export interface LoginForAPI {
+export interface LoginToAPI {
   email: string
   password: string
 }
@@ -7,7 +7,7 @@ export interface LoginFromAPI {
   accessToken: string
 }
 
-export interface SignupForAPI {
+export interface SignupToAPI {
   firstname: string
   lastname: string
   email: string
@@ -18,7 +18,12 @@ export interface SignupFromAPI {
   userId: string
 }
 
-export interface UserDataType {
+export interface UpdatedUserToAPI {
+  firstname: string
+  lastname: string
+}
+
+export interface UserFromAPI {
   firstname: string
   lastname: string
   email: string

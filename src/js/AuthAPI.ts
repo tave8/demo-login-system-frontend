@@ -2,9 +2,9 @@
 
 import APIHelper from "./APIHelper"
 import BaseAPI from "./BaseAPI"
-import { SignupFromAPI, SignupForAPI, LoginForAPI, LoginFromAPI, FetchConfigType, RequestMethod } from "./my_types"
+import { FetchConfigType, RequestMethod } from "./my_types"
 
-export default class AuthAPI extends BaseAPI {
+export default class AuthAPI<T_TO_API extends object, T_FROM_API extends object> extends BaseAPI {
   constructor() {
     // call new BaseAPI()
     super()
@@ -13,7 +13,7 @@ export default class AuthAPI extends BaseAPI {
   /**
    * Logins a user.
    */
-  async login(loginData: LoginForAPI): Promise<LoginFromAPI> {
+  async login(loginData: T_TO_API): Promise<T_FROM_API> {
     const config: FetchConfigType = APIHelper.getFetchConfigFor(RequestMethod.POST, false, loginData)
 
     // server url
@@ -35,7 +35,7 @@ export default class AuthAPI extends BaseAPI {
       throw err
     }
 
-    const data: LoginFromAPI = await resp.json()
+    const data = await APIHelper.parseJSON<T_FROM_API>(resp)
 
     return data
   }
@@ -43,24 +43,16 @@ export default class AuthAPI extends BaseAPI {
   /**
    * Signs up a user.
    */
-  async signup(signupData: SignupForAPI): Promise<SignupFromAPI> {
-    const defaultConfig = {
-      headers: {
-        "content-type": "application/json",
-      },
-      method: "POST",
-      body: JSON.stringify(signupData),
-    }
-    const moreConfig = {}
-    const finalConfig = { ...defaultConfig, ...moreConfig }
+  async signup(signupData: T_TO_API): Promise<T_FROM_API> {
+    const config: FetchConfigType = APIHelper.getFetchConfigFor(RequestMethod.POST, false, signupData)
 
     // server url
-    const url = APIHelper.getAPIUrl() + "/auth/register"
+    const url = APIHelper.getAPIUrlAt("/auth/register")
 
     let resp: Response
 
     try {
-      resp = await fetch(url, finalConfig)
+      resp = await fetch(url, config)
     } catch (err) {
       throw new Error(`Error DURING fetch. Details: ${err}`)
     }
@@ -73,7 +65,7 @@ export default class AuthAPI extends BaseAPI {
       throw err
     }
 
-    const data: SignupFromAPI = await resp.json()
+    const data = await APIHelper.parseJSON<T_FROM_API>(resp)
 
     return data
   }
