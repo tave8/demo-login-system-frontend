@@ -2,7 +2,7 @@
 
 import APIHelper from "./APIHelper"
 import BaseAPI from "./BaseAPI"
-import { FetchConfigType, RequestMethod } from "./my_types"
+import { FetchConfigType, RequestMethod, RequireLogin } from "./my_types"
 
 export default class AuthAPI<T_TO_API extends object, T_FROM_API extends object> extends BaseAPI {
   constructor() {
@@ -14,7 +14,7 @@ export default class AuthAPI<T_TO_API extends object, T_FROM_API extends object>
    * Logins a user.
    */
   async login(loginData: T_TO_API): Promise<T_FROM_API> {
-    const config = APIHelper.getFetchConfigFor(RequestMethod.POST, false, loginData)
+    const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.NO, loginData)
 
     // server url
     const url = APIHelper.getAPIUrlAt("/auth/login")
@@ -44,7 +44,7 @@ export default class AuthAPI<T_TO_API extends object, T_FROM_API extends object>
    * Signs up a user.
    */
   async signup(signupData: T_TO_API): Promise<T_FROM_API> {
-    const config: FetchConfigType = APIHelper.getFetchConfigFor(RequestMethod.POST, false, signupData)
+    const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.NO, signupData)
 
     // server url
     const url = APIHelper.getAPIUrlAt("/auth/register")

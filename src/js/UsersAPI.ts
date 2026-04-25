@@ -2,7 +2,7 @@
 
 import APIHelper from "./APIHelper"
 import BaseAPI from "./BaseAPI"
-import { FetchConfigType, RequestMethod } from "./my_types"
+import { FetchConfigType, RequestMethod, RequireLogin } from "./my_types"
 
 export default class UsersAPI<T_TO_API extends object | unknown, T_FROM_API extends object> extends BaseAPI {
   constructor() {
@@ -15,10 +15,12 @@ export default class UsersAPI<T_TO_API extends object | unknown, T_FROM_API exte
    * logged in user.
    */
   public async getMyInfo(): Promise<T_FROM_API> {
-    const config = APIHelper.getFetchConfigFor(RequestMethod.GET, true)
+    const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
 
     // server url
     const url = APIHelper.getAPIUrlAt("/users/me")
+
+    // const resp: Response = await APIHelper.doRequestAt()
 
     let resp: Response
 

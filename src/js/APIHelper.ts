@@ -109,6 +109,16 @@ export default class APIHelper {
    * this function will throw an error.
    */
   public static async parseJSON<T_FROM_API>(resp: Response): Promise<T_FROM_API> {
+    // the response status is not ok,
+    // therefore we cannot continue ù
+    if (!resp.ok) {
+      throw new Error(
+        `Before parsing JSON, the response is not successful because ` +
+          `it has status code '${resp.status}' with status text '${resp.statusText}'.` +
+          `Therefore JSON cannot be parsed into string.`,
+      )
+    }
+
     // the url the request was made to
     const url: string = resp.url
 
@@ -258,17 +268,16 @@ export default class APIHelper {
     // *********************
 
     const headers: HeadersInit = {
-      ...config.headers
+      ...config.headers,
     }
 
     let requestInit: RequestInit = {
       method,
       headers,
-      body: methodRequiresJSONBody ? config.body : null 
+      body: methodRequiresJSONBody ? config.body : null,
     }
 
     return requestInit
-
   }
 
   /**

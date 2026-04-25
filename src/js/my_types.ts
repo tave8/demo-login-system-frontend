@@ -32,6 +32,11 @@ export interface UserFromAPI {
 
 // FETCH CONFIG TYPES
 
+export const RequireLogin = {
+  YES: true,
+  NO: false,
+} as const
+
 export enum RequestMethod {
   GET = "GET",
   POST = "POST",
