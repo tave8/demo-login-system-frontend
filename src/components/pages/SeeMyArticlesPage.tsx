@@ -6,36 +6,23 @@ import { ArticleFromAPI, ArticleToAPI, ArticlesPageFromAPI } from "../../js/my_t
 import UsersAPI from "../../js/UsersAPI"
 import ArticlesAPI from "../../js/ArticlesAPI"
 
-interface handleAddArticleParams {}
-
 const SeeMyArticlesPage = () => {
   const [articles, setArticles] = useState<ArticleFromAPI[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [isError, setIsError] = useState(false)
 
   //   load my articles
   useEffect(() => {
-    // const fakeArticle1: ArticleFromAPI = {
-    //   title: "fake title 1",
-    //   content: "fake content 1",
-    //   coverUrl: "",
-    //   articleId: "a",
-    //   createdAt: "",
-    // }
-    // const fakeArticle2: ArticleFromAPI = {
-    //   title: "fake title 2",
-    //   content: "fake content 2",
-    //   coverUrl: "",
-    //   articleId: "b",
-    //   createdAt: "",
-    // }
-
-    // const fakeArticles: ArticleFromAPI[] = [fakeArticle1, fakeArticle2]
-
-    // setArticles(fakeArticles)
     const articlesAPI = new ArticlesAPI<any, ArticlesPageFromAPI>()
 
+    setIsLoading(true)
+    setIsError(false)
     articlesAPI
       .getMyArticles()
       .then((articlesPageFromAPI) => {
+        setIsLoading(false)
+        setIsError(false)
+
         console.log(articlesPageFromAPI)
 
         const newArticles = articlesPageFromAPI.content
@@ -45,6 +32,8 @@ const SeeMyArticlesPage = () => {
         // alert("successfully added article")
       })
       .catch((err) => {
+        setIsLoading(false)
+        setIsError(true)
         console.info("Error while getting articles")
         console.error(err)
       })
@@ -63,22 +52,34 @@ const SeeMyArticlesPage = () => {
             </Row>
             {/* articles list */}
             <Row className="g-3">
-              {articles.map((article) => {
-                return (
-                  <Col xs={12} md={6} key={article.articleId} className="border border-secondary">
-                    <Row>
-                      {/* article's title */}
-                      <Col xs={12}>
-                        <p>{article.title}</p>
-                      </Col>
-                      {/* article's content */}
-                      <Col xs={12}>
-                        <p>{article.content}</p>
-                      </Col>
-                    </Row>
-                  </Col>
-                )
-              })}
+              {!isLoading &&
+                !isError &&
+                articles.map((article) => {
+                  return (
+                    <Col xs={12} md={6} key={article.articleId} className="border border-secondary">
+                      <Row>
+                        {/* article's title */}
+                        <Col xs={12}>
+                          <p>{article.title}</p>
+                        </Col>
+                        {/* article's content */}
+                        <Col xs={12}>
+                          <p>{article.content}</p>
+                        </Col>
+                      </Row>
+                    </Col>
+                  )
+                })}
+
+              {/* is loading */}
+              {isLoading && (
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </Spinner>
+              )}
+
+              {/* is error */}
+              {isError && <Alert variant="danger">Something went wrong.</Alert>}
             </Row>
           </Col>
         </Row>
