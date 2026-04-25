@@ -26,12 +26,12 @@ export default class ArticlesAPI<T_TO_API extends object, T_FROM_API extends obj
    * Get articles of the currently
    * logged in user.
    */
-  public async getMyArticles(): Promise<T_FROM_API[]> {
+  public async getMyArticles(): Promise<T_FROM_API> {
     const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
 
     const resp: Response = await APIHelper.doFetchAt("/articles", config)
 
-    const data = await APIHelper.parseJSON<T_FROM_API[]>(resp)
+    const data = await APIHelper.parseJSON<T_FROM_API>(resp)
 
     return data
   }

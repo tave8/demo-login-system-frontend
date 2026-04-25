@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Container, Row, Col, Nav, Navbar, NavDropdown, Image, Dropdown, Form, InputGroup, Button, Spinner, Alert } from "react-bootstrap"
 import { Search, BellFill } from "react-bootstrap-icons"
 import { Link } from "react-router-dom"
-import { ArticleToAPI, ArticleFromAPI } from "../../js/my_types"
+import { ArticleFromAPI, ArticleToAPI, ArticlesPageFromAPI } from "../../js/my_types"
 import UsersAPI from "../../js/UsersAPI"
 import ArticlesAPI from "../../js/ArticlesAPI"
 
@@ -31,12 +31,17 @@ const SeeMyArticlesPage = () => {
     // const fakeArticles: ArticleFromAPI[] = [fakeArticle1, fakeArticle2]
 
     // setArticles(fakeArticles)
-    const articlesAPI = new ArticlesAPI<any, ArticleFromAPI>()
+    const articlesAPI = new ArticlesAPI<any, ArticlesPageFromAPI>()
 
     articlesAPI
       .getMyArticles()
-      .then((articlesFromAPI) => {
-        console.log(articlesFromAPI)
+      .then((articlesPageFromAPI) => {
+        console.log(articlesPageFromAPI)
+
+        const newArticles = articlesPageFromAPI.content
+
+        setArticles(newArticles)
+
         // alert("successfully added article")
       })
       .catch((err) => {
