@@ -13,24 +13,36 @@ const SeeMyArticlesPage = () => {
 
   //   load my articles
   useEffect(() => {
-    const fakeArticle1: ArticleFromAPI = {
-      title: "fake title 1",
-      content: "fake content 1",
-      coverUrl: "",
-      articleId: "a",
-      createdAt: "",
-    }
-    const fakeArticle2: ArticleFromAPI = {
-      title: "fake title 2",
-      content: "fake content 2",
-      coverUrl: "",
-      articleId: "b",
-      createdAt: "",
-    }
+    // const fakeArticle1: ArticleFromAPI = {
+    //   title: "fake title 1",
+    //   content: "fake content 1",
+    //   coverUrl: "",
+    //   articleId: "a",
+    //   createdAt: "",
+    // }
+    // const fakeArticle2: ArticleFromAPI = {
+    //   title: "fake title 2",
+    //   content: "fake content 2",
+    //   coverUrl: "",
+    //   articleId: "b",
+    //   createdAt: "",
+    // }
 
-    const fakeArticles: ArticleFromAPI[] = [fakeArticle1, fakeArticle2]
+    // const fakeArticles: ArticleFromAPI[] = [fakeArticle1, fakeArticle2]
 
-    setArticles(fakeArticles)
+    // setArticles(fakeArticles)
+    const articlesAPI = new ArticlesAPI<any, ArticleFromAPI>()
+
+    articlesAPI
+      .getMyArticles()
+      .then((articlesFromAPI) => {
+        console.log(articlesFromAPI)
+        // alert("successfully added article")
+      })
+      .catch((err) => {
+        console.info("Error while getting articles")
+        console.error(err)
+      })
   }, [])
 
   return (
