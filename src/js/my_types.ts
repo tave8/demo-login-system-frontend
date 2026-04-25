@@ -24,3 +24,20 @@ export interface UserDataType {
   email: string
   avatarUrl: string
 }
+
+// FETCH CONFIG TYPES
+
+export type FetchMethodType = "GET" | "POST" | "PUT" | "PATCH" | "DELETE"
+
+export type FetchHeaderContentTypeType = "application/json"
+
+export interface FetchHeadersType {
+  authorization?: string
+  "content-type": FetchHeaderContentTypeType
+}
+
+export interface FetchConfigType {
+  method: FetchMethodType
+  headers: FetchHeadersType
+  body?: object
+}

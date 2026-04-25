@@ -97,6 +97,49 @@ export default class APIHelper {
   }
 
   /**
+   * Parse a JSON from a response.
+   * Require that a response body is in JSON.
+   * That means, it is required that the server
+   * sends a valid JSON body in its response, else
+   * this function will throw an error.
+   */
+  public static async parseJSON<T>(resp: Response): Promise<T> {
+    // the url the request was made to
+    const url: string = resp.url
+
+    const contentTypeHeader: string | null = resp.headers.get("content-type")
+    // if the content-type is not even there
+    if (!contentTypeHeader) {
+      throw new Error(
+        `Before parsing JSON from a response, the Content-type header from the response was not even there, ` +
+          `therefore it is not possible to determine if this response contains JSON. URL was: ${url}`,
+      )
+    }
+    const hasSentJSON = contentTypeHeader.includes("application/json")
+    // if the content-type is different from application/json,
+    // this will definitely not be a valid JSON
+    if (!hasSentJSON) {
+      throw new Error(
+        `Before parsing JSON from a response, the Content-type header from the response ` +
+          `was not 'application/json', therefore it is not possible to parse the response body into JSON. ` +
+          `Content-type header value is '${contentTypeHeader}' instead. URL was: ${url}`,
+      )
+    }
+
+    try {
+      // try to parse the response body
+      const data: T = await resp.json()
+      return data
+    } catch (err) {
+      throw new Error(
+        `After parsing JSON from a response body, it was assumed ` +
+          `that this would be valid JSON, however the parsing into JSON failed. URL was: ${url}. Details of error: ` +
+          err,
+      )
+    }
+  }
+
+  /**
    * Is the API server ok?
    */
   static async APIServerIsOk(): Promise<Boolean> {

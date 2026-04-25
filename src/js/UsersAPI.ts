@@ -23,6 +23,8 @@ export default class UsersAPI extends BaseAPI {
     const moreConfig = {}
     const finalConfig = { ...defaultConfig, ...moreConfig }
 
+        
+
     // server url
     const url = APIHelper.getAPIUrlAt("/users/me")
 
@@ -42,7 +44,7 @@ export default class UsersAPI extends BaseAPI {
       throw err
     }
 
-    const data: UserDataType = await resp.json()
+    const data: UserDataType = await APIHelper.parseJSON<UserDataType>(resp)
 
     return data
   }
