@@ -1,11 +1,11 @@
 import { useState } from "react"
 import { Container, Row, Col, Form, Button, Spinner, Alert } from "react-bootstrap"
 import { useNavigate, useParams } from "react-router-dom"
-import { AppRoutes, ArticleFromAPI, UpdatedArticleToAPI } from "../../js/my_types"
+import { AppRoutes, ArticleFromAPI, EnrichedArticleFromAPI, UpdatedArticleToAPI } from "../../js/my_types"
 import ArticlesAPI from "../../js/ArticlesAPI"
 
 interface handleEditMyArticleParams {
-  setArticle: (article: ArticleFromAPI) => void
+  setArticle: (article: EnrichedArticleFromAPI) => void
   setUpdatedArticle: (updatedArticle: UpdatedArticleToAPI) => void
 }
 
@@ -13,12 +13,13 @@ type RouteURLParams = {
   articleId: string
 }
 
-const initialArticle: ArticleFromAPI = {
+const initialArticle: EnrichedArticleFromAPI = {
   articleId: "",
   title: "",
   content: "",
   coverUrl: "",
   createdAt: "",
+  relativeTimeFormatted: ""
 }
 
 const initialUpdatedArticle: UpdatedArticleToAPI = {
@@ -49,7 +50,7 @@ const EditMyArticlePage = () => {
     setIsLoading(true)
     setIsError(false)
     articlesAPI
-      .getMyArticleById(articleId)
+      .getMyArticleByIdEnriched(articleId)
       .then((articleFromAPI) => {
         setIsLoading(false)
         setIsError(false)
@@ -86,72 +87,82 @@ const EditMyArticlePage = () => {
 
             {/* my article */}
 
-            {/* {!isLoading && !isError && ( */}
-            <>
-              {/* article's title */}
-              <Row>
-                <Col>
-                  <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                    <Form.Label>Title</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Type the article's title"
-                      value={updatedArticle.title}
-                      onChange={(event) => {
-                        setUpdatedArticle({
-                          ...updatedArticle,
-                          title: event.target.value,
-                        })
+            {!isLoading && !isError && (
+              <>
+                {/* article's metadata */}
+                <Row>
+                  <Col>
+                    <Row>
+                      <Col xs={9}>
+                        <span>{article.relativeTimeFormatted}</span>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+                {/* article's title */}
+                <Row>
+                  <Col>
+                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                      <Form.Label>Title</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Type the article's title"
+                        value={updatedArticle.title}
+                        onChange={(event) => {
+                          setUpdatedArticle({
+                            ...updatedArticle,
+                            title: event.target.value,
+                          })
+                        }}
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+                {/* article's content */}
+                <Row>
+                  <Col>
+                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                      <Form.Label>Content</Form.Label>
+                      <Form.Control
+                        as="textarea"
+                        rows={5}
+                        placeholder="Type the article's content"
+                        value={updatedArticle.content}
+                        onChange={(event) => {
+                          setUpdatedArticle({
+                            ...updatedArticle,
+                            content: event.target.value,
+                          })
+                        }}
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+                {/* submit/add article */}
+                <Row>
+                  <Col className="text-center">
+                    <Button
+                      className="btn btn-primary"
+                      onClick={() => {
+                        handleEditMyArticle(article.articleId, updatedArticle)({ setArticle, setUpdatedArticle })
                       }}
-                    />
-                  </Form.Group>
-                </Col>
-              </Row>
-              {/* article's content */}
-              <Row>
-                <Col>
-                  <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                    <Form.Label>Content</Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      rows={5}
-                      placeholder="Type the article's content"
-                      value={updatedArticle.content}
-                      onChange={(event) => {
-                        setUpdatedArticle({
-                          ...updatedArticle,
-                          content: event.target.value,
-                        })
-                      }}
-                    />
-                  </Form.Group>
-                </Col>
-              </Row>
-              {/* submit/add article */}
-              <Row>
-                <Col className="text-center">
-                  <Button
-                    className="btn btn-primary"
-                    onClick={() => {
-                      handleEditMyArticle(article.articleId, updatedArticle)({ setArticle, setUpdatedArticle })
-                    }}
-                  >
-                    Edit article
-                  </Button>
-                </Col>
-              </Row>
-            </>
-            {/* )} */}
+                    >
+                      Edit article
+                    </Button>
+                  </Col>
+                </Row>
+              </>
+            )}
 
             {/* is loading */}
-            {/* {isLoading && (
+            {isLoading && (
               <Spinner animation="border" role="status">
                 <span className="visually-hidden">Loading...</span>
-              </Spinner> */}
-            {/* )} */}
+              </Spinner>
+            )}
 
             {/* is error */}
-            {/* {isError && <Alert variant="danger">Something went wrong.</Alert>} */}
+            {isError && <Alert variant="danger">Something went wrong.</Alert>}
           </Col>
         </Row>
       </Container>
@@ -166,12 +177,12 @@ const handleEditMyArticle = (articleId: string, updatedArticle: UpdatedArticleTo
     // console.log(articleId, updatedArticle)
     const articlesAPI = new ArticlesAPI()
     articlesAPI
-      .updateMyArticleById(articleId, updatedArticle)
-      .then((article) => {
-        setArticle(article)
+      .updateMyArticleByIdEnriched(articleId, updatedArticle)
+      .then((articleFromAPI) => {
+        setArticle(articleFromAPI)
         setUpdatedArticle({
-          title: article.title,
-          content: article.content,
+          title: articleFromAPI.title,
+          content: articleFromAPI.content,
         })
         // console.log(article)
         alert("successfully updated article")
