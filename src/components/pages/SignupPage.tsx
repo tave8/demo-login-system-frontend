@@ -6,6 +6,8 @@ import { useState } from "react"
 import AuthAPI from "../../js/AuthAPI"
 import { AppRoutes, SignupToAPI } from "../../js/my_types"
 import { NavigateFunction, useNavigate } from "react-router-dom"
+import { useAuth } from "../../auth/AuthContext"
+import UnauthorizedError from "../../js/exceptions/UnauthorizedError"
 
 interface handleSignupParams {
   navigate: NavigateFunction
@@ -22,6 +24,7 @@ const SignupPage = () => {
   const [formValues, setFormValues] = useState(initialFormValues)
 
   const navigate = useNavigate()
+
 
   return (
     <>
@@ -147,8 +150,12 @@ const handleSignup = (formValues: SignupToAPI) => {
         navigate(AppRoutes.login)
       })
       .catch((err) => {
-        console.info("Error during signup")
-        console.error(err)
+        if (err instanceof UnauthorizedError) {
+          alert("Wrong credentials.")
+        } else {
+          console.info("Error during signup")
+          console.error(err)
+        }
       })
   }
 }
