@@ -4,6 +4,7 @@ import { AppRoutes, type LoginToAPI } from "../../js/my_types"
 import AuthAPI from "../../js/AuthAPI"
 import { useAuth } from "../../auth/AuthContext"
 import { useNavigate, NavigateFunction } from "react-router-dom"
+import UnauthorizedError from "../../js/exceptions/UnauthorizedError"
 
 interface handleLoginParams {
   login: (token: string) => void
@@ -93,17 +94,6 @@ const handleLogin = (formValues: LoginToAPI) => {
   return async (params: handleLoginParams) => {
     const { login, logout, authenticated, navigate } = params
 
-    // console.log("about to login")
-
-    // if (authenticated) {
-    //   logout()
-    // } else {
-    //   login("mytoken")
-    // }
-
-    // console.log(authenticated)
-
-    // console.log(formValues)
     const authAPI = new AuthAPI()
 
     authAPI
@@ -117,8 +107,12 @@ const handleLogin = (formValues: LoginToAPI) => {
         // console.log(loginInfo)
       })
       .catch((err) => {
-        console.info("Error during login")
-        console.error(err)
+        if (err instanceof UnauthorizedError) {
+          alert("Wrong credentials.")
+        } else {
+          console.info("Error during login")
+          console.error(err)
+        }
       })
   }
 }

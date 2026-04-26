@@ -11,29 +11,12 @@ export default class AuthAPI extends BaseAPI {
   }
 
   /**
-   * Logins a user.
+   * Login a user.
    */
   public async login(loginData: LoginToAPI): Promise<LoginFromAPI> {
     const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.NO, loginData)
 
-    // server url
-    const url = APIHelper.getAPIUrlAt("/auth/login")
-
-    let resp: Response
-
-    try {
-      resp = await fetch(url, config)
-    } catch (err) {
-      throw new Error(`Error DURING fetch. Details: ${err}`)
-    }
-
-    try {
-      if (!resp.ok) {
-        throw new Error(`Error AFTER fetch. Response status code: ${resp.status}`)
-      }
-    } catch (err) {
-      throw err
-    }
+    const resp: Response = await APIHelper.doFetchAt(`/auth/login`, config)
 
     const data = await APIHelper.parseJSON<LoginFromAPI>(resp)
 
@@ -41,7 +24,7 @@ export default class AuthAPI extends BaseAPI {
   }
 
   /**
-   * Signs up a user.
+   * Sign up a user.
    */
   public async signup(signupData: SignupToAPI): Promise<SignupFromAPI> {
     const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.NO, signupData)

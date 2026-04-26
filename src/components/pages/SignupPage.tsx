@@ -6,7 +6,6 @@ import { useState } from "react"
 import AuthAPI from "../../js/AuthAPI"
 import { AppRoutes, SignupToAPI } from "../../js/my_types"
 import { NavigateFunction, useNavigate } from "react-router-dom"
-import { useAuth } from "../../auth/AuthContext"
 import UnauthorizedError from "../../js/exceptions/UnauthorizedError"
 
 interface handleSignupParams {
