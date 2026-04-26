@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Container, Row, Col, Form, Button, Spinner, Alert } from "react-bootstrap"
+import { Container, Row, Col, Form, Button, Spinner, Alert, Image } from "react-bootstrap"
 import { UpdatedUserToAPI, UserFromAPI } from "../../js/my_types"
 import UsersAPI from "../../js/UsersAPI"
 import UnauthorizedError from "../../js/exceptions/UnauthorizedError"
@@ -67,10 +67,31 @@ const EditMyProfilePage = () => {
             {!isLoading && !isError && (
               <>
                 <Row className="g-3">
-                  <Col xs={12} md={3} className="text-center">
-                    {/* <Image src={userData.avatarUrl} /> */}
+                  <Col xs={12} className="text-center">
+                    <Row className="d-flex flex-column align-items-center g-3">
+                      <Col>
+                        {/* avatar image */}
+                        <Image src={userData.avatarUrl} roundedCircle style={{ width: "100px", height: "100px", objectFit: "cover" }} />
+                      </Col>
+                      <Col xs={12} className="text-center">
+                        {/* avatar image upload */}
+                        <Form.Group className="mb-3">
+                          <Form.Control
+                            type="file"
+                            size="sm"
+                            accept="image/*"
+                            onChange={(event) => {
+                              // const file = event.target.files?.[0]
+                              // if (file) {
+                              //   setAvatarImage(file)
+                              // }
+                            }}
+                          />
+                        </Form.Group>
+                      </Col>
+                    </Row>
                   </Col>
-                  <Col md={9}>
+                  <Col xs={12}>
                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                       <Form.Label>Firstname</Form.Label>
                       <Form.Control
