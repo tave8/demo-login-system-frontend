@@ -3,6 +3,7 @@ import { Container, Row, Col, Form, Button, Spinner, Alert } from "react-bootstr
 import { useNavigate, useParams } from "react-router-dom"
 import { AppRoutes, ArticleFromAPI, EnrichedArticleFromAPI, UpdatedArticleToAPI } from "../../js/my_types"
 import ArticlesAPI from "../../js/ArticlesAPI"
+import UnauthorizedError from "../../js/exceptions/UnauthorizedError"
 
 interface handleEditMyArticleParams {
   setArticle: (article: EnrichedArticleFromAPI) => void
@@ -188,8 +189,13 @@ const handleEditMyArticle = (articleId: string, updatedArticle: UpdatedArticleTo
         alert("successfully updated article")
       })
       .catch((err) => {
-        console.info("Error during update article")
-        console.error(err)
+        if (err instanceof UnauthorizedError) {
+          console.log("you are unauthorized!")
+          console.log(err)
+        } else {
+          console.info("Error during update article")
+          console.error(err)
+        }
       })
   }
 }

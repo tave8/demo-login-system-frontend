@@ -1,5 +1,7 @@
 import { isLoggedIn } from "../auth/isLoggedIn"
+import UnauthorizedError from "./exceptions/UnauthorizedError"
 import { FetchConfigType, RequestHeaderContentType, RequestMethod } from "./my_types"
+// import {logout} from "../auth/AuthContext.tsx"
 
 let API_URL: string
 
@@ -13,6 +15,8 @@ try {
  * API helper.
  */
 export default class APIHelper {
+  // static logout: () => void = logout
+
   /**
    *
    * @returns the URL of the API server
@@ -308,17 +312,37 @@ export default class APIHelper {
   /**
    * Do a fetch request to a complete/absolute URL,
    * providing a fetch configuration object.
+   *
+   * @param absoluteURL absolute URL, example: https://mydomain.com/my/endpoint?q=abc
+   * @param config a valid fetch configuration object (containing method, headers, etc.)
+   * 
+   * @throws {UnauthorizedError} when user is not authorized, likely because of expired access token
+   *    or similar non-authenticated/non-authorized scenarios
    */
   public static async doFetch(absoluteURL: string, config: RequestInit): Promise<Response> {
     let resp: Response
 
+    // ***************************+
+    // PROBLEMS WITH INVALID URL, THE NETWORK, SERVER AVAILABILITY, CORS etc.?
+    // ***************************+
+
     try {
       resp = await fetch(absoluteURL, config)
     } catch (err) {
-      throw new Error(`Error DURING fetch. Details: ${err}`)
+      throw new Error(`Error DURING fetch. This may be due to problems with ` + `the network, CORS, invalid URL, unavailable server. Details: ${err}`)
     }
 
+    // ***************************+
+    // NON-SUCCESSFUL RESPONSE?
+    // ***************************+
+
     try {
+      const isUnauthorized = resp.status == 401
+
+      if (isUnauthorized) {
+        throw new UnauthorizedError()
+      }
+
       if (!resp.ok) {
         throw new Error(`Error AFTER fetch. Response status code: ${resp.status}`)
       }

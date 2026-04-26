@@ -3,16 +3,21 @@ import { Container, Row, Col, Spinner, Alert, Button } from "react-bootstrap"
 import { AppRoutes, EnrichedArticleFromAPI } from "../../js/my_types"
 import ArticlesAPI from "../../js/ArticlesAPI"
 import { Link } from "react-router-dom"
+import UnauthorizedError from "../../js/exceptions/UnauthorizedError"
+import { useAuth } from "../../auth/AuthContext"
 
 interface handleDeleteMyArticleParams {
   articles: EnrichedArticleFromAPI[]
   setArticles: (articles: EnrichedArticleFromAPI[]) => void
+  logout: () => void
 }
 
 const SeeMyArticlesPage = () => {
   const [articles, setArticles] = useState<EnrichedArticleFromAPI[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
+
+  const { login, logout, authenticated } = useAuth()
 
   //   load my articles
   useEffect(() => {
@@ -35,8 +40,14 @@ const SeeMyArticlesPage = () => {
       .catch((err) => {
         setIsLoading(false)
         setIsError(true)
-        console.info("Error while getting articles")
-        console.error(err)
+        if (err instanceof UnauthorizedError) {
+          logout()
+          // console.log("you are unauthorized!")
+          // console.log(err)
+        } else {
+          console.info("Error while getting articles")
+          console.error(err)
+        }
       })
   }, [])
 
@@ -83,7 +94,7 @@ const SeeMyArticlesPage = () => {
                                     if (!answerIsYes) {
                                       return
                                     }
-                                    handleDeleteMyArticle(article.articleId)({ setArticles, articles })
+                                    handleDeleteMyArticle(article.articleId)({ setArticles, articles, logout })
                                   }}
                                 >
                                   Delete
@@ -131,7 +142,7 @@ const SeeMyArticlesPage = () => {
 
 const handleDeleteMyArticle = (targetArticleId: string) => {
   return async (params: handleDeleteMyArticleParams) => {
-    const { setArticles, articles } = params
+    const { setArticles, articles, logout } = params
 
     const articlesAPI = new ArticlesAPI()
     articlesAPI
@@ -144,8 +155,14 @@ const handleDeleteMyArticle = (targetArticleId: string) => {
         alert("successfully deleted article")
       })
       .catch((err) => {
-        console.info("Error during delete article")
-        console.error(err)
+        if (err instanceof UnauthorizedError) {
+          logout()
+          // console.log("you are unauthorized!")
+          // console.log(err)
+        } else {
+          console.info("Error during delete article")
+          console.error(err)
+        }
       })
   }
 }
