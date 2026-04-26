@@ -37,18 +37,15 @@ const EditMyArticlePage = () => {
     setIsLoading(true)
     setIsError(false)
     articlesAPI
-      .getMyArticleByIdEnriched(articleId)
+      .getMyArticleById(articleId)
       .then((articleFromAPI) => {
         setIsLoading(false)
         setIsError(false)
 
-        console.log(articleFromAPI)
+        setArticle(articleFromAPI)
+        // console.log(articleFromAPI)
 
         // console.log(articlesPage)
-
-        // setArticles(articlesPage.content)
-
-        // alert("successfully added article")
       })
       .catch((err) => {
         setIsLoading(false)
@@ -72,54 +69,59 @@ const EditMyArticlePage = () => {
               </Col>
             </Row>
 
-            {/* my profile info */}
+            {/* my article */}
 
             {/* {!isLoading && !isError && ( */}
             <>
-              <Row className="g-3">
-                <Col xs={12} md={3} className="text-center">
-                  {/* <Image src={userData.avatarUrl} /> */}
-                </Col>
-                <Col md={9}>
+              {/* article's title */}
+              <Row>
+                <Col>
                   <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                    <Form.Label>Firstname</Form.Label>
+                    <Form.Label>Title</Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="My firstname"
-                      // value={userData.firstname}
+                      placeholder="Type the article's title"
+                      value={article.title}
                       onChange={(event) => {
-                        //   setUserData({
-                        //     ...userData,
-                        //     firstname: event.target.value,
-                        //   })
-                      }}
-                    />
-                  </Form.Group>
-                  <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                    <Form.Label>Lastname</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="My lastname"
-                      // value={userData.lastname}
-                      onChange={(event) => {
-                        //   setUserData({
-                        //     ...userData,
-                        //     lastname: event.target.value,
-                        //   })
+                        setArticle({
+                          ...article,
+                          title: event.target.value,
+                        })
                       }}
                     />
                   </Form.Group>
                 </Col>
               </Row>
-              <Row className="mt-2">
-                <Col xs={12} className="text-center">
+              {/* article's content */}
+              <Row>
+                <Col>
+                  <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                    <Form.Label>Content</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={5}
+                      placeholder="Type the article's content"
+                      value={article.content}
+                      onChange={(event) => {
+                        setArticle({
+                          ...article,
+                          content: event.target.value,
+                        })
+                      }}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              {/* submit/add article */}
+              <Row>
+                <Col className="text-center">
                   <Button
                     className="btn btn-primary"
                     onClick={() => {
-                      // handleEditProfile(userData)()
+                      //   handleAddArticle(articleData)()
                     }}
                   >
-                    Edit my profile
+                    Add article
                   </Button>
                 </Col>
               </Row>
