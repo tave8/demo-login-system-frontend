@@ -4,6 +4,10 @@ import { UpdatedUserToAPI, UserFromAPI } from "../../js/my_types"
 import UsersAPI from "../../js/UsersAPI"
 import UnauthorizedError from "../../js/exceptions/UnauthorizedError"
 import { useAuth } from "../../auth/AuthContext"
+import FileHelper from "../../js/FileHelper"
+import InvalidFileUploadedError from "../../js/exceptions/InvalidFileUploadedError"
+
+type MaybeFile = File | null
 
 interface handleEditProfileParams {
   logout: () => void
@@ -16,8 +20,15 @@ const initialUserData: UserFromAPI = {
   avatarUrl: "",
 }
 
+interface HandleUploadAvatarImageParams {
+  setUserData: (u: UserFromAPI) => void
+  setIsLoading: (x: boolean) => void
+  setIsError: (x: boolean) => void
+}
+
 const EditMyProfilePage = () => {
   const [userData, setUserData] = useState(initialUserData)
+  const [avatarImage, setAvatarImage] = useState<MaybeFile>()
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
 
@@ -81,10 +92,11 @@ const EditMyProfilePage = () => {
                             size="sm"
                             accept="image/*"
                             onChange={(event) => {
-                              // const file = event.target.files?.[0]
-                              // if (file) {
-                              //   setAvatarImage(file)
-                              // }
+                              const file: MaybeFile = event.target.files?.[0]
+                              if (file) {
+                                setAvatarImage(file)
+                                handleUploadAvatarImage(file)({ setUserData, setIsLoading, setIsError })
+                              }
                             }}
                           />
                         </Form.Group>
@@ -173,6 +185,18 @@ const handleEditProfile = (updatedUser: UpdatedUserToAPI) => {
           console.error(err)
         }
       })
+  }
+}
+
+const handleUploadAvatarImage = (image: File) => {
+  return async (params: HandleUploadAvatarImageParams) => {
+    try {
+      FileHelper.requireValidAvatarImage(image)
+    } catch (err) {
+      if (err instanceof InvalidFileUploadedError) {
+        alert(err.message)
+      }
+    }
   }
 }
 

@@ -1,3 +1,5 @@
+import InvalidFileUploadedError from "./exceptions/InvalidFileUploadedError"
+
 /**
  * Helper class for dealing with files, images etc.
  */
@@ -29,6 +31,12 @@ export default class FileHelper {
   }
 
   /**
+   * Is this file empty?
+   */
+  public static isEmpty(file: File): boolean {
+    return file.size === 0
+  }
+  /**
    * Is the given file within the avatar image
    * default limit (2 MB)?
    */
@@ -37,9 +45,25 @@ export default class FileHelper {
   }
 
   /**
-   * Is this file empty?
+   * Require that the given file is a valid avatar image.
+   * 
+   * @param file the file to upload
+   * 
+   * @throws {InvalidFileUploadedError} if the file is empty, not an image, or too big
    */
-  public static isEmpty(file: File): boolean {
-    return file.size === 0
+  public static requireValidAvatarImage(file: File): void {
+    // if the file is empty
+    if (FileHelper.isEmpty(file)) {
+      throw new InvalidFileUploadedError("File is empty.")
+    }
+    // if file is not an image
+    if (!FileHelper.isImage(file)) {
+      throw new InvalidFileUploadedError("File is not an image.")
+    }
+
+    // if file is too big
+    if (!FileHelper.isWithinAvatarSize(file)) {
+      throw new InvalidFileUploadedError("File is too big. Must be less than 2MB.")
+    }
   }
 }

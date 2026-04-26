@@ -43,21 +43,12 @@ export default class UsersAPI extends BaseAPI {
   /**
    * Upload my avatar image of the currently
    * logged in user.
+   * 
+   * @throws {InvalidFileUploadedError} if the file is not valid (empty, not an image, too big)
    */
   public async uploadMyAvatarImage(avatarImage: File): Promise<UserFromAPI> {
-    // if the file is empty
-    if (FileHelper.isEmpty(avatarImage)) {
-      throw new InvalidFileUploadedError("File is empty.")
-    }
-    // if file is not an image
-    if (!FileHelper.isImage(avatarImage)) {
-      throw new InvalidFileUploadedError("File is not an image.")
-    }
-
-    // if file is too big
-    if (!FileHelper.isWithinAvatarSize(avatarImage)) {
-      throw new InvalidFileUploadedError("File is too big. Must be less than 2MB.")
-    }
+    // all checks that must be passed to upload this avatar image
+    FileHelper.requireValidAvatarImage(avatarImage)
 
     const config = APIHelper.getFetchConfigForFile(RequestMethod.POST, avatarImage, "avatar_image", RequireLogin.YES)
 
