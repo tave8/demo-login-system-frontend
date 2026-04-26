@@ -116,8 +116,18 @@ export default class APIHelper {
 
     // the url the request was made to
     const url: string = resp.url
-
+    const isNoContentStatusCode = resp.status == 204
     const contentTypeHeader: string | null = resp.headers.get("content-type")
+
+    // if the status code is 204, then there's no response body and
+    // no content-type header (for example with a successful DELETE request)
+    if (isNoContentStatusCode) {
+      // the "null as unknown as T_FROM_API" trick is simply to
+      // trick typescript into not checking the type (by first casting null to unknown)
+      // and then casting unknown to T_FROM_API type
+      return Promise.resolve(null as unknown as T_FROM_API)
+    }
+
     // if the content-type is not even there
     if (!contentTypeHeader) {
       throw new Error(
@@ -125,6 +135,7 @@ export default class APIHelper {
           `therefore it is not possible to determine if this response contains JSON. URL was: ${url}`,
       )
     }
+
     const hasSentJSON = contentTypeHeader.includes("application/json")
     // if the content-type is different from application/json,
     // this will definitely not be a valid JSON

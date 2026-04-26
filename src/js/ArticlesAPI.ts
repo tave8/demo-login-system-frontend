@@ -119,6 +119,19 @@ export default class ArticlesAPI extends BaseAPI {
   }
 
   /**
+   * Delete article by ID of the currently
+   * logged in user.
+   */
+  public async deleteMyArticleById(articleId: string): Promise<void> {
+    const config = APIHelper.getFetchConfigFor(RequestMethod.DELETE, RequireLogin.YES)
+
+    const resp: Response = await APIHelper.doFetchAt(`/articles/${articleId}`, config)
+
+    await APIHelper.parseJSON<void>(resp)
+
+  }
+
+  /**
    * Get articles (enriched) of the currently
    * logged in user.
    */

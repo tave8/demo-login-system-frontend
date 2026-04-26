@@ -4,6 +4,11 @@ import { AppRoutes, EnrichedArticleFromAPI } from "../../js/my_types"
 import ArticlesAPI from "../../js/ArticlesAPI"
 import { Link } from "react-router-dom"
 
+interface handleDeleteMyArticleParams {
+  articles: EnrichedArticleFromAPI[]
+  setArticles: (articles: EnrichedArticleFromAPI[]) => void
+}
+
 const SeeMyArticlesPage = () => {
   const [articles, setArticles] = useState<EnrichedArticleFromAPI[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -62,13 +67,27 @@ const SeeMyArticlesPage = () => {
                         <Row>
                           <Col xs={12}>
                             <Row>
-                              <Col xs={9}>
+                              <Col xs={6}>
                                 <span className="fw-light">{article.relativeTimeFormatted}</span>
                               </Col>
                               <Col className="text-end">
+                                {/* edit button */}
                                 <Link className="btn btn-primary" to={AppRoutes.editMyArticleWith(article.articleId)}>
                                   Edit
                                 </Link>
+                                {/* delete button */}
+                                <Button
+                                  variant="danger"
+                                  onClick={() => {
+                                    const answerIsYes: boolean = confirm("Are you sure you want to delete this article?")
+                                    if (!answerIsYes) {
+                                      return
+                                    }
+                                    handleDeleteMyArticle(article.articleId)({ setArticles, articles })
+                                  }}
+                                >
+                                  Delete
+                                </Button>
                               </Col>
                             </Row>
                           </Col>
@@ -101,6 +120,27 @@ const SeeMyArticlesPage = () => {
       </Container>
     </>
   )
+}
+
+const handleDeleteMyArticle = (targetArticleId: string) => {
+  return async (params: handleDeleteMyArticleParams) => {
+    const { setArticles, articles } = params
+
+    const articlesAPI = new ArticlesAPI()
+    articlesAPI
+      .deleteMyArticleById(targetArticleId)
+      .then(() => {
+        const articlesWithoutDeleted = articles.filter((article) => article.articleId != targetArticleId)
+
+        setArticles(articlesWithoutDeleted)
+
+        alert("successfully deleted article")
+      })
+      .catch((err) => {
+        console.info("Error during delete article")
+        console.error(err)
+      })
+  }
 }
 
 export default SeeMyArticlesPage
