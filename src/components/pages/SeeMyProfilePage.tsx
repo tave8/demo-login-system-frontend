@@ -4,6 +4,8 @@ import { Search, BellFill } from "react-bootstrap-icons"
 import { Link } from "react-router-dom"
 import { AppRoutes, type UserFromAPI } from "../../js/my_types"
 import UsersAPI from "../../js/UsersAPI"
+import { useAuth } from "../../auth/AuthContext"
+import UnauthorizedError from "../../js/exceptions/UnauthorizedError"
 
 const initialUserData: UserFromAPI = {
   firstname: "",
@@ -17,10 +19,12 @@ const SeeMyProfilePage = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
 
+  const { logout } = useAuth()
+
   // fetch user data each time
   // the component is rendered
   useState(() => {
-    const usersAPI = new UsersAPI<any, UserFromAPI>()
+    const usersAPI = new UsersAPI()
 
     setIsLoading(true)
     setIsError(false)
@@ -35,8 +39,12 @@ const SeeMyProfilePage = () => {
       .catch((err) => {
         setIsLoading(false)
         setIsError(true)
-        console.info("Error during getting user info")
-        console.error(err)
+        if (err instanceof UnauthorizedError) {
+          logout()
+        } else {
+          console.info("Error during getting user info")
+          console.error(err)
+        }
       })
   }, [])
 

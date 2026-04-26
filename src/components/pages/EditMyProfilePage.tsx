@@ -2,7 +2,12 @@ import { useState } from "react"
 import { Container, Row, Col, Form, Button, Spinner, Alert } from "react-bootstrap"
 import { UpdatedUserToAPI, UserFromAPI } from "../../js/my_types"
 import UsersAPI from "../../js/UsersAPI"
+import UnauthorizedError from "../../js/exceptions/UnauthorizedError"
+import { useAuth } from "../../auth/AuthContext"
 
+interface handleEditProfileParams {
+  logout: () => void
+}
 
 const initialUserData: UserFromAPI = {
   firstname: "",
@@ -15,6 +20,8 @@ const EditMyProfilePage = () => {
   const [userData, setUserData] = useState(initialUserData)
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
+
+  const { logout } = useAuth()
 
   // fetch user data each time
   // the component is rendered
@@ -34,8 +41,12 @@ const EditMyProfilePage = () => {
       .catch((err) => {
         setIsLoading(false)
         setIsError(true)
-        console.info("Error during getting user info")
-        console.error(err)
+        if (err instanceof UnauthorizedError) {
+          logout()
+        } else {
+          console.info("Error during getting user info")
+          console.error(err)
+        }
       })
   }, [])
 
@@ -95,7 +106,7 @@ const EditMyProfilePage = () => {
                     <Button
                       className="btn btn-primary"
                       onClick={() => {
-                        handleEditProfile(userData)()
+                        handleEditProfile(userData)({ logout })
                       }}
                     >
                       Edit my profile
@@ -122,18 +133,24 @@ const EditMyProfilePage = () => {
 }
 
 const handleEditProfile = (updatedUser: UpdatedUserToAPI) => {
-  return async () => {
+  return async (params: handleEditProfileParams) => {
+    const { logout } = params
+
     const usersAPI = new UsersAPI()
 
     usersAPI
       .updateMyInfo(updatedUser)
       .then((userData) => {
-        console.log(userData)
+        // console.log(userData)
         alert("successfully update my info")
       })
       .catch((err) => {
-        console.info("Error during login")
-        console.error(err)
+        if (err instanceof UnauthorizedError) {
+          logout()
+        } else {
+          console.info("Error during login")
+          console.error(err)
+        }
       })
   }
 }
