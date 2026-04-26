@@ -1,5 +1,7 @@
-export default class UnauthorizedError extends Error {
+import HttpError from "./HttpError"
+
+export default class UnauthorizedError extends HttpError {
   constructor(details?: string) {
-    super(details ? `You are not authorized. DETAILS: ${details}` : `You are not authorized.`)
+    super(401, details)
   }
 }

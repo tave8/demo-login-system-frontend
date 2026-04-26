@@ -1,4 +1,8 @@
 import { isLoggedIn } from "../auth/isLoggedIn"
+import BadRequestError from "./exceptions/BadRequestError"
+import HttpError from "./exceptions/HttpError"
+import NetworkError from "./exceptions/NetworkError"
+import ServerError from "./exceptions/ServerError"
 import UnauthorizedError from "./exceptions/UnauthorizedError"
 import { FetchConfigType, RequestHeaderContentType, RequestMethod } from "./my_types"
 // import {logout} from "../auth/AuthContext.tsx"
@@ -310,44 +314,82 @@ export default class APIHelper {
   }
 
   /**
-   * Do a fetch request to a complete/absolute URL,
-   * providing a fetch configuration object.
+   * ## Do a fetch request to a complete/absolute URL with a fetch config object
+   *
+   *
+   * ## Catch custom HTTP exceptions
+   *
+   * Custom exceptions can be caught in the .catch() promise method.
+   *
+   * For example, if the server returns an "unauthorized" status code,
+   * a custom UnauthorizedError is thrown. This allows handling cases like:
+   * - wrong credentials on signup/login
+   * - user is no longer logged in
+   *
+   * @example
+   * articlesAPI.getMyArticles()
+   *   .catch((err) => {
+   *     if (err instanceof UnauthorizedError) {
+   *       // logout user or show wrong credentials message
+   *     } else {
+   *       // show generic error
+   *     }
+   *   })
+   *
+   * ## Params & throws
    *
    * @param absoluteURL absolute URL, example: https://mydomain.com/my/endpoint?q=abc
    * @param config a valid fetch configuration object (containing method, headers, etc.)
-   * 
-   * @throws {UnauthorizedError} when user is not authorized, likely because of expired access token
+   *
+   * @throws {NetworkError} if a fatal error occurs during the fetch
+   * @throws {HttpError} if response status code is non-ok and no custom exception has been thrown before it
+   * @throws {UnauthorizedError} if response status code is 401 - likely because of expired access token
    *    or similar non-authenticated/non-authorized scenarios
+   * @throws {BadRequestError} if response status code is 400
+   * @throws {ServerError} if response status code is 500
    */
   public static async doFetch(absoluteURL: string, config: RequestInit): Promise<Response> {
     let resp: Response
 
     // ***************************+
-    // PROBLEMS WITH INVALID URL, THE NETWORK, SERVER AVAILABILITY, CORS etc.?
+    // NETWORK PROBLEM?
     // ***************************+
 
     try {
       resp = await fetch(absoluteURL, config)
     } catch (err) {
-      throw new Error(`Error DURING fetch. This may be due to problems with ` + `the network, CORS, invalid URL, unavailable server. Details: ${err}`)
+      throw new NetworkError(err instanceof Error ? err.message : String(err))
     }
 
-    // ***************************+
-    // NON-SUCCESSFUL RESPONSE?
-    // ***************************+
+    // ***************************
+    // SPECIFIC NON-OK RESPONSE?
+    // ***************************
 
-    try {
-      const isUnauthorized = resp.status == 401
+    const isBadRequest = resp.status == 400
+    const isUnauthorized = resp.status == 401
+    const isServerError = resp.status == 500
 
-      if (isUnauthorized) {
-        throw new UnauthorizedError()
-      }
+    if (isBadRequest) {
+      throw new BadRequestError()
+    }
 
-      if (!resp.ok) {
-        throw new Error(`Error AFTER fetch. Response status code: ${resp.status}`)
-      }
-    } catch (err) {
-      throw err
+    if (isUnauthorized) {
+      throw new UnauthorizedError()
+    }
+
+    if (isServerError) {
+      throw new ServerError()
+    }
+
+    // ***************************
+    // GENERIC NON-OK RESPONSE?
+    // ***************************
+
+    // generic error in request or response
+    // if the response status code, or anything else about the response,
+    // should throw a custom exception, it should be done before this moment
+    if (!resp.ok) {
+      throw new HttpError(resp.status)
     }
 
     return resp
