@@ -51,8 +51,8 @@ const SeeMyArticlesPage = () => {
                 <h1 className="text-center">My articles</h1>
               </Col>
             </Row>
-            {/* articles list */}
             <Row className="g-3">
+              {/* articles list */}
               {!isLoading &&
                 !isError &&
                 articles.map((article) => {
@@ -104,6 +104,13 @@ const SeeMyArticlesPage = () => {
                     </Col>
                   )
                 })}
+
+              {/* no articles */}
+              {!isLoading && !isError && articles.length == 0 && (
+                <p className="text-center">
+                  No articles yet. <Link to={AppRoutes.addMyArticle}>Add your first.</Link>
+                </p>
+              )}
 
               {/* is loading */}
               {isLoading && (

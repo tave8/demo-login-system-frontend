@@ -29,7 +29,7 @@ function App() {
         <header>
           <AppNav />
         </header>
-        <main className={"d-flex flex-column"}>
+        <main className={"d-flex flex-column my-3"}>
           <Routes>
             <Route path="/" element={<HomePage />} />
 
