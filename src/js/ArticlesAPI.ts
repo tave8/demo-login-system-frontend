@@ -1,6 +1,6 @@
 import APIHelper from "./APIHelper"
 import BaseAPI from "./BaseAPI"
-import { RequestMethod, RequireLogin, ArticleFromAPI, EnrichedArticleFromAPI, ArticleToAPI, ArticlesPageFromAPI, EnrichedArticlesPageFromAPI } from "./my_types"
+import { RequestMethod, RequireLogin, ArticleFromAPI, EnrichedArticleFromAPI, ArticleToAPI, ArticlesPageFromAPI, EnrichedArticlesPageFromAPI, UpdatedArticleToAPI } from "./my_types"
 import TimeHelper from "./TimeHelper"
 
 export default class ArticlesAPI extends BaseAPI {
@@ -84,6 +84,20 @@ export default class ArticlesAPI extends BaseAPI {
   public async getMyArticleByIdEnriched(articleId: string): Promise<EnrichedArticleFromAPI> {
     const item = await this.getMyArticleById(articleId)
     return this.enrichItem(item)
+  }
+
+  /**
+   * Update article by ID of the currently
+   * logged in user.
+   */
+  public async updateMyArticleById(articleId: string, updatedArticle: UpdatedArticleToAPI): Promise<ArticleFromAPI> {
+    const config = APIHelper.getFetchConfigFor(RequestMethod.PUT, RequireLogin.YES, updatedArticle)
+
+    const resp: Response = await APIHelper.doFetchAt(`/articles/${articleId}`, config)
+
+    const data = await APIHelper.parseJSON<ArticleFromAPI>(resp)
+
+    return data
   }
 
   /**

@@ -1,22 +1,34 @@
 import { useState } from "react"
 import { Container, Row, Col, Form, Button, Spinner, Alert } from "react-bootstrap"
 import { useNavigate, useParams } from "react-router-dom"
-import { AppRoutes, ArticleFromAPI, ArticleToAPI, UpdatedArticleToAPI } from "../../js/my_types"
+import { AppRoutes, ArticleFromAPI, UpdatedArticleToAPI } from "../../js/my_types"
 import ArticlesAPI from "../../js/ArticlesAPI"
 
-// interface handleLoginParams {}
+interface handleEditMyArticleParams {
+  setArticle: (article: ArticleFromAPI) => void
+  setUpdatedArticle: (updatedArticle: UpdatedArticleToAPI) => void
+}
 
 type RouteURLParams = {
   articleId: string
 }
 
-const initialArticle: ArticleToAPI = {
+const initialArticle: ArticleFromAPI = {
+  articleId: "",
+  title: "",
+  content: "",
+  coverUrl: "",
+  createdAt: "",
+}
+
+const initialUpdatedArticle: UpdatedArticleToAPI = {
   title: "",
   content: "",
 }
 
 const EditMyArticlePage = () => {
   const [article, setArticle] = useState(initialArticle)
+  const [updatedArticle, setUpdatedArticle] = useState(initialUpdatedArticle)
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
 
@@ -43,14 +55,17 @@ const EditMyArticlePage = () => {
         setIsError(false)
 
         setArticle(articleFromAPI)
-        // console.log(articleFromAPI)
 
-        // console.log(articlesPage)
+        // populate updated article
+        setUpdatedArticle({
+          title: articleFromAPI.title,
+          content: articleFromAPI.content,
+        })
       })
       .catch((err) => {
         setIsLoading(false)
         setIsError(true)
-        console.info("Error while getting article")
+        console.info("Error while updating article")
         console.error(err)
       })
 
@@ -81,10 +96,10 @@ const EditMyArticlePage = () => {
                     <Form.Control
                       type="text"
                       placeholder="Type the article's title"
-                      value={article.title}
+                      value={updatedArticle.title}
                       onChange={(event) => {
-                        setArticle({
-                          ...article,
+                        setUpdatedArticle({
+                          ...updatedArticle,
                           title: event.target.value,
                         })
                       }}
@@ -101,10 +116,10 @@ const EditMyArticlePage = () => {
                       as="textarea"
                       rows={5}
                       placeholder="Type the article's content"
-                      value={article.content}
+                      value={updatedArticle.content}
                       onChange={(event) => {
-                        setArticle({
-                          ...article,
+                        setUpdatedArticle({
+                          ...updatedArticle,
                           content: event.target.value,
                         })
                       }}
@@ -118,11 +133,10 @@ const EditMyArticlePage = () => {
                   <Button
                     className="btn btn-primary"
                     onClick={() => {
-                      //   handleAddArticle(articleData)()
-                    //   handleEditMyArticle()
+                      handleEditMyArticle(article.articleId, updatedArticle)({ setArticle, setUpdatedArticle })
                     }}
                   >
-                    Add article
+                    Edit article
                   </Button>
                 </Col>
               </Row>
@@ -145,19 +159,27 @@ const EditMyArticlePage = () => {
   )
 }
 
-const handleEditMyArticle = (updatedArticle: UpdatedArticleToAPI) => {
-  return async () => {
-    // const articlesAPI = new ArticlesAPI()
-    // usersAPI
-    //   .updateMyInfo(updatedUserData)
-    //   .then((userData) => {
-    //     console.log(userData)
-    //     alert("successfully update my info")
-    //   })
-    //   .catch((err) => {
-    //     console.info("Error during login")
-    //     console.error(err)
-    //   })
+const handleEditMyArticle = (articleId: string, updatedArticle: UpdatedArticleToAPI) => {
+  return async (params: handleEditMyArticleParams) => {
+    const { setArticle, setUpdatedArticle } = params
+
+    // console.log(articleId, updatedArticle)
+    const articlesAPI = new ArticlesAPI()
+    articlesAPI
+      .updateMyArticleById(articleId, updatedArticle)
+      .then((article) => {
+        setArticle(article)
+        setUpdatedArticle({
+          title: article.title,
+          content: article.content,
+        })
+        // console.log(article)
+        alert("successfully updated article")
+      })
+      .catch((err) => {
+        console.info("Error during update article")
+        console.error(err)
+      })
   }
 }
 
