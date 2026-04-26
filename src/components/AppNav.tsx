@@ -17,7 +17,7 @@ const MyNav = () => {
 
   const { login, logout, authenticated } = useAuth()
 
-  return (
+  return ( 
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container fluid>
         <Link to={AppRoutes.home} className="nav-item navbar-brand">
