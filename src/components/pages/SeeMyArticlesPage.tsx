@@ -63,7 +63,7 @@ const SeeMyArticlesPage = () => {
                           <Col xs={12}>
                             <Row>
                               <Col xs={9}>
-                                <span>{article.relativeTimeFormatted}</span>
+                                <span className="fw-light">{article.relativeTimeFormatted}</span>
                               </Col>
                               <Col className="text-end">
                                 <Link className="btn btn-primary" to={AppRoutes.editMyArticleWith(article.articleId)}>

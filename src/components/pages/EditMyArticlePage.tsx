@@ -19,7 +19,7 @@ const initialArticle: EnrichedArticleFromAPI = {
   content: "",
   coverUrl: "",
   createdAt: "",
-  relativeTimeFormatted: ""
+  relativeTimeFormatted: "",
 }
 
 const initialUpdatedArticle: UpdatedArticleToAPI = {
@@ -88,13 +88,13 @@ const EditMyArticlePage = () => {
             {/* my article */}
 
             {!isLoading && !isError && (
-              <>
+              <div className="border border-secondary-subtle rounded-1 p-3">
                 {/* article's metadata */}
-                <Row>
+                <Row className="mb-3">
                   <Col>
                     <Row>
                       <Col xs={9}>
-                        <span>{article.relativeTimeFormatted}</span>
+                        <span className="fw-light">{article.relativeTimeFormatted}</span>
                       </Col>
                     </Row>
                   </Col>
@@ -151,7 +151,7 @@ const EditMyArticlePage = () => {
                     </Button>
                   </Col>
                 </Row>
-              </>
+              </div>
             )}
 
             {/* is loading */}
