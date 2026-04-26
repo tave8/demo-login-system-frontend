@@ -1,9 +1,11 @@
 import { isLoggedIn } from "../auth/isLoggedIn"
 import BadRequestError from "./exceptions/BadRequestError"
 import HttpError from "./exceptions/HttpError"
+import InvalidFileUploadedError from "./exceptions/InvalidFileUploadedError"
 import NetworkError from "./exceptions/NetworkError"
 import ServerError from "./exceptions/ServerError"
 import UnauthorizedError from "./exceptions/UnauthorizedError"
+import FileHelper from "./FileHelper"
 import { FetchConfigType, RequestHeaderContentType, RequestMethod } from "./my_types"
 // import {logout} from "../auth/AuthContext.tsx"
 
@@ -183,39 +185,27 @@ export default class APIHelper {
   }
 
   /**
-   * No body, no authentication.
+   * ## Get a `fetch` configuration object for JSON-based requests
    *
-   * @param method the request method (GET, POST etc.)
-   */
-  public static getFetchConfigFor(method: RequestMethod): RequestInit
-  /**
-   * Custom authentication, no body.
-   *
-   * @param method the request method (GET, POST etc.)
-   * @param requireLogin whether you require the user to be authenticated/logged in.
-   *  this will add an Authorization: Bearer xyz header to the request
-   */
-  public static getFetchConfigFor(method: RequestMethod, requireLogin: boolean): RequestInit
-  /**
-   * Custom authentication, custom body.
-   *
-   * @param method the request method (GET, POST etc.)
-   * @param requireLogin whether you require the user to be authenticated/logged in.
-   *  this will add an Authorization: Bearer xyz header to the request
-   * @param body valid JS object
-   */
-  public static getFetchConfigFor(method: RequestMethod, requireLogin: boolean, body: object): RequestInit
-  /**
-   * Get a default configuration object to
-   * pass directly to the fetch function,
+   * Get a `fetch` configuration object to
+   * pass directly to the `fetch` function,
    * based on request method (GET, POST etc.).
    * Avoids having to pass fetch config manually.
+   *
+   * @param method The request method (GET, POST etc.)
+   * @param requireLogin Whether you require the user to be authenticated/logged in.
+   *  This will add an Authorization: Bearer xyz header to the request
+   * @param body A valid, plain JS object
    */
+  public static getFetchConfigFor(method: RequestMethod): RequestInit
+  public static getFetchConfigFor(method: RequestMethod, requireLogin: boolean): RequestInit
+  public static getFetchConfigFor(method: RequestMethod, requireLogin: boolean, body: object): RequestInit
   public static getFetchConfigFor(method: RequestMethod, requireLogin: boolean = false, body: object | null = null): RequestInit {
     // does this request method require a JSON body?
     const methodRequiresJSONBody: boolean = APIHelper.requestMethodRequiresJSONBody(method)
     // does this request method NOT require a JSON body?
     const methodNotRequiresJSONBody: boolean = APIHelper.requestMethodNotRequiresJSONBody(method)
+
     // is this a valid, plain JS object?
     const isBodyAPlainObject = APIHelper.isPlainObject(body)
     const isNullBody = body == null
@@ -290,6 +280,77 @@ export default class APIHelper {
       method,
       headers,
       body: methodRequiresJSONBody ? config.body : null,
+    }
+
+    return requestInit
+  }
+
+  /**
+   * ## Get a `fetch` configuration object for a request to send a file
+   *
+   * Get a `fetch` configuration object to
+   * pass directly to the `fetch` function,
+   * based on request method (POST, PATCH, PUT).
+   * Avoids having to pass fetch config manually.
+   *
+   * @param method The request method (GET, POST etc.)
+   * @param file a File object
+   * @param field the field name at which the server expects this file, for example "avatar_image"
+   * @param requireLogin Whether you require the user to be authenticated/logged in.
+   *  This will add an Authorization: Bearer xyz header to the request
+   * 
+   * @throws {InvalidFileUploadedError} if the file is empty
+   */
+  public static getFetchConfigForFile(method: RequestMethod, file: File, field: string, requireLogin: boolean): RequestInit {
+    // if request method is not allowed to send a file
+    if (!APIHelper.isRequestMethodAllowedToSendFile(method)) {
+      throw new Error(`The given request method '${method}' is not allowed to send a file.`)
+    }
+
+    // if the file is empty
+    if (FileHelper.isEmpty(file)) {
+      throw new InvalidFileUploadedError(`While getting the fetch config for sending a file, ` + `the file is empty/null, therefore it does not make sense to send it.`)
+    }
+
+    // if the field name is nully
+    if (!field) {
+      throw new Error(`The field name for a file, of a request whose Content-type will be ` + `multipart/form-data (sending a file), cannot be empty/nully.`)
+    }
+
+    // all good, now we can create the config object
+
+    const config: FetchConfigType = {
+      method: method,
+      headers: {},
+    }
+
+    // if authentication/login is required
+    if (requireLogin) {
+      config.headers.authorization = APIHelper.getAuthorizationHeaderValue()
+    }
+
+    // *********************
+    // ADAPT TO BUILT-IN REQUEST INIT
+    // *********************
+
+    const headers: HeadersInit = {
+      ...config.headers,
+    }
+
+    const formData = new FormData()
+
+    // the field where the server will find the uploaded file
+    formData.append(field, file)
+
+    let requestInit: RequestInit = {
+      method,
+      headers,
+      // setting the a FormData instance as the body, 
+      // will make the browser (or fetch?) set the right
+      // content-type request header, including multipart/form-data
+      // and the form data boundary. for this reason, we should not
+      // set the content-type header manually
+      body: formData,
     }
 
     return requestInit
@@ -417,6 +478,18 @@ export default class APIHelper {
    * Methods allowed to have a JSON body: POST, PUT, PATCH
    */
   public static requestMethodRequiresJSONBody(method: RequestMethod): boolean {
+    if (method == null || method == undefined) {
+      throw new Error(`A fetch method cannot be nully. ` + `Make sure the caller is passing an actual RequestMethod enum type.`)
+    }
+    return method == RequestMethod.POST || method == RequestMethod.PUT || method == RequestMethod.PATCH
+  }
+
+  /**
+   * Is the request method allowed to send a file?
+   *
+   * Methods allowed: POST, PUT, PATCH
+   */
+  public static isRequestMethodAllowedToSendFile(method: RequestMethod): boolean {
     if (method == null || method == undefined) {
       throw new Error(`A fetch method cannot be nully. ` + `Make sure the caller is passing an actual RequestMethod enum type.`)
     }
