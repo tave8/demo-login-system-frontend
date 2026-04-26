@@ -64,19 +64,18 @@ const SeeMyProfilePage = () => {
 
             {!isLoading && !isError && (
               <>
-                <Row className="g-3">
+                <Row className="g-3 align-items-center">
                   <Col xs={12} md={3} className="text-center">
-                    <Image src={userData.avatarUrl} />
+                    <Image src={userData.avatarUrl} roundedCircle style={{ width: "120px", height: "120px", objectFit: "cover" }} />
                   </Col>
                   <Col md={9}>
-                    {/* full name */}
-                    <p className="fs-4">
-                      Fullname: {userData.firstname} {userData.lastname}
+                    <p className="fs-4 mb-1">
+                      {userData.firstname} {userData.lastname}
                     </p>
-                    <p className="fs-4">Email: {userData.email}</p>
+                    <p className="text-muted mb-0">{userData.email}</p>
                   </Col>
                 </Row>
-                <Row className="mt-2">
+                <Row className="mt-3">
                   <Col xs={12} className="text-center">
                     <Link to={AppRoutes.editMyProfile} className="btn btn-primary">
                       Edit my profile
