@@ -6,6 +6,7 @@ import UnauthorizedError from "../../js/exceptions/UnauthorizedError"
 import { useAuth } from "../../auth/AuthContext"
 import FileHelper from "../../js/FileHelper"
 import InvalidFileUploadedError from "../../js/exceptions/InvalidFileUploadedError"
+import ServerError from "../../js/exceptions/ServerError"
 
 type MaybeFile = File | null
 
@@ -24,6 +25,7 @@ interface HandleUploadAvatarImageParams {
   setUserData: (u: UserFromAPI) => void
   setIsLoading: (x: boolean) => void
   setIsError: (x: boolean) => void
+  logout: () => void
 }
 
 const EditMyProfilePage = () => {
@@ -95,7 +97,7 @@ const EditMyProfilePage = () => {
                               const file: MaybeFile = event.target.files?.[0]
                               if (file) {
                                 setAvatarImage(file)
-                                handleUploadAvatarImage(file)({ setUserData, setIsLoading, setIsError })
+                                handleUploadAvatarImage(file)({ setUserData, setIsLoading, setIsError, logout })
                               }
                             }}
                           />
@@ -190,13 +192,45 @@ const handleEditProfile = (updatedUser: UpdatedUserToAPI) => {
 
 const handleUploadAvatarImage = (image: File) => {
   return async (params: HandleUploadAvatarImageParams) => {
+    const { setIsError, setIsLoading, setUserData, logout } = params
+
+    // check that image passes all checks
     try {
       FileHelper.requireValidAvatarImage(image)
     } catch (err) {
       if (err instanceof InvalidFileUploadedError) {
+        // ideally, you could clean the input field here
         alert(err.message)
       }
+      // if we ever enter the catch block, we stop
+      return
     }
+
+    // all checks passed, now we can upload the image
+
+    const usersAPI = new UsersAPI()
+
+    setIsLoading(true)
+    setIsError(false)
+    usersAPI
+      .uploadMyAvatarImage(image)
+      .then((userData) => {
+        setIsLoading(false)
+        setIsError(false)
+        setUserData(userData)
+      })
+      .catch((err) => {
+        setIsLoading(false)
+        setIsError(true)
+        if (err instanceof UnauthorizedError) {
+          logout()
+        } else if (err instanceof ServerError) {
+          alert("There was a problem with the server.")
+        } else {
+          console.info("Error during avatar image upload")
+          console.error(err)
+        }
+      })
   }
 }
 
