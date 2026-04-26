@@ -2,9 +2,10 @@
 
 import APIHelper from "./APIHelper"
 import BaseAPI from "./BaseAPI"
-import { RequestMethod, RequireLogin } from "./my_types"
+import { RequestMethod, RequireLogin, UpdatedUserToAPI, UserFromAPI } from "./my_types"
 
-export default class UsersAPI<T_TO_API extends object, T_FROM_API extends object> extends BaseAPI {
+
+export default class UsersAPI extends BaseAPI {
   constructor() {
     // call new BaseAPI()
     super()
@@ -14,12 +15,12 @@ export default class UsersAPI<T_TO_API extends object, T_FROM_API extends object
    * Get the info/profile of the currently
    * logged in user.
    */
-  public async getMyInfo(): Promise<T_FROM_API> {
+  public async getMyInfo(): Promise<UserFromAPI> {
     const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
 
     const resp: Response = await APIHelper.doFetchAt("/users/me", config)
 
-    const data = await APIHelper.parseJSON<T_FROM_API>(resp)
+    const data = await APIHelper.parseJSON<UserFromAPI>(resp)
 
     return data
   }
@@ -28,12 +29,12 @@ export default class UsersAPI<T_TO_API extends object, T_FROM_API extends object
    * Update the info/profile of the currently
    * logged in user.
    */
-  public async updateMyInfo(updatedUserData: T_TO_API): Promise<T_FROM_API> {
-    const config = APIHelper.getFetchConfigFor(RequestMethod.PUT, RequireLogin.YES, updatedUserData)
+  public async updateMyInfo(updatedUser: UpdatedUserToAPI): Promise<UserFromAPI> {
+    const config = APIHelper.getFetchConfigFor(RequestMethod.PUT, RequireLogin.YES, updatedUser)
 
     const resp: Response = await APIHelper.doFetchAt("/users/me", config)
 
-    const data = await APIHelper.parseJSON<T_FROM_API>(resp)
+    const data = await APIHelper.parseJSON<UserFromAPI>(resp)
 
     return data
   }

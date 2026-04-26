@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Container, Row, Col, Form, Button, Spinner, Alert } from "react-bootstrap"
 import { useNavigate, useParams } from "react-router-dom"
-import { AppRoutes, ArticleFromAPI, ArticleToAPI } from "../../js/my_types"
+import { AppRoutes, ArticleFromAPI, ArticleToAPI, UpdatedArticleToAPI } from "../../js/my_types"
 import ArticlesAPI from "../../js/ArticlesAPI"
 
 // interface handleLoginParams {}
@@ -119,6 +119,7 @@ const EditMyArticlePage = () => {
                     className="btn btn-primary"
                     onClick={() => {
                       //   handleAddArticle(articleData)()
+                    //   handleEditMyArticle()
                     }}
                   >
                     Add article
@@ -144,21 +145,20 @@ const EditMyArticlePage = () => {
   )
 }
 
-// const handleEditProfile = (updatedUserData: UpdatedUserToAPI) => {
-//   return async () => {
-//     const usersAPI = new UsersAPI<UpdatedUserToAPI, UserFromAPI>()
-
-//     usersAPI
-//       .updateMyInfo(updatedUserData)
-//       .then((userData) => {
-//         console.log(userData)
-//         alert("successfully update my info")
-//       })
-//       .catch((err) => {
-//         console.info("Error during login")
-//         console.error(err)
-//       })
-//   }
-// }
+const handleEditMyArticle = (updatedArticle: UpdatedArticleToAPI) => {
+  return async () => {
+    // const articlesAPI = new ArticlesAPI()
+    // usersAPI
+    //   .updateMyInfo(updatedUserData)
+    //   .then((userData) => {
+    //     console.log(userData)
+    //     alert("successfully update my info")
+    //   })
+    //   .catch((err) => {
+    //     console.info("Error during login")
+    //     console.error(err)
+    //   })
+  }
+}
 
 export default EditMyArticlePage

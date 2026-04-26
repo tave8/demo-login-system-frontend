@@ -3,12 +3,6 @@ import BaseAPI from "./BaseAPI"
 import { RequestMethod, RequireLogin, ArticleFromAPI, EnrichedArticleFromAPI, ArticleToAPI, ArticlesPageFromAPI, EnrichedArticlesPageFromAPI } from "./my_types"
 import TimeHelper from "./TimeHelper"
 
-type ITEM_TO_API = ArticleToAPI
-type ITEM_FROM_API = ArticleFromAPI
-type ENRICHED_ITEM_FROM_API = EnrichedArticleFromAPI
-type PAGE_FROM_API = ArticlesPageFromAPI
-type ENRICHED_PAGE_FROM_API = EnrichedArticlesPageFromAPI
-
 export default class ArticlesAPI extends BaseAPI {
   constructor() {
     // call new BaseAPI()
@@ -18,7 +12,7 @@ export default class ArticlesAPI extends BaseAPI {
   /**
    * Enrich a pagination page.
    */
-  private enrichPage(page: PAGE_FROM_API): ENRICHED_PAGE_FROM_API {
+  private enrichPage(page: ArticlesPageFromAPI): EnrichedArticlesPageFromAPI {
     const enrichedItems = this.enrichItems(page.content)
     return {
       ...page,
@@ -26,7 +20,7 @@ export default class ArticlesAPI extends BaseAPI {
     }
   }
 
-  private enrichItems(items: ITEM_FROM_API[]): ENRICHED_ITEM_FROM_API[] {
+  private enrichItems(items: ArticleFromAPI[]): EnrichedArticleFromAPI[] {
     return items.map((item) => this.enrichItem(item))
   }
 
@@ -34,7 +28,7 @@ export default class ArticlesAPI extends BaseAPI {
    * Enriches an article coming from the API.
    * It only adds new fields.
    */
-  private enrichItem(item: ITEM_FROM_API): ENRICHED_ITEM_FROM_API {
+  private enrichItem(item: ArticleFromAPI): EnrichedArticleFromAPI {
     return {
       ...item,
       relativeTimeFormatted: TimeHelper.toRelativeTime(item.createdAt),
@@ -45,12 +39,12 @@ export default class ArticlesAPI extends BaseAPI {
    * Add an article of the currently
    * logged in user.
    */
-  public async addMyArticle(articleData: ITEM_TO_API): Promise<ITEM_FROM_API> {
-    const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.YES, articleData)
+  public async addMyArticle(newArticle: ArticleToAPI): Promise<ArticleFromAPI> {
+    const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.YES, newArticle)
 
     const resp: Response = await APIHelper.doFetchAt("/articles", config)
 
-    const data = await APIHelper.parseJSON<ITEM_FROM_API>(resp)
+    const data = await APIHelper.parseJSON<ArticleFromAPI>(resp)
 
     return data
   }
@@ -59,12 +53,12 @@ export default class ArticlesAPI extends BaseAPI {
    * Get articles of the currently
    * logged in user.
    */
-  public async getMyArticles(): Promise<PAGE_FROM_API> {
+  public async getMyArticles(): Promise<ArticlesPageFromAPI> {
     const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
 
     const resp: Response = await APIHelper.doFetchAt("/articles", config)
 
-    const data = await APIHelper.parseJSON<PAGE_FROM_API>(resp)
+    const data = await APIHelper.parseJSON<ArticlesPageFromAPI>(resp)
 
     return data
   }
@@ -73,12 +67,12 @@ export default class ArticlesAPI extends BaseAPI {
    * Get article by ID of the currently
    * logged in user.
    */
-  public async getMyArticleById(articleId: string): Promise<ITEM_FROM_API> {
+  public async getMyArticleById(articleId: string): Promise<ArticleFromAPI> {
     const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
 
     const resp: Response = await APIHelper.doFetchAt(`/articles/${articleId}`, config)
 
-    const data = await APIHelper.parseJSON<ITEM_FROM_API>(resp)
+    const data = await APIHelper.parseJSON<ArticleFromAPI>(resp)
 
     return data
   }
@@ -87,16 +81,16 @@ export default class ArticlesAPI extends BaseAPI {
    * Get article by ID of the currently
    * logged in user.
    */
-  public async getMyArticleByIdEnriched(articleId: string): Promise<ENRICHED_ITEM_FROM_API> {
-      const item = await this.getMyArticleById(articleId)
-      return this.enrichItem(item)
+  public async getMyArticleByIdEnriched(articleId: string): Promise<EnrichedArticleFromAPI> {
+    const item = await this.getMyArticleById(articleId)
+    return this.enrichItem(item)
   }
 
   /**
    * Get articles (enriched) of the currently
    * logged in user.
    */
-  public async getMyArticlesEnriched(): Promise<ENRICHED_PAGE_FROM_API> {
+  public async getMyArticlesEnriched(): Promise<EnrichedArticlesPageFromAPI> {
     const page = await this.getMyArticles()
     return this.enrichPage(page)
   }

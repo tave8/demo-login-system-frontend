@@ -1,11 +1,8 @@
 import { useState } from "react"
-import { Container, Row, Col, Nav, Navbar, NavDropdown, Image, Dropdown, Form, InputGroup, Button, Spinner, Alert } from "react-bootstrap"
-import { Search, BellFill } from "react-bootstrap-icons"
-import { Link } from "react-router-dom"
+import { Container, Row, Col, Form, Button, Spinner, Alert } from "react-bootstrap"
 import { UpdatedUserToAPI, UserFromAPI } from "../../js/my_types"
 import UsersAPI from "../../js/UsersAPI"
 
-interface handleLoginParams {}
 
 const initialUserData: UserFromAPI = {
   firstname: "",
@@ -22,7 +19,7 @@ const EditMyProfilePage = () => {
   // fetch user data each time
   // the component is rendered
   useState(() => {
-    const usersAPI = new UsersAPI<UpdatedUserToAPI, UserFromAPI>()
+    const usersAPI = new UsersAPI()
 
     setIsLoading(true)
     setIsError(false)
@@ -124,12 +121,12 @@ const EditMyProfilePage = () => {
   )
 }
 
-const handleEditProfile = (updatedUserData: UpdatedUserToAPI) => {
+const handleEditProfile = (updatedUser: UpdatedUserToAPI) => {
   return async () => {
-    const usersAPI = new UsersAPI<UpdatedUserToAPI, UserFromAPI>()
+    const usersAPI = new UsersAPI()
 
     usersAPI
-      .updateMyInfo(updatedUserData)
+      .updateMyInfo(updatedUser)
       .then((userData) => {
         console.log(userData)
         alert("successfully update my info")
