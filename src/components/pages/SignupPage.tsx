@@ -143,14 +143,15 @@ const handleSignup = (formValues: SignupToAPI) => {
     authAPI
       .signup(formValues)
       .then((userData) => {
-        alert("successful signup")
+        alert("Successful signup. Check your inbox: We've just "
+              +"sent you an email to verify that it's you.")
 
         // console.log("successful signup, navigating to login page")
         navigate(AppRoutes.login)
       })
       .catch((err) => {
         if (err instanceof UnauthorizedError) {
-          alert("Wrong credentials.")
+          alert("You cannot use this email.")
         } else {
           console.info("Error during signup")
           console.error(err)

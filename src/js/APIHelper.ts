@@ -7,11 +7,13 @@ import ServerError from "./exceptions/ServerError"
 import UnauthorizedError from "./exceptions/UnauthorizedError"
 import FileHelper from "./FileHelper"
 import { FetchConfigType, RequestHeaderContentType, RequestMethod } from "./my_types"
+import ForbiddenError from "./exceptions/ForbiddenError.ts";
 // import {logout} from "../auth/AuthContext.tsx"
 
 let API_URL: string
 
 try {
+  // @ts-ignore
   API_URL = import.meta.env.VITE_API_URL
 } catch (err) {
   throw new Error("error loading env var 'VITE_API_URL'; are you sure it exists?")
@@ -428,6 +430,7 @@ export default class APIHelper {
 
     const isBadRequest = resp.status == 400
     const isUnauthorized = resp.status == 401
+    const isForbidden = resp.status == 403
     const isServerError = resp.status == 500
 
     if (isBadRequest) {
@@ -436,6 +439,10 @@ export default class APIHelper {
 
     if (isUnauthorized) {
       throw new UnauthorizedError()
+    }
+
+    if (isForbidden) {
+      throw new ForbiddenError()
     }
 
     if (isServerError) {

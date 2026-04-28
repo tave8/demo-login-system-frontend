@@ -5,6 +5,7 @@ import AuthAPI from "../../js/AuthAPI"
 import { useAuth } from "../../auth/AuthContext"
 import { useNavigate, NavigateFunction } from "react-router-dom"
 import UnauthorizedError from "../../js/exceptions/UnauthorizedError"
+import ForbiddenError from "../../js/exceptions/ForbiddenError.ts";
 
 interface handleLoginParams {
   login: (token: string) => void
@@ -109,6 +110,9 @@ const handleLogin = (formValues: LoginToAPI) => {
       .catch((err) => {
         if (err instanceof UnauthorizedError) {
           alert("Wrong credentials.")
+        } else if (err instanceof ForbiddenError) {
+          alert("You need to verify your email first. "
+              +"We've just sent you a unique verification link in your inbox.")
         } else {
           console.info("Error during login")
           console.error(err)

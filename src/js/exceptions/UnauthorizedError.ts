@@ -1,6 +1,6 @@
-import HttpError from "./HttpError"
+import ShouldLogoutError from "./ShouldLogoutError.ts";
 
-export default class UnauthorizedError extends HttpError {
+export default class UnauthorizedError extends ShouldLogoutError  {
   constructor(details?: string) {
     super(401, details)
   }

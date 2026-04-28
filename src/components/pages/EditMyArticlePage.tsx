@@ -1,13 +1,15 @@
 import { useState } from "react"
 import { Container, Row, Col, Form, Button, Spinner, Alert } from "react-bootstrap"
 import { useNavigate, useParams } from "react-router-dom"
-import { AppRoutes, ArticleFromAPI, EnrichedArticleFromAPI, UpdatedArticleToAPI } from "../../js/my_types"
+import { AppRoutes, EnrichedArticleFromAPI, UpdatedArticleToAPI } from "../../js/my_types"
 import ArticlesAPI from "../../js/ArticlesAPI"
-import UnauthorizedError from "../../js/exceptions/UnauthorizedError"
+import ShouldLogoutError from "../../js/exceptions/ShouldLogoutError.ts";
+import {useAuth} from "../../auth/AuthContext.tsx";
 
 interface handleEditMyArticleParams {
   setArticle: (article: EnrichedArticleFromAPI) => void
   setUpdatedArticle: (updatedArticle: UpdatedArticleToAPI) => void
+  logout: () => void
 }
 
 type RouteURLParams = {
@@ -36,6 +38,7 @@ const EditMyArticlePage = () => {
 
   const params = useParams<RouteURLParams>()
   const navigate = useNavigate()
+  const {logout} = useAuth()
 
   // fetch the article each time
   // the component is rendered
@@ -65,10 +68,14 @@ const EditMyArticlePage = () => {
         })
       })
       .catch((err) => {
-        setIsLoading(false)
-        setIsError(true)
-        console.info("Error while updating article")
-        console.error(err)
+        if(err instanceof ShouldLogoutError) {
+          logout()
+        } else {
+          setIsLoading(false)
+          setIsError(true)
+          console.info("Error while updating article")
+          console.error(err)
+        }
       })
 
     // get the article ID
@@ -145,7 +152,7 @@ const EditMyArticlePage = () => {
                     <Button
                       className="btn btn-primary"
                       onClick={() => {
-                        handleEditMyArticle(article.articleId, updatedArticle)({ setArticle, setUpdatedArticle })
+                        handleEditMyArticle(article.articleId, updatedArticle)({ setArticle, setUpdatedArticle, logout })
                       }}
                     >
                       Edit article
@@ -173,7 +180,7 @@ const EditMyArticlePage = () => {
 
 const handleEditMyArticle = (articleId: string, updatedArticle: UpdatedArticleToAPI) => {
   return async (params: handleEditMyArticleParams) => {
-    const { setArticle, setUpdatedArticle } = params
+    const { setArticle, setUpdatedArticle, logout } = params
 
     // console.log(articleId, updatedArticle)
     const articlesAPI = new ArticlesAPI()
@@ -189,9 +196,10 @@ const handleEditMyArticle = (articleId: string, updatedArticle: UpdatedArticleTo
         alert("successfully updated article")
       })
       .catch((err) => {
-        if (err instanceof UnauthorizedError) {
-          console.log("you are unauthorized!")
-          console.log(err)
+        if (err instanceof ShouldLogoutError) {
+          logout()
+          // console.log("you are unauthorized!")
+          // console.log(err)
         } else {
           console.info("Error during update article")
           console.error(err)
