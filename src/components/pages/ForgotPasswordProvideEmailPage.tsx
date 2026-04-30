@@ -1,11 +1,11 @@
 import {Alert, Button, Col, Container, Form, Image, Row, Spinner} from "react-bootstrap";
 import {useState} from "react";
-import {useAuth} from "../auth/AuthContext.tsx";
-import {ForgotPasswordRequestToAPI, UpdatedUserToAPI, UserFromAPI} from "../js/my_types.ts";
-import UsersAPI from "../js/UsersAPI.ts";
-import UnauthorizedError from "../js/exceptions/UnauthorizedError.ts";
-import AuthAPI from "../js/AuthAPI.ts";
-import ForbiddenError from "../js/exceptions/ForbiddenError.ts";
+import {useAuth} from "../../auth/AuthContext.tsx";
+import {ForgotPasswordRequestToAPI, UpdatedUserToAPI, UserFromAPI} from "../../js/my_types.ts";
+import UsersAPI from "../../js/UsersAPI.ts";
+import UnauthorizedError from "../../js/exceptions/UnauthorizedError.ts";
+import AuthAPI from "../../js/AuthAPI.ts";
+import ForbiddenError from "../../js/exceptions/ForbiddenError.ts";
 
 const initialEmailData: ForgotPasswordRequestToAPI = {
     email: ""

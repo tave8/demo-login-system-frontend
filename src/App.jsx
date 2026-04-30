@@ -18,8 +18,8 @@ import AddMyArticlePage from "./components/pages/AddMyArticlePage.tsx"
 import EditMyArticlePage from "./components/pages/EditMyArticlePage.tsx"
 import SeeMyArticlesPage from "./components/pages/SeeMyArticlesPage.tsx"
 import NotFoundPage from "./components/pages/NotFoundPage.jsx"
-import ForgotPasswordProvideEmailPage from "./components/ForgotPasswordProvideEmailPage.tsx";
-import ForgotPasswordSetNewPasswordPage from "./components/ForgotPasswordSetNewPasswordPage.tsx";
+import ForgotPasswordProvideEmailPage from "./components/pages/ForgotPasswordProvideEmailPage.tsx";
+import ForgotPasswordSetNewPasswordPage from "./components/pages/ForgotPasswordSetNewPasswordPage.tsx";
 
 // components
 import AppNav from "./components/AppNav.tsx"
