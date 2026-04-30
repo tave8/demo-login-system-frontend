@@ -8,6 +8,7 @@ import UnauthorizedError from "./exceptions/UnauthorizedError"
 import FileHelper from "./FileHelper"
 import { FetchConfigType, RequestHeaderContentType, RequestMethod } from "./my_types"
 import ForbiddenError from "./exceptions/ForbiddenError.ts";
+import NotFoundError from "./exceptions/NotFoundError.ts";
 // import {logout} from "../auth/AuthContext.tsx"
 
 let API_URL: string
@@ -431,6 +432,7 @@ export default class APIHelper {
     const isBadRequest = resp.status == 400
     const isUnauthorized = resp.status == 401
     const isForbidden = resp.status == 403
+    const isNotFound = resp.status == 404
     const isServerError = resp.status == 500
 
     if (isBadRequest) {
@@ -443,6 +445,10 @@ export default class APIHelper {
 
     if (isForbidden) {
       throw new ForbiddenError()
+    }
+
+    if (isNotFound) {
+      throw new NotFoundError()
     }
 
     if (isServerError) {
