@@ -2,7 +2,15 @@
 
 import APIHelper from "./APIHelper"
 import BaseAPI from "./BaseAPI"
-import { RequestMethod, RequireLogin, SignupToAPI, SignupFromAPI, LoginToAPI, LoginFromAPI } from "./my_types"
+import {
+  RequestMethod,
+  RequireLogin,
+  SignupToAPI,
+  SignupFromAPI,
+  LoginToAPI,
+  LoginFromAPI,
+  ForgotPasswordRequestToAPI, ForgotPasswordRequestFromAPI
+} from "./my_types"
 
 export default class AuthAPI extends BaseAPI {
   constructor() {
@@ -35,4 +43,18 @@ export default class AuthAPI extends BaseAPI {
 
     return data
   }
+
+  /**
+   * Send a forgot password request, if user can set a new password.
+   */
+  public async sendForgotPasswordRequest(emailData: ForgotPasswordRequestToAPI): Promise<ForgotPasswordRequestFromAPI> {
+    const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.NO, emailData)
+
+    const resp: Response = await APIHelper.doFetchAt(`/auth/forgot-password/request`, config)
+
+    const data = await APIHelper.parseJSON<ForgotPasswordRequestFromAPI>(resp)
+
+    return data
+  }
+
 }

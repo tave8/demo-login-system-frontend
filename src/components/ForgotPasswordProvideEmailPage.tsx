@@ -4,6 +4,8 @@ import {useAuth} from "../auth/AuthContext.tsx";
 import {ForgotPasswordRequestToAPI, UpdatedUserToAPI, UserFromAPI} from "../js/my_types.ts";
 import UsersAPI from "../js/UsersAPI.ts";
 import UnauthorizedError from "../js/exceptions/UnauthorizedError.ts";
+import AuthAPI from "../js/AuthAPI.ts";
+import ForbiddenError from "../js/exceptions/ForbiddenError.ts";
 
 const initialEmailData: ForgotPasswordRequestToAPI = {
     email: ""
@@ -90,24 +92,25 @@ const ForgotPasswordProvideEmailPage = () => {
 const handleForgotPasswordRequest = (emailData: ForgotPasswordRequestToAPI) => {
     return async (params: HandleForgotPasswordRequestParams) => {
         console.log(emailData, params)
-        // const { logout } = params
 
-        // const usersAPI = new UsersAPI()
-        //
-        // usersAPI
-        //     .updateMyInfo(updatedUser)
-        //     .then((userData) => {
-        //         // console.log(userData)
-        //         alert("successfully update my info")
-        //     })
-        //     .catch((err) => {
-        //         if (err instanceof UnauthorizedError) {
-        //             logout()
-        //         } else {
-        //             console.info("Error during login")
-        //             console.error(err)
-        //         }
-        //     })
+        const authAPI = new AuthAPI();
+
+        authAPI
+            .sendForgotPasswordRequest(emailData)
+            .then((msgFromServer) => {
+                // console.log(userData)
+                alert(msgFromServer.message)
+            })
+            .catch((err: unknown) => {
+                if (err instanceof UnauthorizedError || err instanceof ForbiddenError) {
+                    // logout()
+                    console.log(err.message)
+                    alert("You cannot set a new password right now.")
+                } else {
+                    console.info("Error during forgot password request")
+                    console.error(err)
+                }
+            })
     }
 }
 

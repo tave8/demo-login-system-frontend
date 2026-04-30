@@ -161,9 +161,12 @@ export default class APIHelper {
     }
 
     try {
+
       // try to parse the response body
       const data: T_FROM_API = await resp.json()
+
       return data
+
     } catch (err) {
       throw new Error(
         `After parsing JSON from a response body, it was assumed ` +
@@ -171,6 +174,7 @@ export default class APIHelper {
           err,
       )
     }
+
   }
 
   /**
@@ -180,11 +184,15 @@ export default class APIHelper {
     const url = APIHelper.getAPIUrl()
 
     try {
+
       await fetch(url)
+
       return true
+
     } catch (err) {
       return false
     }
+
   }
 
   /**
