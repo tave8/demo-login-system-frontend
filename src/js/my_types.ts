@@ -68,6 +68,15 @@ export interface SignupFromAPI {
   userId: string
 }
 
+export interface ForgotPasswordRequestToAPI {
+  email: string
+}
+
+export interface ForgotPasswordRequestFromAPI {
+  message: string
+}
+
+
 // USERS
 
 export interface UpdatedUserToAPI {
