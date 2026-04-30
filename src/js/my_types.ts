@@ -167,3 +167,11 @@ export interface FetchConfigType {
   body?: string
 }
 
+// OTHER SERVER RESPONSES
+
+export interface ErrorPayloadFromAPI {
+   errors: string[]
+   message: string
+   timestamp: string
+}
+
