@@ -7,6 +7,8 @@ import AuthAPI from "../../js/AuthAPI"
 import { AppRoutes, SignupToAPI } from "../../js/my_types"
 import {Link, NavigateFunction, useNavigate} from "react-router-dom"
 import UnauthorizedError from "../../js/exceptions/UnauthorizedError"
+import BadRequestError from "../../js/exceptions/BadRequestError.ts";
+import HttpError from "../../js/exceptions/HttpError.ts";
 
 interface handleSignupParams {
   navigate: NavigateFunction
@@ -159,14 +161,17 @@ const handleSignup = (formValues: SignupToAPI) => {
         // console.log("successful signup, navigating to login page")
         navigate(AppRoutes.login)
       })
-      .catch((err) => {
-        if (err instanceof UnauthorizedError) {
-          alert("You cannot use this email.")
-        } else {
-          console.info("Error during signup")
-          console.error(err)
-        }
-      })
+        .catch((err: unknown) => {
+            if (err instanceof UnauthorizedError) {
+              alert("You cannot use this email.")
+            } else if (err instanceof BadRequestError) {
+              const badRequest = err as BadRequestError;
+              alert("Some fields are invalid. Details: " + badRequest.getErrorsAsStr())
+            } else {
+              console.info("Error during signup")
+              console.error(err)
+            }
+        })
   }
 }
 

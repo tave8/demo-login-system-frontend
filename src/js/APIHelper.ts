@@ -6,9 +6,10 @@ import NetworkError from "./exceptions/NetworkError"
 import ServerError from "./exceptions/ServerError"
 import UnauthorizedError from "./exceptions/UnauthorizedError"
 import FileHelper from "./FileHelper"
-import { FetchConfigType, RequestHeaderContentType, RequestMethod } from "./my_types"
+import {ErrorPayloadFromAPI, FetchConfigType, RequestHeaderContentType, RequestMethod} from "./my_types"
 import ForbiddenError from "./exceptions/ForbiddenError.ts";
 import NotFoundError from "./exceptions/NotFoundError.ts";
+import ExpectedJSONPayloadError from "./exceptions/ExpectedJSONPayloadError.ts";
 // import {logout} from "../auth/AuthContext.tsx"
 
 let API_URL: string
@@ -115,17 +116,10 @@ export default class APIHelper {
    * That means, it is required that the server
    * sends a valid JSON body in its response, else
    * this function will throw an error.
+   *
+   * @throws {ExpectedJSONPayloadError} if no JSON body is found or no relevant content-type indicating a JSON body
    */
   public static async parseJSON<T_FROM_API>(resp: Response): Promise<T_FROM_API> {
-    // the response status is not ok,
-    // therefore we cannot continue ù
-    if (!resp.ok) {
-      throw new Error(
-        `Before parsing JSON, the response is not successful because ` +
-          `it has status code '${resp.status}' with status text '${resp.statusText}'.` +
-          `Therefore JSON cannot be parsed into string.`,
-      )
-    }
 
     // the url the request was made to
     const url: string = resp.url
@@ -143,7 +137,7 @@ export default class APIHelper {
 
     // if the content-type is not even there
     if (!contentTypeHeader) {
-      throw new Error(
+      throw new ExpectedJSONPayloadError(
         `Before parsing JSON from a response, the Content-type header from the response was not even there, ` +
           `therefore it is not possible to determine if this response contains JSON. URL was: ${url}`,
       )
@@ -153,7 +147,7 @@ export default class APIHelper {
     // if the content-type is different from application/json,
     // this will definitely not be a valid JSON
     if (!hasSentJSON) {
-      throw new Error(
+      throw new ExpectedJSONPayloadError(
         `Before parsing JSON from a response, the Content-type header from the response ` +
           `was not 'application/json', therefore it is not possible to parse the response body into JSON. ` +
           `Content-type header value is '${contentTypeHeader}' instead. URL was: ${url}`,
@@ -168,7 +162,7 @@ export default class APIHelper {
       return data
 
     } catch (err) {
-      throw new Error(
+      throw new ExpectedJSONPayloadError(
         `After parsing JSON from a response body, it was assumed ` +
           `that this would be valid JSON, however the parsing into JSON failed. URL was: ${url}. Details of error: ` +
           err,
@@ -428,10 +422,29 @@ export default class APIHelper {
     // ***************************+
 
     try {
+
       resp = await fetch(absoluteURL, config)
+
     } catch (err) {
       throw new NetworkError(err instanceof Error ? err.message : String(err))
     }
+
+
+    // parse json body, if exists
+
+    let jsonPayload: ErrorPayloadFromAPI | null = null;
+
+    try {
+
+      // trying to parse a json body, if exists
+      jsonPayload = await APIHelper.parseJSON<ErrorPayloadFromAPI>(resp)
+
+    } catch(err) {
+      if(err instanceof ExpectedJSONPayloadError) {
+        // we don't need to do anything
+      }
+    }
+
 
     // ***************************
     // SPECIFIC NON-OK RESPONSE?
@@ -444,23 +457,23 @@ export default class APIHelper {
     const isServerError = resp.status == 500
 
     if (isBadRequest) {
-      throw new BadRequestError()
+      throw new BadRequestError(resp.statusText, jsonPayload)
     }
 
     if (isUnauthorized) {
-      throw new UnauthorizedError()
+      throw new UnauthorizedError(resp.statusText, jsonPayload)
     }
 
     if (isForbidden) {
-      throw new ForbiddenError()
+      throw new ForbiddenError(resp.statusText, jsonPayload)
     }
 
     if (isNotFound) {
-      throw new NotFoundError()
+      throw new NotFoundError(resp.statusText, jsonPayload)
     }
 
     if (isServerError) {
-      throw new ServerError()
+      throw new ServerError(resp.statusText, jsonPayload)
     }
 
     // ***************************
@@ -471,7 +484,7 @@ export default class APIHelper {
     // if the response status code, or anything else about the response,
     // should throw a custom exception, it should be done before this moment
     if (!resp.ok) {
-      throw new HttpError(resp.status)
+      throw new HttpError(resp.status, resp.statusText, jsonPayload)
     }
 
     return resp
