@@ -3,7 +3,7 @@ import { Container, Row, Col, Form, Button } from "react-bootstrap"
 import { AppRoutes, type LoginToAPI } from "../../js/my_types"
 import AuthAPI from "../../js/AuthAPI"
 import { useAuth } from "../../auth/AuthContext"
-import { useNavigate, NavigateFunction } from "react-router-dom"
+import {useNavigate, NavigateFunction, Link} from "react-router-dom"
 import UnauthorizedError from "../../js/exceptions/UnauthorizedError"
 import ForbiddenError from "../../js/exceptions/ForbiddenError.ts";
 
@@ -83,6 +83,14 @@ const LoginPage = () => {
               >
                 Login
               </Button>
+            </Col>
+            {/* forgot password */}
+            <Col className="text-center mt-3">
+              <Link
+                  to={AppRoutes.forgotPasswordProvideEmail}
+              >
+                Forgot password?
+              </Link>
             </Col>
           </Col>
         </Row>

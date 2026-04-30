@@ -5,7 +5,7 @@ import { Container, Row, Col, Form, Button } from "react-bootstrap"
 import { useState } from "react"
 import AuthAPI from "../../js/AuthAPI"
 import { AppRoutes, SignupToAPI } from "../../js/my_types"
-import { NavigateFunction, useNavigate } from "react-router-dom"
+import {Link, NavigateFunction, useNavigate} from "react-router-dom"
 import UnauthorizedError from "../../js/exceptions/UnauthorizedError"
 
 interface handleSignupParams {
@@ -124,6 +124,16 @@ const SignupPage = () => {
                   >
                     Sign up
                   </Button>
+                </Col>
+              </Row>
+              <Row>
+                {/* forgot password */}
+                <Col className="text-center mt-3">
+                  <Link
+                      to={AppRoutes.login}
+                  >
+                    Already have an account?
+                  </Link>
                 </Col>
               </Row>
             </Form>

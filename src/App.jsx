@@ -103,23 +103,23 @@ function App() {
             />
 
 
-              <Route
-                  path={AppRoutes.forgotPasswordProvideEmail}
-                  element={
-                      <PublicOnlyRoute>
-                          <ForgotPasswordProvideEmailPage />
-                      </PublicOnlyRoute>
-                  }
-              />
+          <Route
+              path={AppRoutes.forgotPasswordProvideEmail}
+              element={
+                  <PublicOnlyRoute>
+                      <ForgotPasswordProvideEmailPage />
+                  </PublicOnlyRoute>
+              }
+          />
 
-              <Route
-                  path={AppRoutes.forgotPasswordSetNewPassword}
-                  element={
-                      <PublicOnlyRoute>
-                          <ForgotPasswordSetNewPasswordPage />
-                      </PublicOnlyRoute>
-                  }
-              />
+          <Route
+              path={AppRoutes.forgotPasswordSetNewPassword}
+              element={
+                  <PublicOnlyRoute>
+                      <ForgotPasswordSetNewPasswordPage />
+                  </PublicOnlyRoute>
+              }
+          />
 
 
             <Route path="*" element={<NotFoundPage />} />

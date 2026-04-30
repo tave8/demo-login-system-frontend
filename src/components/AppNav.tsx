@@ -68,6 +68,7 @@ const MyNav = () => {
               </Link>
             )}
 
+
             {/* LOGOUT */}
             {authenticated && (
               <span
