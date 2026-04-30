@@ -10,6 +10,9 @@ export const AppRoutes = {
   addMyArticle: "/my-articles/add",
   editMyArticle: "/my-articles/:articleId/edit",
   editMyArticleWith: (articleId: string) => `/my-articles/${articleId}/edit`,
+  forgotPasswordProvideEmail: "/forgot-password",
+  forgotPasswordSetNewPassword: "/forgot-password/verify/:code",
+  forgotPasswordSetNewPasswordWith: (code: string) => `/forgot-password/verify/${code}`,
 } as const
 
 // PAGINATION

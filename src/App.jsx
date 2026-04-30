@@ -18,6 +18,9 @@ import AddMyArticlePage from "./components/pages/AddMyArticlePage.tsx"
 import EditMyArticlePage from "./components/pages/EditMyArticlePage.tsx"
 import SeeMyArticlesPage from "./components/pages/SeeMyArticlesPage.tsx"
 import NotFoundPage from "./components/pages/NotFoundPage.jsx"
+import ForgotPasswordProvideEmailPage from "./components/ForgotPasswordProvideEmailPage.tsx";
+import ForgotPasswordSetNewPasswordPage from "./components/ForgotPasswordSetNewPasswordPage.tsx";
+
 // components
 import AppNav from "./components/AppNav.tsx"
 import AppFooter from "./components/AppFooter.tsx"
@@ -98,6 +101,27 @@ function App() {
                 </PublicOnlyRoute>
               }
             />
+
+
+              <Route
+                  path={AppRoutes.forgotPasswordProvideEmail}
+                  element={
+                      <PublicOnlyRoute>
+                          <ForgotPasswordProvideEmailPage />
+                      </PublicOnlyRoute>
+                  }
+              />
+
+              <Route
+                  path={AppRoutes.forgotPasswordSetNewPassword}
+                  element={
+                      <PublicOnlyRoute>
+                          <ForgotPasswordSetNewPasswordPage />
+                      </PublicOnlyRoute>
+                  }
+              />
+
+
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </main>
