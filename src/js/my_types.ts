@@ -76,6 +76,15 @@ export interface ForgotPasswordRequestFromAPI {
   message: string
 }
 
+export interface ForgotPasswordVerifyCodeToAPI {
+  code: string
+}
+
+export interface ForgotPasswordVerifyCodeFromAPI {
+  message: string
+}
+
+
 export interface ForgotPasswordNewPasswordToAPI {
   newPassword: string
   code: string

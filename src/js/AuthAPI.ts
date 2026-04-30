@@ -9,7 +9,8 @@ import {
   SignupFromAPI,
   LoginToAPI,
   LoginFromAPI,
-  ForgotPasswordRequestToAPI, ForgotPasswordRequestFromAPI
+  ForgotPasswordRequestToAPI, ForgotPasswordRequestFromAPI, ForgotPasswordNewPasswordToAPI,
+  ForgotPasswordNewPasswordFromAPI, ForgotPasswordVerifyCodeToAPI, ForgotPasswordVerifyCodeFromAPI
 } from "./my_types"
 
 export default class AuthAPI extends BaseAPI {
@@ -53,6 +54,19 @@ export default class AuthAPI extends BaseAPI {
     const resp: Response = await APIHelper.doFetchAt(`/auth/forgot-password/request`, config)
 
     const data = await APIHelper.parseJSON<ForgotPasswordRequestFromAPI>(resp)
+
+    return data
+  }
+
+  /**
+   * Is this code authorized to access the page to set a new password?
+   */
+  public async verifyForgotPasswordCode(newPasswordData: ForgotPasswordVerifyCodeToAPI): Promise<ForgotPasswordVerifyCodeFromAPI> {
+    const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.NO, newPasswordData)
+
+    const resp: Response = await APIHelper.doFetchAt(`/auth/forgot-password/verify`, config)
+
+    const data = await APIHelper.parseJSON<ForgotPasswordVerifyCodeFromAPI>(resp)
 
     return data
   }
