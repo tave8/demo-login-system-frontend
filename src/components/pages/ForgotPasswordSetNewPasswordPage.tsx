@@ -131,9 +131,8 @@ const ForgotPasswordSetNewPasswordPage = () => {
                                 {/* info alert */}
                                 <Row>
                                     <Alert variant={"primary"}>
-                                        <span>🔒 For your safety, this page will soon expire and is only accessible by you.
-                                            After you set your new password, it will be removed.
-                                            If you close this page, it will also be removed.</span>
+                                        <span>🔒 For your safety, this page can only be opened once and will soon expire.
+                                            When you set your new password or close this page, it will also be removed.</span>
                                     </Alert>
                                 </Row>
 
@@ -188,29 +187,27 @@ const ForgotPasswordSetNewPasswordPage = () => {
 }
 
 
-const handleForgotPasswordNewPassword = (newPasswordData: ForgotPasswordNewPasswordToAPI) => {
+const handleForgotPasswordNewPassword = (newPassword: ForgotPasswordNewPasswordToAPI) => {
     return async (params: HandleForgotPasswordNewPasswordParams) => {
-        console.log(newPasswordData)
-        // console.log(emailData, params)
 
-        // const authAPI = new AuthAPI();
-        //
-        // authAPI
-        //     .sendForgotPasswordRequest(emailData)
-        //     .then((msgFromServer) => {
-        //         // console.log(userData)
-        //         alert(msgFromServer.message)
-        //     })
-        //     .catch((err: unknown) => {
-        //         if (err instanceof UnauthorizedError || err instanceof ForbiddenError) {
-        //             // logout()
-        //             console.log(err.message)
-        //             alert("You cannot set a new password right now.")
-        //         } else {
-        //             console.info("Error during forgot password request")
-        //             console.error(err)
-        //         }
-        //     })
+        const authAPI = new AuthAPI();
+
+        authAPI
+            .setNewPasswordIfAuthorized(newPassword)
+            .then((msgFromServer) => {
+                // console.log(userData)
+                alert(msgFromServer.message)
+            })
+            .catch((err: unknown) => {
+                if (err instanceof UnauthorizedError || err instanceof ForbiddenError) {
+                    // logout()
+                    console.log(err.message)
+                    alert("You cannot set a new password right now, maybe your authorization has expired.")
+                } else {
+                    console.info("Error during forgot password reset")
+                    console.error(err)
+                }
+            })
     }
 }
 

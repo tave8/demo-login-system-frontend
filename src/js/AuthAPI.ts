@@ -61,12 +61,27 @@ export default class AuthAPI extends BaseAPI {
   /**
    * Is this code authorized to access the page to set a new password?
    */
-  public async verifyForgotPasswordCode(newPasswordData: ForgotPasswordVerifyCodeToAPI): Promise<ForgotPasswordVerifyCodeFromAPI> {
-    const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.NO, newPasswordData)
+  public async verifyForgotPasswordCode(authCode: ForgotPasswordVerifyCodeToAPI): Promise<ForgotPasswordVerifyCodeFromAPI> {
+    const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.NO, authCode)
 
     const resp: Response = await APIHelper.doFetchAt(`/auth/forgot-password/verify`, config)
 
     const data = await APIHelper.parseJSON<ForgotPasswordVerifyCodeFromAPI>(resp)
+
+    return data
+  }
+
+
+  /**
+   * Set a new password for the user associated with the given code.
+   * (if this code is still valid, of course)
+   */
+  public async setNewPasswordIfAuthorized(newPassword: ForgotPasswordNewPasswordToAPI): Promise<ForgotPasswordNewPasswordFromAPI> {
+    const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.NO, newPassword)
+
+    const resp: Response = await APIHelper.doFetchAt(`/auth/forgot-password/reset`, config)
+
+    const data = await APIHelper.parseJSON<ForgotPasswordNewPasswordFromAPI>(resp)
 
     return data
   }

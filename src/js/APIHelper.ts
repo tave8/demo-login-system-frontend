@@ -10,6 +10,7 @@ import {ErrorPayloadFromAPI, FetchConfigType, RequestHeaderContentType, RequestM
 import ForbiddenError from "./exceptions/ForbiddenError.ts";
 import NotFoundError from "./exceptions/NotFoundError.ts";
 import ExpectedJSONPayloadError from "./exceptions/ExpectedJSONPayloadError.ts";
+import {jasmine} from "globals";
 // import {logout} from "../auth/AuthContext.tsx"
 
 let API_URL: string
@@ -121,6 +122,12 @@ export default class APIHelper {
    */
   public static async parseJSON<T_FROM_API>(resp: Response): Promise<T_FROM_API> {
 
+
+    // ***************************
+    // SPECIFIC NON-OK RESPONSE?
+    // ***************************
+
+
     // the url the request was made to
     const url: string = resp.url
     const isNoContentStatusCode = resp.status == 204
@@ -154,20 +161,80 @@ export default class APIHelper {
       )
     }
 
+    let jsonPayload: T_FROM_API
+
     try {
 
       // try to parse the response body
-      const data: T_FROM_API = await resp.json()
-
-      return data
+      jsonPayload = await resp.json()
 
     } catch (err) {
-      throw new ExpectedJSONPayloadError(
-        `After parsing JSON from a response body, it was assumed ` +
-          `that this would be valid JSON, however the parsing into JSON failed. URL was: ${url}. Details of error: ` +
-          err,
-      )
-    }
+        throw new ExpectedJSONPayloadError(
+          `After parsing JSON from a response body, it was assumed ` +
+            `that this would be valid JSON, however the parsing into JSON failed. URL was: ${url}. Details of error: ` +
+            err,
+        )
+      }
+
+      const isBadRequest = resp.status == 400
+      const isUnauthorized = resp.status == 401
+      const isForbidden = resp.status == 403
+      const isNotFound = resp.status == 404
+      const isServerError = resp.status == 500
+
+      const isProblem = isBadRequest || isUnauthorized || isForbidden || isNotFound || isServerError
+
+      // if response is not problematic, return payload
+      if (!isProblem) {
+        return jsonPayload
+      }
+
+      // if we get here, we assume we have a problem
+
+      // @ts-ignore
+    jsonPayload = jsonPayload as ErrorPayloadFromAPI;
+
+
+      if (isBadRequest) {
+        // @ts-ignore
+        throw new BadRequestError(resp.statusText, jsonPayload)
+      }
+
+      if (isUnauthorized) {
+        // @ts-ignore
+        throw new UnauthorizedError(resp.statusText, jsonPayload)
+      }
+
+      if (isForbidden) {
+        // @ts-ignore
+        throw new ForbiddenError(resp.statusText, jsonPayload)
+      }
+
+      if (isNotFound) {
+        // @ts-ignore
+        throw new NotFoundError(resp.statusText, jsonPayload)
+      }
+
+      if (isServerError) {
+        // @ts-ignore
+        throw new ServerError(resp.statusText, jsonPayload)
+      }
+
+      // ***************************
+      // GENERIC NON-OK RESPONSE?
+      // ***************************
+
+      // generic error in request or response
+      // if the response status code, or anything else about the response,
+      // should throw a custom exception, it should be done before this moment
+      if (!resp.ok) {
+        // @ts-ignore
+        throw new HttpError(resp.status, resp.statusText, jsonPayload)
+      }
+
+      return jsonPayload
+
+
 
   }
 
@@ -373,6 +440,7 @@ export default class APIHelper {
    *    /auth/login
    *    /users/me
    *
+   * @throws {NetworkError}
    */
   public static async doFetchAt(relativeURLPath: string, config: RequestInit): Promise<Response> {
     const absoluteURL = APIHelper.getAPIUrlAt(relativeURLPath)
@@ -408,11 +476,6 @@ export default class APIHelper {
    * @param config a valid fetch configuration object (containing method, headers, etc.)
    *
    * @throws {NetworkError} if a fatal error occurs during the fetch
-   * @throws {HttpError} if response status code is non-ok and no custom exception has been thrown before it
-   * @throws {UnauthorizedError} if response status code is 401 - likely because of expired access token
-   *    or similar non-authenticated/non-authorized scenarios
-   * @throws {BadRequestError} if response status code is 400
-   * @throws {ServerError} if response status code is 500
    */
   public static async doFetch(absoluteURL: string, config: RequestInit): Promise<Response> {
     let resp: Response
@@ -429,63 +492,6 @@ export default class APIHelper {
       throw new NetworkError(err instanceof Error ? err.message : String(err))
     }
 
-
-    // parse json body, if exists
-
-    let jsonPayload: ErrorPayloadFromAPI | null = null;
-
-    try {
-
-      // trying to parse a json body, if exists
-      jsonPayload = await APIHelper.parseJSON<ErrorPayloadFromAPI>(resp)
-
-    } catch(err) {
-      if(err instanceof ExpectedJSONPayloadError) {
-        // we don't need to do anything
-      }
-    }
-
-
-    // ***************************
-    // SPECIFIC NON-OK RESPONSE?
-    // ***************************
-
-    const isBadRequest = resp.status == 400
-    const isUnauthorized = resp.status == 401
-    const isForbidden = resp.status == 403
-    const isNotFound = resp.status == 404
-    const isServerError = resp.status == 500
-
-    if (isBadRequest) {
-      throw new BadRequestError(resp.statusText, jsonPayload)
-    }
-
-    if (isUnauthorized) {
-      throw new UnauthorizedError(resp.statusText, jsonPayload)
-    }
-
-    if (isForbidden) {
-      throw new ForbiddenError(resp.statusText, jsonPayload)
-    }
-
-    if (isNotFound) {
-      throw new NotFoundError(resp.statusText, jsonPayload)
-    }
-
-    if (isServerError) {
-      throw new ServerError(resp.statusText, jsonPayload)
-    }
-
-    // ***************************
-    // GENERIC NON-OK RESPONSE?
-    // ***************************
-
-    // generic error in request or response
-    // if the response status code, or anything else about the response,
-    // should throw a custom exception, it should be done before this moment
-    if (!resp.ok) {
-      throw new HttpError(resp.status, resp.statusText, jsonPayload)
-    }
 
     return resp
   }
