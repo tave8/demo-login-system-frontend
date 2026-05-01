@@ -12,7 +12,7 @@ import UsersAPI from "../../js/UsersAPI.ts";
 import UnauthorizedError from "../../js/exceptions/UnauthorizedError.ts";
 import AuthAPI from "../../js/AuthAPI.ts";
 import ForbiddenError from "../../js/exceptions/ForbiddenError.ts";
-import {useNavigate, useParams} from "react-router-dom";
+import {NavigateFunction, useNavigate, useParams} from "react-router-dom";
 import NotFoundError from "../../js/exceptions/NotFoundError.ts";
 
 type RouteURLParams = {
@@ -40,6 +40,7 @@ const initialNewPasswordData: ForgotPasswordNewPasswordToAPI = {
 interface HandleForgotPasswordNewPasswordParams {
     setIsLoading: (x: boolean) => void
     setIsError: (x: boolean) => void
+    navigate: NavigateFunction
 }
 
 
@@ -160,7 +161,7 @@ const ForgotPasswordSetNewPasswordPage = () => {
                                         <Button
                                             className="btn btn-primary"
                                             onClick={() => {
-                                                handleForgotPasswordNewPassword(newPasswordData)({ setIsLoading, setIsError })
+                                                handleForgotPasswordNewPassword(newPasswordData)({ setIsLoading, setIsError, navigate })
                                             }}
                                         >
                                             Set new password
@@ -190,6 +191,8 @@ const ForgotPasswordSetNewPasswordPage = () => {
 const handleForgotPasswordNewPassword = (newPassword: ForgotPasswordNewPasswordToAPI) => {
     return async (params: HandleForgotPasswordNewPasswordParams) => {
 
+        const {navigate} = params
+
         const authAPI = new AuthAPI();
 
         authAPI
@@ -197,6 +200,9 @@ const handleForgotPasswordNewPassword = (newPassword: ForgotPasswordNewPasswordT
             .then((msgFromServer) => {
                 // console.log(userData)
                 alert(msgFromServer.message)
+                // user has successfully set a new password,
+                // send them to login page
+                navigate(AppRoutes.login)
             })
             .catch((err: unknown) => {
                 if (err instanceof UnauthorizedError || err instanceof ForbiddenError) {
