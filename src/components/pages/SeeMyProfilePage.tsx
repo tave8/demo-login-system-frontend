@@ -3,7 +3,7 @@ import { Container, Row, Col, Nav, Navbar, NavDropdown, Image, Dropdown, Form, I
 import { Search, BellFill } from "react-bootstrap-icons"
 import { Link } from "react-router-dom"
 import { AppRoutes, type UserFromAPI } from "../../js/my_types"
-import UsersAPI from "../../js/UsersAPI"
+import UsersAPI from "../../js/api/UsersAPI"
 import { useAuth } from "../../auth/AuthContext"
 import UnauthorizedError from "../../js/exceptions/UnauthorizedError"
 

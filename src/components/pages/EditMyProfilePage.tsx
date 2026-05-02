@@ -1,10 +1,10 @@
 import { useState } from "react"
 import { Container, Row, Col, Form, Button, Spinner, Alert, Image } from "react-bootstrap"
 import { UpdatedUserToAPI, UserFromAPI } from "../../js/my_types"
-import UsersAPI from "../../js/UsersAPI"
+import UsersAPI from "../../js/api/UsersAPI"
 import UnauthorizedError from "../../js/exceptions/UnauthorizedError"
 import { useAuth } from "../../auth/AuthContext"
-import FileHelper from "../../js/FileHelper"
+import FileHelper from "../../js/helpers/FileHelper"
 import InvalidFileUploadedError from "../../js/exceptions/InvalidFileUploadedError"
 import ServerError from "../../js/exceptions/ServerError"
 

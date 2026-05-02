@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Container, Row, Col, Form, Button, Spinner, Alert } from "react-bootstrap"
 import { useNavigate, useParams } from "react-router-dom"
 import { AppRoutes, EnrichedArticleFromAPI, UpdatedArticleToAPI } from "../../js/my_types"
-import ArticlesAPI from "../../js/ArticlesAPI"
+import ArticlesAPI from "../../js/api/ArticlesAPI"
 import ShouldLogoutError from "../../js/exceptions/ShouldLogoutError.ts";
 import {useAuth} from "../../auth/AuthContext.tsx";
 

@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Container, Row, Col, Form, Button } from "react-bootstrap"
 import { AppRoutes, type LoginToAPI } from "../../js/my_types"
-import AuthAPI from "../../js/AuthAPI"
+import AuthAPI from "../../js/api/AuthAPI"
 import { useAuth } from "../../auth/AuthContext"
 import {useNavigate, NavigateFunction, Link} from "react-router-dom"
 import UnauthorizedError from "../../js/exceptions/UnauthorizedError"

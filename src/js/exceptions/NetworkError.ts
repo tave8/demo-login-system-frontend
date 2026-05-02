@@ -23,6 +23,11 @@
  */
 export default class NetworkError extends Error {
   constructor(details?: string) {
-    super(details ? `Network error. DETAILS: ${details}` : `Network error.`)
+    super(details ? `Network error. Check that `
+                      +`1) server is online. `
+                      +`2) client is online. `
+                      +`3) server has CORS enabled. `
+                      + `If none of that solves the error, this might be a generic network error. `
+                      +`DETAILS: ${details}` : `Network error.`)
   }
 }

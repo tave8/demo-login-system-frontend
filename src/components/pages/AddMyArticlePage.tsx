@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Container, Row, Col, Form, Button } from "react-bootstrap"
 import { ArticleToAPI } from "../../js/my_types"
-import ArticlesAPI from "../../js/ArticlesAPI"
+import ArticlesAPI from "../../js/api/ArticlesAPI"
 
 interface handleAddArticleParams {}
 

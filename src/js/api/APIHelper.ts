@@ -1,16 +1,16 @@
-import { isLoggedIn } from "../auth/isLoggedIn"
-import BadRequestError from "./exceptions/BadRequestError"
-import HttpError from "./exceptions/HttpError"
-import InvalidFileUploadedError from "./exceptions/InvalidFileUploadedError"
-import NetworkError from "./exceptions/NetworkError"
-import ServerError from "./exceptions/ServerError"
-import UnauthorizedError from "./exceptions/UnauthorizedError"
-import FileHelper from "./FileHelper"
-import {ErrorPayloadFromAPI, FetchConfigType, RequestHeaderContentType, RequestMethod} from "./my_types"
-import ForbiddenError from "./exceptions/ForbiddenError.ts";
-import NotFoundError from "./exceptions/NotFoundError.ts";
-import ExpectedJSONPayloadError from "./exceptions/ExpectedJSONPayloadError.ts";
-import {jasmine} from "globals";
+import { isLoggedIn } from "../../auth/isLoggedIn"
+import BadRequestError from "../exceptions/BadRequestError"
+import HttpError from "../exceptions/HttpError"
+import InvalidFileUploadedError from "../exceptions/InvalidFileUploadedError"
+import NetworkError from "../exceptions/NetworkError"
+import ServerError from "../exceptions/ServerError"
+import UnauthorizedError from "../exceptions/UnauthorizedError"
+import FileHelper from "../helpers/FileHelper"
+import {ErrorPayloadFromAPI, FetchConfigType, RequestHeaderContentType, RequestMethod} from "../my_types"
+import ForbiddenError from "../exceptions/ForbiddenError.ts";
+import NotFoundError from "../exceptions/NotFoundError.ts";
+import ExpectedJSONPayloadError from "../exceptions/ExpectedJSONPayloadError.ts";
+
 // import {logout} from "../auth/AuthContext.tsx"
 
 let API_URL: string

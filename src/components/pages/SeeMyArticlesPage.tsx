@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { Container, Row, Col, Spinner, Alert, Button } from "react-bootstrap"
 import { AppRoutes, EnrichedArticleFromAPI } from "../../js/my_types"
-import ArticlesAPI from "../../js/ArticlesAPI"
+import ArticlesAPI from "../../js/api/ArticlesAPI"
 import { Link } from "react-router-dom"
 import UnauthorizedError from "../../js/exceptions/UnauthorizedError"
 import { useAuth } from "../../auth/AuthContext"

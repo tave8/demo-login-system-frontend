@@ -1,4 +1,4 @@
-import InvalidFileUploadedError from "./exceptions/InvalidFileUploadedError"
+import InvalidFileUploadedError from "../exceptions/InvalidFileUploadedError"
 
 /**
  * Helper class for dealing with files, images etc.

@@ -1,4 +1,4 @@
-import APIHelper from "./APIHelper"
+import APIHelper from "./api/APIHelper"
 
 const main = async () => {
   console.log("**** START LOGS ON APP LOAD ****")

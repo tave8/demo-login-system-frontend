@@ -9,8 +9,8 @@ import {
   ArticlesPageFromAPI,
   EnrichedArticlesPageFromAPI,
   UpdatedArticleToAPI,
-} from "./my_types"
-import TimeHelper from "./TimeHelper"
+} from "../my_types"
+import TimeHelper from "../helpers/TimeHelper"
 
 export default class ArticlesAPI extends BaseAPI {
   constructor() {

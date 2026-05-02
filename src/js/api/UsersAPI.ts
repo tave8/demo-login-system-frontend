@@ -2,9 +2,8 @@
 
 import APIHelper from "./APIHelper"
 import BaseAPI from "./BaseAPI"
-import InvalidFileUploadedError from "./exceptions/InvalidFileUploadedError"
-import FileHelper from "./FileHelper"
-import { RequestMethod, RequireLogin, UpdatedUserToAPI, UserFromAPI } from "./my_types"
+import FileHelper from "../helpers/FileHelper"
+import { RequestMethod, RequireLogin, UpdatedUserToAPI, UserFromAPI } from "../my_types"
 
 export default class UsersAPI extends BaseAPI {
   constructor() {

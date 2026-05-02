@@ -11,7 +11,7 @@ import {
   LoginFromAPI,
   ForgotPasswordRequestToAPI, ForgotPasswordRequestFromAPI, ForgotPasswordNewPasswordToAPI,
   ForgotPasswordNewPasswordFromAPI, ForgotPasswordVerifyCodeToAPI, ForgotPasswordVerifyCodeFromAPI
-} from "./my_types"
+} from "../my_types"
 
 export default class AuthAPI extends BaseAPI {
   constructor() {

@@ -8,9 +8,9 @@ import {
     UpdatedUserToAPI,
     UserFromAPI
 } from "../../js/my_types.ts";
-import UsersAPI from "../../js/UsersAPI.ts";
+import UsersAPI from "../../js/api/UsersAPI.ts";
 import UnauthorizedError from "../../js/exceptions/UnauthorizedError.ts";
-import AuthAPI from "../../js/AuthAPI.ts";
+import AuthAPI from "../../js/api/AuthAPI.ts";
 import ForbiddenError from "../../js/exceptions/ForbiddenError.ts";
 import {NavigateFunction, useNavigate, useParams} from "react-router-dom";
 import NotFoundError from "../../js/exceptions/NotFoundError.ts";
