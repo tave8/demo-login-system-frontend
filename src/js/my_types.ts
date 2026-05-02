@@ -13,6 +13,7 @@ export const AppRoutes = {
   forgotPasswordProvideEmail: "/forgot-password",
   forgotPasswordSetNewPassword: "/forgot-password/verify/:code",
   forgotPasswordSetNewPasswordWith: (code: string) => `/forgot-password/verify/${code}`,
+  uploadCV: `/cv/upload`
 } as const
 
 // PAGINATION
@@ -136,6 +137,8 @@ export interface EnrichedArticleFromAPI extends ArticleFromAPI {
 export interface ArticlesPageFromAPI extends Pagination<ArticleFromAPI> {}
 
 export interface EnrichedArticlesPageFromAPI extends Pagination<EnrichedArticleFromAPI> {}
+
+export type MaybeFile = File | null
 
 // FETCH CONFIG TYPES
 

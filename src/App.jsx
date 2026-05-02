@@ -17,6 +17,8 @@ import SignupPage from "./components/pages/SignupPage.tsx"
 import AddMyArticlePage from "./components/pages/AddMyArticlePage.tsx"
 import EditMyArticlePage from "./components/pages/EditMyArticlePage.tsx"
 import SeeMyArticlesPage from "./components/pages/SeeMyArticlesPage.tsx"
+import UploadCvPage from "./components/pages/UploadCVPage.tsx";
+// standard pages
 import NotFoundPage from "./components/pages/NotFoundPage.jsx"
 import ForgotPasswordProvideEmailPage from "./components/pages/ForgotPasswordProvideEmailPage.tsx";
 import ForgotPasswordSetNewPasswordPage from "./components/pages/ForgotPasswordSetNewPasswordPage.tsx";
@@ -83,6 +85,16 @@ function App() {
                 </ProtectedRoute>
               }
             />
+
+
+          <Route
+              path={AppRoutes.uploadCV}
+              element={
+                  <ProtectedRoute>
+                      <UploadCvPage />
+                  </ProtectedRoute>
+              }
+          />
 
             <Route
               path={AppRoutes.login}

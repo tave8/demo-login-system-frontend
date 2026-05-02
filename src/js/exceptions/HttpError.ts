@@ -26,6 +26,9 @@ export default class HttpError extends Error {
     const baseMessage = `Server response is not ok. Status code was '${statusCode}'.`
     const fullMessage = details ? `${baseMessage} DETAILS: ${details}` : baseMessage
     super(fullMessage)
+     // TODO: check that the body exactly has these fields,
+    //    and that these fields have the expected types.
+    //   for example, there must be an array of strings etc.
     this.body = body
   }
 
@@ -34,14 +37,31 @@ export default class HttpError extends Error {
    * join them to make a string.
    */
   public getErrorsAsStr(): string {
-    if (this.body != null) {
-      try {
-        return Object.values(this.body.errors).flat().join(", ");
-      } catch (err) {
-        return "<error parsing the body>"
-      }
+    if (this.body == null) {
+      return "<no errors found in body>";
     }
-    return `<no errors found in body>`;
+
+    try {
+      const parts: string[] = [];
+
+      if (this.body.message != null) {
+        parts.push(this.body.message);
+      }
+
+      if (this.body.errors != null && Object.keys(this.body.errors).length > 0) {
+        const errors = Object.values(this.body.errors).flat().join(", ");
+        parts.push(errors);
+      }
+
+      if (parts.length === 0) {
+        return "<no errors found in body>";
+      }
+
+      return parts.join(". ");
+
+    } catch (err) {
+      return "<error parsing the body>";
+    }
   }
 
 }

@@ -47,6 +47,14 @@ const MyNav = () => {
               </Link>
             )}
 
+            {/* CV - UPLOAD */}
+            {authenticated && (
+                <Link to={AppRoutes.uploadCV} className="nav-item nav-link">
+                  Upload CV
+                </Link>
+            )}
+
+
             {/* MY PROFILE */}
             {authenticated && (
               <Link to={AppRoutes.myProfile} className="nav-item nav-link">
