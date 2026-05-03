@@ -20,7 +20,9 @@ export default abstract class BaseAPI {
             // app-specific actions to be triggered when
             // an error is thrown
             if(err instanceof NetworkError) {
-                console.log("NETWORK ERROR!")
+                // console.log("NETWORK ERROR!")
+                const errMsg = "There was a network error. Please check your connection."
+                window.dispatchEvent(new CustomEvent("network-error", { detail: errMsg }));
             }
         })
 

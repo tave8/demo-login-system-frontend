@@ -30,162 +30,168 @@ import AppSidebar from "./components/AppSidebar.tsx";
 import {useAuth} from "./auth/AuthContext.tsx";
 import {Col, Container, Row} from "react-bootstrap";
 import DashboardPage from "./components/pages/DashboardPage.tsx";
+import {useEffect} from "react";
+import NetworkErrorToast from "./components/NetworkErrorToast.tsx";
 
 function App() {
 
     const { login, logout, authenticated } = useAuth()
 
+
   return (
-    <BrowserRouter>
-      <AuthGuard>
-        <header>
-          <AppNav />
-        </header>
-        <main className={"d-flex flex-column"}>
+      <>
+        <NetworkErrorToast />
+        <BrowserRouter>
+          <AuthGuard>
+            <header>
+              <AppNav />
+            </header>
+            <main className={"d-flex flex-column"}>
 
 
-            {/* sidebar */}
-            {authenticated && (
-                <Container id="sidebar">
-                    <Row style={{ minHeight: "100%" }}>
+                {/* sidebar */}
+                {authenticated && (
+                    <Container id="sidebar">
+                        <Row style={{ minHeight: "100%" }}>
 
-                        <Col style={{ minHeight: "100%" }}>
+                            <Col style={{ minHeight: "100%" }}>
 
-                            <AppSidebar />
+                                <AppSidebar />
+
+                            </Col>
+                        </Row>
+                    </Container>
+                )}
+
+
+                <Container fluid id="page-without-sidebar" className={authenticated ? "has-sidebar" : ""}>
+                    <Row>
+
+                        {/* "page" */}
+                        <Col id="page">
+
+                          {/* here go pages */}
+                          <Routes>
+
+                              <Route path="/" element={<HomePage />} />
+
+                              <Route
+                                  path={AppRoutes.dashboard}
+                                  element={
+                                      <ProtectedRoute>
+                                          <DashboardPage />
+                                      </ProtectedRoute>
+                                  }
+                              />
+
+                                <Route
+                                  path={AppRoutes.myProfile}
+                                  element={
+                                    <ProtectedRoute>
+                                      <SeeMyProfilePage />
+                                    </ProtectedRoute>
+                                  }
+                                />
+
+                                <Route
+                                  path={AppRoutes.editMyProfile}
+                                  element={
+                                    <ProtectedRoute>
+                                      <EditMyProfilePage />
+                                    </ProtectedRoute>
+                                  }
+                                />
+
+                                <Route
+                                  path={AppRoutes.myArticles}
+                                  element={
+                                    <ProtectedRoute>
+                                      <SeeMyArticlesPage />
+                                    </ProtectedRoute>
+                                  }
+                                />
+
+                                <Route
+                                  path={AppRoutes.addMyArticle}
+                                  element={
+                                    <ProtectedRoute>
+                                      <AddMyArticlePage />
+                                    </ProtectedRoute>
+                                  }
+                                />
+
+                                <Route
+                                  path={AppRoutes.editMyArticle}
+                                  element={
+                                    <ProtectedRoute>
+                                      <EditMyArticlePage />
+                                    </ProtectedRoute>
+                                  }
+                                />
+
+
+                              <Route
+                                  path={AppRoutes.uploadCV}
+                                  element={
+                                      <ProtectedRoute>
+                                          <UploadCvPage />
+                                      </ProtectedRoute>
+                                  }
+                              />
+
+                                <Route
+                                  path={AppRoutes.login}
+                                  element={
+                                    <PublicOnlyRoute>
+                                      <LoginPage />
+                                    </PublicOnlyRoute>
+                                  }
+                                />
+
+                                <Route
+                                  path={AppRoutes.signup}
+                                  element={
+                                    <PublicOnlyRoute>
+                                      <SignupPage />
+                                    </PublicOnlyRoute>
+                                  }
+                                />
+
+
+                              <Route
+                                  path={AppRoutes.forgotPasswordProvideEmail}
+                                  element={
+                                      <PublicOnlyRoute>
+                                          <ForgotPasswordProvideEmailPage />
+                                      </PublicOnlyRoute>
+                                  }
+                              />
+
+                              <Route
+                                  path={AppRoutes.forgotPasswordSetNewPassword}
+                                  element={
+                                      <PublicOnlyRoute>
+                                          <ForgotPasswordSetNewPasswordPage />
+                                      </PublicOnlyRoute>
+                                  }
+                              />
+
+
+                                <Route path="*" element={<NotFoundPage />} />
+                              </Routes>
 
                         </Col>
                     </Row>
                 </Container>
-            )}
 
 
-            <Container fluid id="page-without-sidebar" className={authenticated ? "has-sidebar" : ""}>
-                <Row>
-
-                    {/* "page" */}
-                    <Col id="page">
-
-                      {/* here go pages */}
-                      <Routes>
-
-                          <Route path="/" element={<HomePage />} />
-
-                          <Route
-                              path={AppRoutes.dashboard}
-                              element={
-                                  <ProtectedRoute>
-                                      <DashboardPage />
-                                  </ProtectedRoute>
-                              }
-                          />
-
-                            <Route
-                              path={AppRoutes.myProfile}
-                              element={
-                                <ProtectedRoute>
-                                  <SeeMyProfilePage />
-                                </ProtectedRoute>
-                              }
-                            />
-
-                            <Route
-                              path={AppRoutes.editMyProfile}
-                              element={
-                                <ProtectedRoute>
-                                  <EditMyProfilePage />
-                                </ProtectedRoute>
-                              }
-                            />
-
-                            <Route
-                              path={AppRoutes.myArticles}
-                              element={
-                                <ProtectedRoute>
-                                  <SeeMyArticlesPage />
-                                </ProtectedRoute>
-                              }
-                            />
-
-                            <Route
-                              path={AppRoutes.addMyArticle}
-                              element={
-                                <ProtectedRoute>
-                                  <AddMyArticlePage />
-                                </ProtectedRoute>
-                              }
-                            />
-
-                            <Route
-                              path={AppRoutes.editMyArticle}
-                              element={
-                                <ProtectedRoute>
-                                  <EditMyArticlePage />
-                                </ProtectedRoute>
-                              }
-                            />
-
-
-                          <Route
-                              path={AppRoutes.uploadCV}
-                              element={
-                                  <ProtectedRoute>
-                                      <UploadCvPage />
-                                  </ProtectedRoute>
-                              }
-                          />
-
-                            <Route
-                              path={AppRoutes.login}
-                              element={
-                                <PublicOnlyRoute>
-                                  <LoginPage />
-                                </PublicOnlyRoute>
-                              }
-                            />
-
-                            <Route
-                              path={AppRoutes.signup}
-                              element={
-                                <PublicOnlyRoute>
-                                  <SignupPage />
-                                </PublicOnlyRoute>
-                              }
-                            />
-
-
-                          <Route
-                              path={AppRoutes.forgotPasswordProvideEmail}
-                              element={
-                                  <PublicOnlyRoute>
-                                      <ForgotPasswordProvideEmailPage />
-                                  </PublicOnlyRoute>
-                              }
-                          />
-
-                          <Route
-                              path={AppRoutes.forgotPasswordSetNewPassword}
-                              element={
-                                  <PublicOnlyRoute>
-                                      <ForgotPasswordSetNewPasswordPage />
-                                  </PublicOnlyRoute>
-                              }
-                          />
-
-
-                            <Route path="*" element={<NotFoundPage />} />
-                          </Routes>
-
-                    </Col>
-                </Row>
-            </Container>
-
-
-        </main>
-          {/*<footer>*/}
-          {/*    <AppFooter />*/}
-          {/*</footer>*/}
-      </AuthGuard>
-    </BrowserRouter>
+            </main>
+              {/*<footer>*/}
+              {/*    <AppFooter />*/}
+              {/*</footer>*/}
+          </AuthGuard>
+        </BrowserRouter>
+      </>
   )
 }
 
