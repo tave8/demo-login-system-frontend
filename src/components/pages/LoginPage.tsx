@@ -8,6 +8,8 @@ import UnauthorizedError from "../../js/exceptions/UnauthorizedError"
 import ForbiddenError from "../../js/exceptions/ForbiddenError.ts";
 
 interface handleLoginParams {
+  setIsLoading: (x:boolean) => void
+  setIsError: (x:boolean) => void
   login: (token: string) => void
   logout: () => void
   authenticated: boolean
@@ -21,6 +23,8 @@ const initialFormValues: LoginToAPI = {
 
 const LoginPage = () => {
   const [formValues, setFormValues] = useState(initialFormValues)
+  const [isLoading, setIsLoading] = useState(false)
+  const [isError, setIsError] = useState(false)
 
   const { login, logout, authenticated } = useAuth()
 
@@ -37,53 +41,65 @@ const LoginPage = () => {
                 <h1 className="text-center">Login</h1>
               </Col>
             </Row>
-            {/* email */}
-            <Row>
+
+            {/* form */}
+            <Form onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleLogin(formValues)({ login, logout, authenticated, navigate, setIsError, setIsLoading });
+                }
+              }}>
+              {/* email */}
+              <Row>
+                <Col>
+                  <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                    <Form.Label>Email</Form.Label>
+                    <Form.Control
+                      disabled={isLoading}
+                      type="email"
+                      placeholder="name@example.com"
+                      value={formValues.email}
+                      onChange={(event) => {
+                        setFormValues({
+                          ...formValues,
+                          email: event.target.value,
+                        })
+                      }}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              {/* password */}
               <Col>
-                <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                  <Form.Label>Email</Form.Label>
+                <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
+                  <Form.Label>Password</Form.Label>
                   <Form.Control
-                    type="email"
-                    placeholder="name@example.com"
-                    value={formValues.email}
+                    disabled={isLoading}
+                    type="password"
+                    placeholder="Your password"
+                    value={formValues.password}
                     onChange={(event) => {
                       setFormValues({
                         ...formValues,
-                        email: event.target.value,
+                        password: event.target.value,
                       })
                     }}
                   />
                 </Form.Group>
               </Col>
-            </Row>
-            {/* password */}
-            <Col>
-              <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                  type="password"
-                  placeholder="Your password"
-                  value={formValues.password}
-                  onChange={(event) => {
-                    setFormValues({
-                      ...formValues,
-                      password: event.target.value,
-                    })
+              {/* submit */}
+              <Col className="text-center">
+                <Button
+                  disabled={isLoading}
+                  variant="primary"
+                  onClick={() => {
+                    handleLogin(formValues)({ login, logout, authenticated, navigate, setIsError, setIsLoading })
                   }}
-                />
-              </Form.Group>
-            </Col>
-            {/* submit */}
-            <Col className="text-center">
-              <Button
-                variant="primary"
-                onClick={() => {
-                  handleLogin(formValues)({ login, logout, authenticated, navigate })
-                }}
-              >
-                Login
-              </Button>
-            </Col>
+                >
+                  Login
+                </Button>
+              </Col>
+            </Form>
+
             {/* forgot password */}
             <Col className="text-center mt-3">
               <Link
@@ -101,13 +117,20 @@ const LoginPage = () => {
 
 const handleLogin = (formValues: LoginToAPI) => {
   return async (params: handleLoginParams) => {
-    const { login, logout, authenticated, navigate } = params
+    const { login, logout, authenticated, navigate, setIsError, setIsLoading } = params
 
     const authAPI = new AuthAPI()
+
+    setIsLoading(true)
+    setIsError(false)
 
     authAPI
       .login(formValues)
       .then((loginInfo) => {
+
+        setIsLoading(false)
+        setIsError(false)
+
         const { accessToken } = loginInfo
         login(accessToken)
         // after successful login, where route the user
@@ -121,6 +144,10 @@ const handleLogin = (formValues: LoginToAPI) => {
         )
       })
       .catch((err) => {
+
+        setIsLoading(false)
+        setIsError(true)
+
         if (err instanceof UnauthorizedError) {
           alert("Wrong credentials.")
         } else if (err instanceof ForbiddenError) {
@@ -132,6 +159,7 @@ const handleLogin = (formValues: LoginToAPI) => {
         }
       })
   }
+
 }
 
 export default LoginPage
