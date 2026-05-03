@@ -31,7 +31,8 @@ import {useAuth} from "./auth/AuthContext.tsx";
 import {Col, Container, Row} from "react-bootstrap";
 import DashboardPage from "./components/pages/DashboardPage.tsx";
 import {useEffect} from "react";
-import NetworkErrorToast from "./components/NetworkErrorToast.tsx";
+import NetworkErrorToast from "./components/toasts/NetworkErrorToast.tsx";
+import LoginToast from "./components/toasts/LoginToast.tsx";
 
 function App() {
 
@@ -40,7 +41,9 @@ function App() {
 
   return (
       <>
+        <LoginToast />
         <NetworkErrorToast />
+
         <BrowserRouter>
           <AuthGuard>
             <header>

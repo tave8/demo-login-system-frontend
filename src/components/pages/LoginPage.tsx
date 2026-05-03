@@ -108,14 +108,17 @@ const handleLogin = (formValues: LoginToAPI) => {
     authAPI
       .login(formValues)
       .then((loginInfo) => {
-        alert("successful login")
-        // console.log("logged in successfully")
         const { accessToken } = loginInfo
         login(accessToken)
         // after successful login, where route the user
         // is redirected to
         navigate(AppRoutes.dashboard)
         // console.log(loginInfo)
+        window.dispatchEvent(
+            new CustomEvent("login-success", {
+              detail: "Successful login"
+            })
+        )
       })
       .catch((err) => {
         if (err instanceof UnauthorizedError) {
