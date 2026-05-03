@@ -2,7 +2,7 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import "./App.css"
 
 // import { useState, useEffect } from "react"
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import {BrowserRouter, Routes, Route, Link} from "react-router-dom"
 import { ProtectedRoute } from "./auth/ProtectedRoute.tsx"
 import { PublicOnlyRoute } from "./auth/PublicOnlyRoute.tsx"
 import { AuthGuard } from "./auth/AuthGuard.tsx"
@@ -26,8 +26,13 @@ import ForgotPasswordSetNewPasswordPage from "./components/pages/ForgotPasswordS
 // components
 import AppNav from "./components/AppNav.tsx"
 import AppFooter from "./components/AppFooter.tsx"
+import AppSidebar from "./components/AppSidebar.tsx";
+import {useAuth} from "./auth/AuthContext.tsx";
 
 function App() {
+
+    const { login, logout, authenticated } = useAuth()
+
   return (
     <BrowserRouter>
       <AuthGuard>
@@ -35,6 +40,13 @@ function App() {
           <AppNav />
         </header>
         <main className={"d-flex flex-column my-3"}>
+
+            {/* sidebar shown only when logged in */}
+            {authenticated && (
+                <AppSidebar />
+            )}
+
+          {/* here go pages */}
           <Routes>
             <Route path="/" element={<HomePage />} />
 
