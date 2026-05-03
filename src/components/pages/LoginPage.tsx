@@ -154,8 +154,12 @@ const handleLogin = (formValues: LoginToAPI) => {
           }))
 
         } else if (err instanceof ForbiddenError) {
-          alert("You need to verify your email first. "
-              +"We've just sent you a unique verification link in your inbox.")
+
+          window.dispatchEvent(new CustomEvent("app-error", {
+            detail: "You need to verify your email first. "
+                   +"We've just sent you a unique verification link in your inbox."
+          }))
+
         }
       })
   }

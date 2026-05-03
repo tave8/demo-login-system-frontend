@@ -20,7 +20,7 @@ export default function ErrorToast() {
     return (
         <ToastContainer position="bottom-end" className="p-3">
             {messages.map((m) => (
-                <Toast key={m.id} onClose={() => dismiss(m.id)} delay={5000} autohide style={{ borderLeft: "3px solid #dc3545" }}>
+                <Toast key={m.id} onClose={() => dismiss(m.id)} delay={10000} autohide style={{ borderLeft: "3px solid #dc3545" }}>
                     <Toast.Header>
                         <strong className="me-auto text-danger" style={{ fontSize: "13px" }}>Error</strong>
                     </Toast.Header>

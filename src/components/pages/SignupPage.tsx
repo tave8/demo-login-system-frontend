@@ -12,6 +12,8 @@ import HttpError from "../../js/exceptions/HttpError.ts";
 
 interface handleSignupParams {
   navigate: NavigateFunction
+  setIsLoading: (x:boolean) => void
+  setIsError: (x:boolean) => void
 }
 
 const initialFormValues: SignupToAPI = {
@@ -23,6 +25,8 @@ const initialFormValues: SignupToAPI = {
 
 const SignupPage = () => {
   const [formValues, setFormValues] = useState(initialFormValues)
+  const [isLoading, setIsLoading] = useState(false)
+  const [isError, setIsError] = useState(false)
 
   const navigate = useNavigate()
 
@@ -38,7 +42,13 @@ const SignupPage = () => {
                 <h1 className="text-center">Sign up</h1>
               </Col>
             </Row>
-            <Form>
+
+            {/*form */}
+            <Form onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSignup(formValues)({ navigate, setIsError, setIsLoading });
+                }
+              }}>
               {/* firstname */}
               <Row>
                 <Col>
@@ -46,6 +56,7 @@ const SignupPage = () => {
                     <Form.Label>Firstname</Form.Label>
                     <Form.Control
                       type="text"
+                      disabled={isLoading}
                       placeholder="My firstname"
                       value={formValues.firstname}
                       onChange={(event) => {
@@ -65,6 +76,7 @@ const SignupPage = () => {
                     <Form.Label>Lastname</Form.Label>
                     <Form.Control
                       type="text"
+                      disabled={isLoading}
                       placeholder="My lastname"
                       value={formValues.lastname}
                       onChange={(event) => {
@@ -84,6 +96,7 @@ const SignupPage = () => {
                     <Form.Label>Email</Form.Label>
                     <Form.Control
                       type="email"
+                      disabled={isLoading}
                       placeholder="name@example.com"
                       value={formValues.email}
                       onChange={(event) => {
@@ -103,6 +116,7 @@ const SignupPage = () => {
                     <Form.Label>Password</Form.Label>
                     <Form.Control
                       type="password"
+                      disabled={isLoading}
                       placeholder="Your password"
                       value={formValues.password}
                       onChange={(event) => {
@@ -121,7 +135,7 @@ const SignupPage = () => {
                   <Button
                     variant="primary"
                     onClick={() => {
-                      handleSignup(formValues)({ navigate })
+                      handleSignup(formValues)({ navigate, setIsError, setIsLoading })
                     }}
                   >
                     Sign up
@@ -148,32 +162,41 @@ const SignupPage = () => {
 
 const handleSignup = (formValues: SignupToAPI) => {
   return async (params: handleSignupParams) => {
-    const { navigate } = params
+    const { navigate, setIsError, setIsLoading } = params
 
     const authAPI = new AuthAPI()
+
+    setIsLoading(true)
+    setIsError(false)
 
     authAPI
       .signup(formValues)
       .then((userData) => {
+        setIsLoading(false)
+        setIsError(false)
 
         window.dispatchEvent(new CustomEvent("signup-success", {
           detail: "Successful signup. Check your inbox: We've just "
               +"sent you an email to verify that it's you."
         }))
 
-        // console.log("successful signup, navigating to login page")
         navigate(AppRoutes.login)
       })
         .catch((err: unknown) => {
+          setIsLoading(false)
+          setIsError(true)
+
             if (err instanceof UnauthorizedError) {
-              alert("You cannot use this email.")
+
+              window.dispatchEvent(new CustomEvent("app-error", {
+                detail: "You cannot use this email."
+              }))
+
             } else if (err instanceof BadRequestError) {
               const badRequest = err as BadRequestError;
               alert("Some fields are invalid. Details: " + badRequest.getErrorsAsStr())
-            } else {
-              console.info("Error during signup")
-              console.error(err)
             }
+
         })
   }
 }
