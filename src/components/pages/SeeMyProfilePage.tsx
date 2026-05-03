@@ -41,9 +41,6 @@ const SeeMyProfilePage = () => {
         setIsError(true)
         if (err instanceof UnauthorizedError) {
           logout()
-        } else {
-          console.info("Error during getting user info")
-          console.error(err)
         }
       })
   }, [])

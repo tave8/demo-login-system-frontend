@@ -112,6 +112,34 @@ export default class APIHelper {
     return accessToken
   }
 
+
+  /**
+   *
+   * @param resp
+   * @param callbackOnError
+   */
+  public static async parseJSONButIfError<T_FROM_API>(resp: Response,
+                                                      callbackOnError: Function): Promise<T_FROM_API>
+  {
+
+    try {
+
+      // if all good, return the JSON directly
+      return await APIHelper.parseJSON(resp)
+
+      // otherwise the catch block will be executed,
+      //   and in it, the custom callback on error
+      //   after that, the error gets re-thrown
+    } catch(err) {
+
+      callbackOnError(err)
+      throw err
+
+    }
+
+  }
+
+
   /**
    * Parse a JSON from a response.
    * Require that a response body is in JSON.
@@ -123,12 +151,6 @@ export default class APIHelper {
    */
   public static async parseJSON<T_FROM_API>(resp: Response): Promise<T_FROM_API> {
 
-
-    // ***************************
-    // SPECIFIC NON-OK RESPONSE?
-    // ***************************
-
-
     // the url the request was made to
     const url: string = resp.url
     const isNoContentStatusCode = resp.status == 204
@@ -136,6 +158,7 @@ export default class APIHelper {
 
     // if the status code is 204, then there's no response body and
     // no content-type header (for example with a successful DELETE request)
+
     if (isNoContentStatusCode) {
       // the "null as unknown as T_FROM_API" trick is simply to
       // trick typescript into not checking the type (by first casting null to unknown)
@@ -144,6 +167,7 @@ export default class APIHelper {
     }
 
     // if the content-type is not even there
+
     if (!contentTypeHeader) {
       throw new ExpectedJSONPayloadError(
         `Before parsing JSON from a response, the Content-type header from the response was not even there, ` +
@@ -152,8 +176,10 @@ export default class APIHelper {
     }
 
     const hasSentJSON = contentTypeHeader.includes("application/json")
+
     // if the content-type is different from application/json,
     // this will definitely not be a valid JSON
+
     if (!hasSentJSON) {
       throw new ExpectedJSONPayloadError(
         `Before parsing JSON from a response, the Content-type header from the response ` +
@@ -177,6 +203,11 @@ export default class APIHelper {
         )
       }
 
+    // ***************************
+    // PROBLEMATIC RESPONSE STATUS CODES
+    // ***************************
+
+
       const isBadRequest = resp.status == 400
       const isUnauthorized = resp.status == 401
       const isForbidden = resp.status == 403
@@ -192,8 +223,10 @@ export default class APIHelper {
 
       // if we get here, we assume we have a problem
 
+      // we cast whatever json the server as sent,
+      // into a custom type that models just that json
       // @ts-ignore
-    jsonPayload = jsonPayload as ErrorPayloadFromAPI;
+      jsonPayload = jsonPayload as ErrorPayloadFromAPI;
 
 
       if (isBadRequest) {
@@ -233,9 +266,9 @@ export default class APIHelper {
         throw new HttpError(resp.status, resp.statusText, jsonPayload)
       }
 
+      // if no problematic status code was detected,
+      // we return the json payload
       return jsonPayload
-
-
 
   }
 
@@ -270,7 +303,6 @@ export default class APIHelper {
    *  This will add an Authorization: Bearer xyz header to the request
    * @param body A valid, plain JS object
    */
-  public static getFetchConfigFor(method: RequestMethod): RequestInit
   public static getFetchConfigFor(method: RequestMethod, requireLogin: boolean): RequestInit
   public static getFetchConfigFor(method: RequestMethod, requireLogin: boolean, body: object): RequestInit
   public static getFetchConfigFor(method: RequestMethod, requireLogin: boolean = false, body: object | null = null): RequestInit {
