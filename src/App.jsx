@@ -41,17 +41,25 @@ function App() {
           <AppNav />
         </header>
         <main className={"d-flex flex-column"}>
-            <Container fluid>
+
+
+            {/* sidebar */}
+            {authenticated && (
+                <Container id="sidebar">
+                    <Row>
+                        <Col >
+
+                            <AppSidebar />
+
+                        </Col>
+                    </Row>
+                </Container>
+            )}
+
+
+            <Container fluid id="page-without-sidebar" className={authenticated ? "has-sidebar" : ""}>
                 <Row>
 
-                    {/* sidebar */}
-                    <Col id="sidebar">
-
-                        {authenticated && (
-                            <AppSidebar />
-                        )}
-
-                    </Col>
 
                     {/* "page" */}
                     <Col id="page">
@@ -161,13 +169,11 @@ function App() {
 
                     </Col>
                 </Row>
+                  {/*<AppFooter />*/}
             </Container>
 
 
         </main>
-        <footer>
-          <AppFooter />
-        </footer>
       </AuthGuard>
     </BrowserRouter>
   )

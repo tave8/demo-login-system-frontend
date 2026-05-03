@@ -1,3 +1,7 @@
+body {
+  /*overflow-y: hidden;*/
+}
+
 /* push footer to bottom of page */
 #root {
   /* the entire page must always span the entire window, in height */
@@ -27,6 +31,7 @@ header {
   position: fixed;
   /* the navbar spans the entire window width */
   min-width: 100%;
+  z-index: 9999;
 }
 
 main {
@@ -42,9 +47,9 @@ main {
 /* we want it to span the entire space when
 we take out header and footer */
 main > * {
-  display: flex;
-  flex-grow: 1;
-  flex-direction: column;
+  /*display: flex;*/
+  /*flex-grow: 1;*/
+  /*flex-direction: column;*/
 }
 
 /* the only row in th only container in the main */
@@ -56,8 +61,33 @@ main > * > * {
 #sidebar {
   /*flex-grow: 1;*/
   background-color: gray;
+  height: 100vh;
+  padding: 0;
+  margin: 0;
+  position: fixed;
+  width: 150px;
 }
 
 #page {
-  flex-grow: 9;
+  /*flex-grow: 9;*/
+}
+
+#page-without-sidebar {
+
+
+  /*min-height: calc(100vh - 61px);*/
+
+  justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+}
+
+#footer {
+  max-height: 50px;
+}
+
+
+.has-sidebar {
+  margin-left: 150px;
+  width: calc(100% - 150px);
 }

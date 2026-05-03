@@ -5,13 +5,11 @@ import { Link } from "react-router-dom"
 
 const MyFooter = () => {
   return (
-    <Container fluid className="bg-body-tertiary">
-      <Row className="justify-content-center align-items-center">
+      <Row className="justify-content-center align-items-center bg-black" id="footer">
         <Col className="text-center">
           <p className="my-3">Demo Login System - {new Date().getFullYear()}</p>
         </Col>
       </Row>
-    </Container>
   )
 }
 
