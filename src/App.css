@@ -8,3 +8,25 @@
 main {
   flex-grow: 1;
 }
+
+/* the only container in the main */
+main > * {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  /*min-height: 100%;*/
+}
+
+/* the only row of the only container in the main */
+main > * > * {
+  flex-grow: 1;
+}
+
+#sidebar {
+  flex-grow: 1;
+  background-color: gray;
+}
+
+#page {
+  flex-grow: 9;
+}

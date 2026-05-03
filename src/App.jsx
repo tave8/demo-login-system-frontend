@@ -28,6 +28,7 @@ import AppNav from "./components/AppNav.tsx"
 import AppFooter from "./components/AppFooter.tsx"
 import AppSidebar from "./components/AppSidebar.tsx";
 import {useAuth} from "./auth/AuthContext.tsx";
+import {Col, Container, Row} from "react-bootstrap";
 
 function App() {
 
@@ -39,115 +40,130 @@ function App() {
         <header>
           <AppNav />
         </header>
-        <main className={"d-flex flex-column my-3"}>
+        <main className={"d-flex flex-column"}>
+            <Container fluid>
+                <Row>
 
-            {/* sidebar shown only when logged in */}
-            {authenticated && (
-                <AppSidebar />
-            )}
+                    {/* sidebar */}
+                    <Col id="sidebar">
 
-          {/* here go pages */}
-          <Routes>
-            <Route path="/" element={<HomePage />} />
+                        {authenticated && (
+                            <AppSidebar />
+                        )}
 
-            {/* <Route path="/feed" element={<HomePage />} /> */}
-            {/* <Route path="/articles/add" element={<HomePage />} /> */}
+                    </Col>
 
-            <Route
-              path={AppRoutes.myProfile}
-              element={
-                <ProtectedRoute>
-                  <SeeMyProfilePage />
-                </ProtectedRoute>
-              }
-            />
+                    {/* "page" */}
+                    <Col id="page">
 
-            <Route
-              path={AppRoutes.editMyProfile}
-              element={
-                <ProtectedRoute>
-                  <EditMyProfilePage />
-                </ProtectedRoute>
-              }
-            />
+                      {/* here go pages */}
+                      <Routes>
+                            <Route path="/" element={<HomePage />} />
 
-            <Route
-              path={AppRoutes.myArticles}
-              element={
-                <ProtectedRoute>
-                  <SeeMyArticlesPage />
-                </ProtectedRoute>
-              }
-            />
-            
-            <Route
-              path={AppRoutes.addMyArticle}
-              element={
-                <ProtectedRoute>
-                  <AddMyArticlePage />
-                </ProtectedRoute>
-              }
-            />
+                            {/* <Route path="/feed" element={<HomePage />} /> */}
+                            {/* <Route path="/articles/add" element={<HomePage />} /> */}
 
-            <Route
-              path={AppRoutes.editMyArticle}
-              element={
-                <ProtectedRoute>
-                  <EditMyArticlePage />
-                </ProtectedRoute>
-              }
-            />
+                            <Route
+                              path={AppRoutes.myProfile}
+                              element={
+                                <ProtectedRoute>
+                                  <SeeMyProfilePage />
+                                </ProtectedRoute>
+                              }
+                            />
 
+                            <Route
+                              path={AppRoutes.editMyProfile}
+                              element={
+                                <ProtectedRoute>
+                                  <EditMyProfilePage />
+                                </ProtectedRoute>
+                              }
+                            />
 
-          <Route
-              path={AppRoutes.uploadCV}
-              element={
-                  <ProtectedRoute>
-                      <UploadCvPage />
-                  </ProtectedRoute>
-              }
-          />
+                            <Route
+                              path={AppRoutes.myArticles}
+                              element={
+                                <ProtectedRoute>
+                                  <SeeMyArticlesPage />
+                                </ProtectedRoute>
+                              }
+                            />
 
-            <Route
-              path={AppRoutes.login}
-              element={
-                <PublicOnlyRoute>
-                  <LoginPage />
-                </PublicOnlyRoute>
-              }
-            />
+                            <Route
+                              path={AppRoutes.addMyArticle}
+                              element={
+                                <ProtectedRoute>
+                                  <AddMyArticlePage />
+                                </ProtectedRoute>
+                              }
+                            />
 
-            <Route
-              path={AppRoutes.signup}
-              element={
-                <PublicOnlyRoute>
-                  <SignupPage />
-                </PublicOnlyRoute>
-              }
-            />
+                            <Route
+                              path={AppRoutes.editMyArticle}
+                              element={
+                                <ProtectedRoute>
+                                  <EditMyArticlePage />
+                                </ProtectedRoute>
+                              }
+                            />
 
 
-          <Route
-              path={AppRoutes.forgotPasswordProvideEmail}
-              element={
-                  <PublicOnlyRoute>
-                      <ForgotPasswordProvideEmailPage />
-                  </PublicOnlyRoute>
-              }
-          />
+                          <Route
+                              path={AppRoutes.uploadCV}
+                              element={
+                                  <ProtectedRoute>
+                                      <UploadCvPage />
+                                  </ProtectedRoute>
+                              }
+                          />
 
-          <Route
-              path={AppRoutes.forgotPasswordSetNewPassword}
-              element={
-                  <PublicOnlyRoute>
-                      <ForgotPasswordSetNewPasswordPage />
-                  </PublicOnlyRoute>
-              }
-          />
+                            <Route
+                              path={AppRoutes.login}
+                              element={
+                                <PublicOnlyRoute>
+                                  <LoginPage />
+                                </PublicOnlyRoute>
+                              }
+                            />
+
+                            <Route
+                              path={AppRoutes.signup}
+                              element={
+                                <PublicOnlyRoute>
+                                  <SignupPage />
+                                </PublicOnlyRoute>
+                              }
+                            />
 
 
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
+                          <Route
+                              path={AppRoutes.forgotPasswordProvideEmail}
+                              element={
+                                  <PublicOnlyRoute>
+                                      <ForgotPasswordProvideEmailPage />
+                                  </PublicOnlyRoute>
+                              }
+                          />
+
+                          <Route
+                              path={AppRoutes.forgotPasswordSetNewPassword}
+                              element={
+                                  <PublicOnlyRoute>
+                                      <ForgotPasswordSetNewPasswordPage />
+                                  </PublicOnlyRoute>
+                              }
+                          />
+
+
+                            <Route path="*" element={<NotFoundPage />} />
+                          </Routes>
+
+                    </Col>
+                </Row>
+            </Container>
+
+
         </main>
         <footer>
           <AppFooter />
