@@ -175,7 +175,7 @@ const handleSignup = (formValues: SignupToAPI) => {
         setIsLoading(false)
         setIsError(false)
 
-        window.dispatchEvent(new CustomEvent("signup-success", {
+        window.dispatchEvent(new CustomEvent("app-success", {
           detail: "Successful signup. Check your inbox: We've just "
               +"sent you an email to verify that it's you."
         }))

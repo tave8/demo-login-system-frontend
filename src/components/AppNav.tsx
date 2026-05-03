@@ -103,7 +103,9 @@ const handleLogout = () => {
     logout()
     navigate(AppRoutes.login)
     window.dispatchEvent(
-        new CustomEvent("logout-success")
+        new CustomEvent("app-success", {
+          detail: "You've been logged out."
+        })
     )
   }
 }

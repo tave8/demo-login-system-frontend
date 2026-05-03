@@ -34,7 +34,7 @@ export default abstract class BaseAPI {
             if(err instanceof NetworkError) {
                 // console.log("NETWORK ERROR!")
                 const errMsg = "There was a network error. Please check your connection."
-                window.dispatchEvent(new CustomEvent("network-error", { detail: errMsg }));
+                window.dispatchEvent(new CustomEvent("app-error", { detail: errMsg }));
             }
 
         })
@@ -54,9 +54,12 @@ export default abstract class BaseAPI {
             console.error(err)
 
             if(err instanceof ExpectedJSONPayloadError) {
-                console.log("error when parsing JSON")
+                window.dispatchEvent(new CustomEvent("app-error", {
+                    detail: "Internal error (expected JSON payload)"
+                }));
+
             } else if (err instanceof ShouldLogoutError) {
-                console.log("user should logout")
+
             }
 
         })

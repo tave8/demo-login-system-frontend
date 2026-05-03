@@ -137,8 +137,8 @@ const handleLogin = (formValues: LoginToAPI) => {
         // is redirected to
         navigate(AppRoutes.dashboard)
         window.dispatchEvent(
-            new CustomEvent("login-success", {
-              detail: "Successful login"
+            new CustomEvent("app-success", {
+              detail: "Welcome back."
             })
         )
       })

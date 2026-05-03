@@ -30,12 +30,8 @@ import AppSidebar from "./components/AppSidebar.tsx";
 import {useAuth} from "./auth/AuthContext.tsx";
 import {Col, Container, Row} from "react-bootstrap";
 import DashboardPage from "./components/pages/DashboardPage.tsx";
-import {useEffect} from "react";
-import NetworkErrorToast from "./components/toasts/NetworkErrorToast.tsx";
-import LoginToast from "./components/toasts/LoginToast.tsx";
-import LogoutToast from "./components/toasts/LogoutToast.tsx";
-import SignupToast from "./components/toasts/SignupToast.tsx";
-import ErrorToast from "./components/toasts/ErrorToast.tsx";
+import AppToast from "./components/AppToast.tsx";
+
 
 function App() {
 
@@ -44,11 +40,7 @@ function App() {
 
   return (
       <>
-          <ErrorToast />
-        <LoginToast />
-          <LogoutToast />
-          <SignupToast />
-        <NetworkErrorToast />
+          <AppToast />
 
         <BrowserRouter>
           <AuthGuard>
