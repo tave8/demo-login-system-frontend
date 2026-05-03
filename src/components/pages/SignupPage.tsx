@@ -155,8 +155,11 @@ const handleSignup = (formValues: SignupToAPI) => {
     authAPI
       .signup(formValues)
       .then((userData) => {
-        alert("Successful signup. Check your inbox: We've just "
-              +"sent you an email to verify that it's you.")
+
+        window.dispatchEvent(new CustomEvent("signup-success", {
+          detail: "Successful signup. Check your inbox: We've just "
+              +"sent you an email to verify that it's you."
+        }))
 
         // console.log("successful signup, navigating to login page")
         navigate(AppRoutes.login)
