@@ -18,7 +18,8 @@ export default class UsersAPI extends BaseAPI {
   public async getMyInfo(): Promise<UserFromAPI> {
     const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
 
-    const resp: Response = await APIHelper.doFetchAt("/users/me", config)
+    // const resp: Response = await APIHelper.doFetchAt("/users/me", config)
+    const resp: Response = await this.doFetchAt("/users/me", config)
 
     const data = await APIHelper.parseJSON<UserFromAPI>(resp)
 

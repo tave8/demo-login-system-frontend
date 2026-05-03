@@ -10,6 +10,7 @@ import {ErrorPayloadFromAPI, FetchConfigType, RequestHeaderContentType, RequestM
 import ForbiddenError from "../exceptions/ForbiddenError.ts";
 import NotFoundError from "../exceptions/NotFoundError.ts";
 import ExpectedJSONPayloadError from "../exceptions/ExpectedJSONPayloadError.ts";
+import {call} from "@vitejs/plugin-react";
 
 // import {logout} from "../auth/AuthContext.tsx"
 
@@ -428,6 +429,42 @@ export default class APIHelper {
     return requestInit
   }
 
+
+  /**
+   * Do an API call, but if an error is thrown,
+   * fire a custom callback.
+   * It provides the base mechanism for automatic,
+   * custom error handling. The error is re-thrown,
+   * only after having having called the custom callback.
+   *
+   * @param relativeURLPath
+   * @param config
+   * @param callbackOnError the callback that gets called
+   *  when an error is raised
+   *
+   *  @raises The same type of errors thrown by its counterpart `doFetchAt`
+   */
+  public static async doFetchAtButIfError(relativeURLPath: string,
+                                          config: RequestInit,
+                                          callbackOnError: Function): Promise<Response>
+  {
+     try {
+
+       // if all good, return the API call directly
+       return await APIHelper.doFetchAt(relativeURLPath, config)
+
+     // otherwise the catch block will be executed,
+     //   and in it, the custom callback on error
+     //   after that, the error gets re-thrown
+     } catch(err) {
+
+        callbackOnError(err)
+        throw err
+
+     }
+  }
+
+
   /**
    * Do a fetch request to a (relative) endpoint,
    * providing a fetch configuration object.
@@ -489,7 +526,11 @@ export default class APIHelper {
       resp = await fetch(absoluteURL, config)
 
     } catch (err) {
-      throw new NetworkError(err instanceof Error ? err.message : String(err))
+
+      const errMsg = err instanceof Error ? err.message : String(err)
+
+      throw new NetworkError(errMsg)
+
     }
 
 
