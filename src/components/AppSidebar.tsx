@@ -1,13 +1,89 @@
-import {Col, Container, Row} from "react-bootstrap";
+import {Col, Container, Nav, Row} from "react-bootstrap";
 
 const AppSidebar = () => {
     return (
         <>
-            <Container>
-                <Row>
+            <Container fluid>
+                <Row className={"d-flex flex-column"}>
                     <Col>
-                        <p>Hello</p>
+                        <p>col 1</p>
                     </Col>
+                    <Col>
+                        <p>col 2</p>
+                    </Col>
+                    <Col>
+                        <p>col 3</p>
+                    </Col>
+                    <Col>
+                        <p>col 1</p>
+                    </Col>
+                    <Col>
+                        <p>col 1</p>
+                    </Col>
+                    <Col>
+                        <p>col 1</p>
+                    </Col>
+                    <Col>
+                        <p>col 1</p>
+                    </Col>
+                    <Col>
+                        <p>col 1</p>
+                    </Col>
+                    <Col>
+                        <p>col 1</p>
+                    </Col>
+                    <Col>
+                        <p>col 1</p>
+                    </Col>
+                    <Col>
+                        <p>col 1</p>
+                    </Col>
+                    <Col>
+                        <p>col 1</p>
+                    </Col>
+                    <Col>
+                        <p>col 1</p>
+                    </Col>
+                    <Col>
+                        <p>col 1</p>
+                    </Col>
+                    <Col>
+                        <p>col 1</p>
+                    </Col>
+                    <Col>
+                        <p>col 1</p>
+                    </Col>
+                    <Col>
+                        <p>col 1</p>
+                    </Col>
+                    <Col>
+                        <p>col 1</p>
+                    </Col>
+                    <Col>
+                        <p>col 1</p>
+                    </Col>
+                    <Col>
+                        <p>col 1</p>
+                    </Col>
+                    <Col>
+                        <p>col 1</p>
+                    </Col>
+                    <Col>
+                        <p>col 1</p>
+                    </Col>
+                    <Col>
+                        <p>col 1</p>
+                    </Col>
+                    <Col>
+                        <p>col 1</p>
+                    </Col>
+                    <Col>
+                        <p>col 1</p>
+                    </Col>
+                    <Col>
+                        <p>col 1</p>
+                    </Col>
+
                 </Row>
             </Container>
         </>

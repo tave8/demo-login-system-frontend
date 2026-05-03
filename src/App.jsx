@@ -169,11 +169,13 @@ function App() {
 
                     </Col>
                 </Row>
-                  {/*<AppFooter />*/}
             </Container>
 
 
         </main>
+          {/*<footer>*/}
+          {/*    <AppFooter />*/}
+          {/*</footer>*/}
       </AuthGuard>
     </BrowserRouter>
   )

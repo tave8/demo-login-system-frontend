@@ -61,11 +61,14 @@ main > * > * {
 #sidebar {
   /*flex-grow: 1;*/
   background-color: gray;
-  height: 100vh;
+  /*we substract the header/navbar height */
+  height: calc(100vh - 50px);
   padding: 0;
   margin: 0;
   position: fixed;
   width: 150px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 #page {
@@ -73,7 +76,6 @@ main > * > * {
 }
 
 #page-without-sidebar {
-
 
   /*min-height: calc(100vh - 61px);*/
 
@@ -83,7 +85,7 @@ main > * > * {
 }
 
 #footer {
-  max-height: 50px;
+  height: 50px;
 }
 
 
