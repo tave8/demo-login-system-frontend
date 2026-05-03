@@ -46,18 +46,20 @@ const MyNav = () => {
                   </Link>
               )}
 
-              {!authenticated && (
+            </Nav>
+
+            {/* login / signup */}
+            {!authenticated && (
+            <Nav className="end">
                   <Link to={AppRoutes.login} className="nav-item nav-link">
                     Login
                   </Link>
-              )}
-
-              {!authenticated && (
                   <Link to={AppRoutes.signup} className="nav-item nav-link">
                     Sign up
                   </Link>
-              )}
             </Nav>
+            )}
+
 
             {/* settings */}
             {authenticated && (
