@@ -54,14 +54,6 @@ const MyNav = () => {
                 </Link>
             )}
 
-
-            {/* MY PROFILE */}
-            {authenticated && (
-              <Link to={AppRoutes.myProfile} className="nav-item nav-link">
-                My profile
-              </Link>
-            )}
-
             {/* LOGIN */}
             {!authenticated && (
               <Link to={AppRoutes.login} className="nav-item nav-link">
@@ -76,30 +68,33 @@ const MyNav = () => {
               </Link>
             )}
 
-
-            {/* LOGOUT */}
-            {authenticated && (
-              <span
-                className="nav-item nav-link"
-                onClick={() => {
-                  handleLogout()({ login, logout, authenticated, navigate })
-                }}
-                style={{ cursor: "pointer" }}
-              >
-                Logout
-              </span>
-            )}
-
             {/* <Nav.Link href="#home">Home</Nav.Link> */}
 
             {/* <Nav.Link href="#link">Link</Nav.Link> */}
-            {/* <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-              <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
-            </NavDropdown> */}
+
+            {authenticated && (
+              <NavDropdown title="Settings" id="basic-nav-dropdown">
+                <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
+
+                {/* my profile */}
+                <NavDropdown.Item as={Link} to={AppRoutes.myProfile}>
+                  My profile
+                </NavDropdown.Item>
+
+                {/* divider */}
+                <NavDropdown.Divider />
+
+                {/* logout */}
+                <NavDropdown.Item
+                    onClick={() => {
+                      handleLogout()({ login, logout, authenticated, navigate })
+                    }}>
+                    Logout
+                </NavDropdown.Item>
+              </NavDropdown>
+            )}
+
+
           </Nav>
         </Navbar.Collapse>
       </Container>
