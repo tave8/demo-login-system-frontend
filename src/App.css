@@ -60,7 +60,6 @@ main > * > * {
 
 #sidebar {
   /*flex-grow: 1;*/
-  background-color: gray;
   /*we substract the header/navbar height */
   height: calc(100vh - 50px);
   padding: 0;

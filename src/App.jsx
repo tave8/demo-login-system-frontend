@@ -47,8 +47,9 @@ function App() {
             {/* sidebar */}
             {authenticated && (
                 <Container id="sidebar">
-                    <Row>
-                        <Col >
+                    <Row style={{ minHeight: "100%" }}>
+
+                        <Col style={{ minHeight: "100%" }}>
 
                             <AppSidebar />
 
