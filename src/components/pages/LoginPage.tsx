@@ -136,7 +136,6 @@ const handleLogin = (formValues: LoginToAPI) => {
         // after successful login, where route the user
         // is redirected to
         navigate(AppRoutes.dashboard)
-        // console.log(loginInfo)
         window.dispatchEvent(
             new CustomEvent("login-success", {
               detail: "Successful login"
@@ -149,13 +148,14 @@ const handleLogin = (formValues: LoginToAPI) => {
         setIsError(true)
 
         if (err instanceof UnauthorizedError) {
-          alert("Wrong credentials.")
+
+          window.dispatchEvent(new CustomEvent("app-error", {
+            detail: "Wrong credentials."
+          }))
+
         } else if (err instanceof ForbiddenError) {
           alert("You need to verify your email first. "
               +"We've just sent you a unique verification link in your inbox.")
-        } else {
-          console.info("Error during login")
-          console.error(err)
         }
       })
   }

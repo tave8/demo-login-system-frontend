@@ -35,6 +35,7 @@ import NetworkErrorToast from "./components/toasts/NetworkErrorToast.tsx";
 import LoginToast from "./components/toasts/LoginToast.tsx";
 import LogoutToast from "./components/toasts/LogoutToast.tsx";
 import SignupToast from "./components/toasts/SignupToast.tsx";
+import ErrorToast from "./components/toasts/ErrorToast.tsx";
 
 function App() {
 
@@ -43,6 +44,7 @@ function App() {
 
   return (
       <>
+          <ErrorToast />
         <LoginToast />
           <LogoutToast />
           <SignupToast />
