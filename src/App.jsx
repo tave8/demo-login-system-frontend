@@ -29,6 +29,7 @@ import AppFooter from "./components/AppFooter.tsx"
 import AppSidebar from "./components/AppSidebar.tsx";
 import {useAuth} from "./auth/AuthContext.tsx";
 import {Col, Container, Row} from "react-bootstrap";
+import DashboardPage from "./components/pages/DashboardPage.tsx";
 
 function App() {
 
@@ -60,16 +61,22 @@ function App() {
             <Container fluid id="page-without-sidebar" className={authenticated ? "has-sidebar" : ""}>
                 <Row>
 
-
                     {/* "page" */}
                     <Col id="page">
 
                       {/* here go pages */}
                       <Routes>
-                            <Route path="/" element={<HomePage />} />
 
-                            {/* <Route path="/feed" element={<HomePage />} /> */}
-                            {/* <Route path="/articles/add" element={<HomePage />} /> */}
+                          <Route path="/" element={<HomePage />} />
+
+                          <Route
+                              path={AppRoutes.dashboard}
+                              element={
+                                  <ProtectedRoute>
+                                      <DashboardPage />
+                                  </ProtectedRoute>
+                              }
+                          />
 
                             <Route
                               path={AppRoutes.myProfile}

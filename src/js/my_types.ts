@@ -1,6 +1,7 @@
 // ROUTES
 
 export const AppRoutes = {
+  dashboard: "/dashboard",
   login: "/login",
   signup: "/signup",
   home: "/",

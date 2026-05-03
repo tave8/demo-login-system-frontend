@@ -10,5 +10,7 @@ import { AppRoutes } from "../js/my_types"
  */
 export function PublicOnlyRoute({ children }: { children: React.ReactNode }) {
   const { authenticated } = useAuth()
-  return authenticated ? <Navigate to={AppRoutes.myProfile} /> : children
+  // if the user is not logged in, they can access the component
+  // otherwise they are redirected to dashboard page
+  return !authenticated ? children : <Navigate to={AppRoutes.dashboard} />
 }

@@ -112,7 +112,9 @@ const handleLogin = (formValues: LoginToAPI) => {
         // console.log("logged in successfully")
         const { accessToken } = loginInfo
         login(accessToken)
-        navigate(AppRoutes.myProfile)
+        // after successful login, where route the user
+        // is redirected to
+        navigate(AppRoutes.dashboard)
         // console.log(loginInfo)
       })
       .catch((err) => {

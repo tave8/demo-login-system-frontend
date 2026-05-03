@@ -29,6 +29,12 @@ const MyNav = () => {
 
             <Nav className="me-auto">
               {authenticated && (
+                  <Link to={AppRoutes.dashboard} className="nav-item nav-link">
+                    Dashboard
+                  </Link>
+              )}
+
+              {authenticated && (
                   <Link to={AppRoutes.myArticles} className="nav-item nav-link">
                     My articles
                   </Link>

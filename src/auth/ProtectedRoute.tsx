@@ -8,5 +8,7 @@ import { AppRoutes } from "../js/my_types"
  */
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { authenticated } = useAuth()
+  // if the user is authenticated, they can access that component
+  // otherwise they redirected to login page
   return authenticated ? children : <Navigate to={AppRoutes.login} />
 }

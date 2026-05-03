@@ -18,6 +18,8 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     if (authenticated && !isLoggedIn()) {
       alert("You've been logged out")
       logout()
+      // if the user is not logged in,
+      // they are redirected to login
       navigate(AppRoutes.login)
     }
   }, [location])
