@@ -17,88 +17,74 @@ const MyNav = () => {
 
   const { login, logout, authenticated } = useAuth()
 
-  return ( 
-    <Navbar expand="lg" className="bg-body-tertiary">
-      <Container fluid>
-        <Link to={AppRoutes.home} className="nav-item navbar-brand">
-          Demo Login System
-        </Link>
-        {/* <Navbar.Brand href="#home">Weather app</Navbar.Brand>
-         */}
+  return (
+      <Navbar expand="lg" className="bg-body-tertiary">
+        <Container fluid>
+          <Link to={AppRoutes.home} className="nav-item navbar-brand">
+            Demo Login System
+          </Link>
 
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
-            {/* <Link to={AppRoutes.home} className="nav-item nav-link">
-              Home
-            </Link> */}
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
 
-            {/* MY ARTICLES - SEE */}
+            <Nav className="me-auto">
+              {authenticated && (
+                  <Link to={AppRoutes.myArticles} className="nav-item nav-link">
+                    My articles
+                  </Link>
+              )}
+
+              {authenticated && (
+                  <Link to={AppRoutes.addMyArticle} className="nav-item nav-link">
+                    Add article
+                  </Link>
+              )}
+
+              {authenticated && (
+                  <Link to={AppRoutes.uploadCV} className="nav-item nav-link">
+                    Upload CV
+                  </Link>
+              )}
+
+              {!authenticated && (
+                  <Link to={AppRoutes.login} className="nav-item nav-link">
+                    Login
+                  </Link>
+              )}
+
+              {!authenticated && (
+                  <Link to={AppRoutes.signup} className="nav-item nav-link">
+                    Sign up
+                  </Link>
+              )}
+            </Nav>
+
+            {/* settings */}
             {authenticated && (
-              <Link to={AppRoutes.myArticles} className="nav-item nav-link">
-                My articles
-              </Link>
+                <Nav>
+                  <NavDropdown title="Settings" id="basic-nav-dropdown" align="end">
+                    {/* my profile */}
+                    <NavDropdown.Item onClick={() => navigate(AppRoutes.myProfile)}>
+                      My profile
+                    </NavDropdown.Item>
+
+                    {/* divider */}
+                    <NavDropdown.Divider />
+
+                    {/* logout */}
+                    <NavDropdown.Item
+                        onClick={() => {
+                          handleLogout()({ login, logout, authenticated, navigate });
+                        }}>
+                      Logout
+                    </NavDropdown.Item>
+                  </NavDropdown>
+                </Nav>
             )}
 
-            {/* MY ARTICLES - ADD */}
-            {authenticated && (
-              <Link to={AppRoutes.addMyArticle} className="nav-item nav-link">
-                Add article
-              </Link>
-            )}
-
-            {/* CV - UPLOAD */}
-            {authenticated && (
-                <Link to={AppRoutes.uploadCV} className="nav-item nav-link">
-                  Upload CV
-                </Link>
-            )}
-
-            {/* LOGIN */}
-            {!authenticated && (
-              <Link to={AppRoutes.login} className="nav-item nav-link">
-                Login
-              </Link>
-            )}
-
-            {/* SIGN UP */}
-            {!authenticated && (
-              <Link to={AppRoutes.signup} className="nav-item nav-link">
-                Sign up
-              </Link>
-            )}
-
-            {/* <Nav.Link href="#home">Home</Nav.Link> */}
-
-            {/* <Nav.Link href="#link">Link</Nav.Link> */}
-
-            {authenticated && (
-              <NavDropdown title="Settings" id="basic-nav-dropdown">
-                <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
-
-                {/* my profile */}
-                <NavDropdown.Item as={Link} to={AppRoutes.myProfile}>
-                  My profile
-                </NavDropdown.Item>
-
-                {/* divider */}
-                <NavDropdown.Divider />
-
-                {/* logout */}
-                <NavDropdown.Item
-                    onClick={() => {
-                      handleLogout()({ login, logout, authenticated, navigate })
-                    }}>
-                    Logout
-                </NavDropdown.Item>
-              </NavDropdown>
-            )}
-
-
-          </Nav>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
   )
 }
 
