@@ -24,6 +24,17 @@ export enum AppEvent {
   APP_ERROR = "APP_ERROR"
 }
 
+export enum AppEventMessage {
+  LOGIN_SUCCESS = "Welcome back.",
+  WRONG_CREDENTIALS = "Wrong credentials.",
+  MUST_VERIFY_EMAIL = "You need to verify your email first. We've just sent you a unique verification link in your inbox.",
+  NETWORK_ERROR = "There was a network error. Please check your connection.",
+  EXPECTED_JSON_PAYLOAD = "Internal error (expected JSON payload)",
+  SIGNUP_SUCCESS = "Successful signup. Check your inbox: We've just sent you an email to verify that it's you.",
+  SIGNUP_CANNOT_USE_EMAIL =  "You cannot use this email.",
+  INVALID_FIELDS = "Some fields are invalid. Details: "
+}
+
 // PAGINATION
 
 interface PaginationSort {

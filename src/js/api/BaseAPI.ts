@@ -3,7 +3,7 @@ import NetworkError from "../exceptions/NetworkError.ts";
 import ExpectedJSONPayloadError from "../exceptions/ExpectedJSONPayloadError.ts";
 import ShouldLogoutError from "../exceptions/ShouldLogoutError.ts";
 import AppEventDispatcher from "../AppEventDispatcher.ts";
-import {AppEvent} from "../my_types.ts";
+import {AppEvent, AppEventMessage} from "../my_types.ts";
 
 export default abstract class BaseAPI {
 
@@ -41,7 +41,7 @@ export default abstract class BaseAPI {
 
                 this.appEventDispatcher.dispatch(
                     AppEvent.APP_ERROR,
-                    "There was a network error. Please check your connection."
+                    AppEventMessage.NETWORK_ERROR
                 )
 
             }
@@ -68,7 +68,7 @@ export default abstract class BaseAPI {
 
                 this.appEventDispatcher.dispatch(
                     AppEvent.APP_ERROR,
-                    "Internal error (expected JSON payload)"
+                    AppEventMessage.EXPECTED_JSON_PAYLOAD
                 )
 
             } else if (err instanceof ShouldLogoutError) {

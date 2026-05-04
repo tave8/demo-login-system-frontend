@@ -4,11 +4,15 @@ import { Container, Row, Col, Form, Button } from "react-bootstrap"
 // import { Link } from "react-router-dom"
 import { useState } from "react"
 import AuthAPI from "../../js/api/AuthAPI"
-import { AppRoutes, SignupToAPI } from "../../js/my_types"
+import {AppEvent, AppEventMessage, AppRoutes, SignupToAPI} from "../../js/my_types"
 import {Link, NavigateFunction, useNavigate} from "react-router-dom"
 import UnauthorizedError from "../../js/exceptions/UnauthorizedError"
 import BadRequestError from "../../js/exceptions/BadRequestError.ts";
 import HttpError from "../../js/exceptions/HttpError.ts";
+import AppEventDispatcher from "../../js/AppEventDispatcher.ts";
+
+const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
+
 
 interface handleSignupParams {
   navigate: NavigateFunction
@@ -175,10 +179,11 @@ const handleSignup = (formValues: SignupToAPI) => {
         setIsLoading(false)
         setIsError(false)
 
-        window.dispatchEvent(new CustomEvent("app-success", {
-          detail: "Successful signup. Check your inbox: We've just "
-              +"sent you an email to verify that it's you."
-        }))
+
+        appEventDispatcher.dispatch(
+            AppEvent.APP_SUCCESS,
+            AppEventMessage.SIGNUP_SUCCESS
+        )
 
         navigate(AppRoutes.login)
       })
@@ -188,13 +193,19 @@ const handleSignup = (formValues: SignupToAPI) => {
 
             if (err instanceof UnauthorizedError) {
 
-              window.dispatchEvent(new CustomEvent("app-error", {
-                detail: "You cannot use this email."
-              }))
+              appEventDispatcher.dispatch(
+                  AppEvent.APP_ERROR,
+                  AppEventMessage.SIGNUP_CANNOT_USE_EMAIL
+              )
 
             } else if (err instanceof BadRequestError) {
               const badRequest = err as BadRequestError;
-              alert("Some fields are invalid. Details: " + badRequest.getErrorsAsStr())
+
+              appEventDispatcher.dispatch(
+                  AppEvent.APP_ERROR,
+                  AppEventMessage.INVALID_FIELDS + badRequest.getErrorsAsStr()
+              )
+
             }
 
         })

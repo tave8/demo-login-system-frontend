@@ -1,6 +1,6 @@
 import {useState} from "react"
 import {Button, Col, Container, Form, Row} from "react-bootstrap"
-import {AppEvent, AppRoutes, type LoginToAPI} from "../../js/my_types"
+import {AppEvent, AppEventMessage, AppRoutes, type LoginToAPI} from "../../js/my_types"
 import AuthAPI from "../../js/api/AuthAPI"
 import {useAuth} from "../../auth/AuthContext"
 import {Link, NavigateFunction, useNavigate} from "react-router-dom"
@@ -143,7 +143,7 @@ const handleLogin = (formValues: LoginToAPI) => {
 
         appEventDispatcher.dispatch(
             AppEvent.APP_SUCCESS,
-            "Welcome back."
+            AppEventMessage.LOGIN_SUCCESS
         )
 
       })
@@ -154,16 +154,17 @@ const handleLogin = (formValues: LoginToAPI) => {
 
         if (err instanceof UnauthorizedError) {
 
-          window.dispatchEvent(new CustomEvent("app-error", {
-            detail: "Wrong credentials."
-          }))
+          appEventDispatcher.dispatch(
+              AppEvent.APP_ERROR,
+              AppEventMessage.WRONG_CREDENTIALS
+          )
 
         } else if (err instanceof ForbiddenError) {
 
-          window.dispatchEvent(new CustomEvent("app-error", {
-            detail: "You need to verify your email first. "
-                   +"We've just sent you a unique verification link in your inbox."
-          }))
+          appEventDispatcher.dispatch(
+              AppEvent.APP_ERROR,
+              AppEventMessage.MUST_VERIFY_EMAIL
+          )
 
         }
       })
