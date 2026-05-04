@@ -28,11 +28,13 @@ export enum AppEventMessage {
   LOGIN_SUCCESS = "Welcome back.",
   WRONG_CREDENTIALS = "Wrong credentials.",
   MUST_VERIFY_EMAIL = "You need to verify your email first. We've just sent you a unique verification link in your inbox.",
-  NETWORK_ERROR = "There was a network error. Please check your connection.",
+  NETWORK_ERROR = "There was a network error. Either you are offline, or the server is offline.",
   EXPECTED_JSON_PAYLOAD = "Internal error (expected JSON payload)",
   SIGNUP_SUCCESS = "Successful signup. Check your inbox: We've just sent you an email to verify that it's you.",
   SIGNUP_CANNOT_USE_EMAIL =  "You cannot use this email.",
-  INVALID_FIELDS = "Some fields are invalid. Details: "
+  INVALID_FIELDS = "Some fields are invalid. Details: ",
+  SAVED_SUCCESS = "Saved.",
+  SERVER_ERROR = "Your request has successfully reached the server, but there was a problem in the server."
 }
 
 // PAGINATION

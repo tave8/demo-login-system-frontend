@@ -4,29 +4,28 @@ import ExpectedJSONPayloadError from "../exceptions/ExpectedJSONPayloadError.ts"
 import ShouldLogoutError from "../exceptions/ShouldLogoutError.ts";
 import AppEventDispatcher from "../AppEventDispatcher.ts";
 import {AppEvent, AppEventMessage} from "../my_types.ts";
+import ServerError from "../exceptions/ServerError.ts";
 
+
+/**
+ * Use the methods in this parent class when you want automatic, app-specific
+ * error management, without having to handle
+ * all error cases manually.
+ *
+ * For example, if a network or server error occurs,
+ * you want to show a toast message, without having
+ * to repeat this logic in every API call.
+ *
+ * We're guaranteed that the error always gets re-thrown,
+ * so we can do something more specific about it.
+ * However, this layer allows us to handle common
+ * error scenarios by default.
+ *
+ */
 export default abstract class BaseAPI {
 
     // dependency
     private readonly appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
-
-    /**
-     * Use this when you want automatic, app-specific
-     * error management, without having to handle
-     * all error cases manually.
-     * For example, if a network error occurs,
-     * you want to show a toast message, without having
-     * to repeat this logic in every API call.
-     *
-     * Do an API call at the specific endpoint,
-     * with built-in error handling.
-     * The error gets re-thrown.
-     *
-     * Because this is a
-     *
-     * @param relativeURLPath
-     * @param config
-     */
     public async doFetchAt(relativeURLPath: string,
                            config: RequestInit): Promise<Response>
     {
@@ -72,6 +71,13 @@ export default abstract class BaseAPI {
                 )
 
             } else if (err instanceof ShouldLogoutError) {
+
+            } else if (err instanceof ServerError) {
+
+                this.appEventDispatcher.dispatch(
+                    AppEvent.APP_ERROR,
+                    AppEventMessage.SERVER_ERROR
+                )
 
             }
 

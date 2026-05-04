@@ -1,12 +1,15 @@
 import { useState } from "react"
 import { Container, Row, Col, Form, Button, Spinner, Alert, Image } from "react-bootstrap"
-import { UpdatedUserToAPI, UserFromAPI } from "../../js/my_types"
+import {AppEvent, AppEventMessage, UpdatedUserToAPI, UserFromAPI} from "../../js/my_types"
 import UsersAPI from "../../js/api/UsersAPI"
 import UnauthorizedError from "../../js/exceptions/UnauthorizedError"
 import { useAuth } from "../../auth/AuthContext"
 import FileHelper from "../../js/helpers/FileHelper"
 import InvalidFileUploadedError from "../../js/exceptions/InvalidFileUploadedError"
-import ServerError from "../../js/exceptions/ServerError"
+import AppEventDispatcher from "../../js/AppEventDispatcher.ts";
+
+
+const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
 
 type MaybeFile = File | null
 
@@ -56,9 +59,6 @@ const EditMyProfilePage = () => {
         setIsError(true)
         if (err instanceof UnauthorizedError) {
           logout()
-        } else {
-          console.info("Error during getting user info")
-          console.error(err)
         }
       })
   }, [])
@@ -176,15 +176,16 @@ const handleEditProfile = (updatedUser: UpdatedUserToAPI) => {
     usersAPI
       .updateMyInfo(updatedUser)
       .then((userData) => {
-        // console.log(userData)
-        alert("successfully update my info")
+
+        appEventDispatcher.dispatch(
+            AppEvent.APP_SUCCESS,
+            AppEventMessage.SAVED_SUCCESS
+        )
+
       })
       .catch((err) => {
         if (err instanceof UnauthorizedError) {
           logout()
-        } else {
-          console.info("Error during login")
-          console.error(err)
         }
       })
   }
@@ -224,11 +225,6 @@ const handleUploadAvatarImage = (image: File) => {
         setIsError(true)
         if (err instanceof UnauthorizedError) {
           logout()
-        } else if (err instanceof ServerError) {
-          alert("There was a problem with the server.")
-        } else {
-          console.info("Error during avatar image upload")
-          console.error(err)
         }
       })
   }

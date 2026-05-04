@@ -79,9 +79,9 @@ export default class ArticlesAPI extends BaseAPI {
   public async getMyArticleById(articleId: string): Promise<ArticleFromAPI> {
     const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
 
-    const resp: Response = await APIHelper.doFetchAt(`/articles/${articleId}`, config)
+    const resp: Response = await this.doFetchAt(`/articles/${articleId}`, config)
 
-    const data = await APIHelper.parseJSON<ArticleFromAPI>(resp)
+    const data = await this.parseJSON<ArticleFromAPI>(resp)
 
     return data
   }
@@ -102,9 +102,9 @@ export default class ArticlesAPI extends BaseAPI {
   public async updateMyArticleById(articleId: string, updatedArticle: UpdatedArticleToAPI): Promise<ArticleFromAPI> {
     const config = APIHelper.getFetchConfigFor(RequestMethod.PUT, RequireLogin.YES, updatedArticle)
 
-    const resp: Response = await APIHelper.doFetchAt(`/articles/${articleId}`, config)
+    const resp: Response = await this.doFetchAt(`/articles/${articleId}`, config)
 
-    const data = await APIHelper.parseJSON<ArticleFromAPI>(resp)
+    const data = await this.parseJSON<ArticleFromAPI>(resp)
 
     return data
   }
@@ -125,7 +125,7 @@ export default class ArticlesAPI extends BaseAPI {
   public async deleteMyArticleById(articleId: string): Promise<void> {
     const config = APIHelper.getFetchConfigFor(RequestMethod.DELETE, RequireLogin.YES)
 
-    const resp: Response = await APIHelper.doFetchAt(`/articles/${articleId}`, config)
+    const resp: Response = await this.doFetchAt(`/articles/${articleId}`, config)
 
     await APIHelper.parseJSON<void>(resp)
 

@@ -33,9 +33,9 @@ export default class UsersAPI extends BaseAPI {
   public async updateMyInfo(updatedUser: UpdatedUserToAPI): Promise<UserFromAPI> {
     const config = APIHelper.getFetchConfigFor(RequestMethod.PUT, RequireLogin.YES, updatedUser)
 
-    const resp: Response = await APIHelper.doFetchAt("/users/me", config)
+    const resp: Response = await this.doFetchAt("/users/me", config)
 
-    const data = await APIHelper.parseJSON<UserFromAPI>(resp)
+    const data = await this.parseJSON<UserFromAPI>(resp)
 
     return data
   }
@@ -52,9 +52,9 @@ export default class UsersAPI extends BaseAPI {
 
     const config = APIHelper.getFetchConfigForFile(RequestMethod.POST, avatarImage, "avatar_image", RequireLogin.YES)
 
-    const resp: Response = await APIHelper.doFetchAt("/users/me/avatar-image", config)
+    const resp: Response = await this.doFetchAt("/users/me/avatar-image", config)
 
-    const data = await APIHelper.parseJSON<UserFromAPI>(resp)
+    const data = await this.parseJSON<UserFromAPI>(resp)
 
     return data
   }

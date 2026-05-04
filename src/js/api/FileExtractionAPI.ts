@@ -21,9 +21,9 @@ export default class FileExtractionAPI extends BaseAPI {
 
         const config = APIHelper.getFetchConfigForFile(RequestMethod.POST, cv, "file", RequireLogin.YES)
 
-        const resp: Response = await APIHelper.doFetchAt("/ai/extract/cv", config)
+        const resp: Response = await this.doFetchAt("/ai/extract/cv", config)
 
-        const data = await APIHelper.parseJSON<unknown>(resp)
+        const data = await this.parseJSON<unknown>(resp)
 
         return data
     }

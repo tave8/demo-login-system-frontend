@@ -25,9 +25,9 @@ export default class AuthAPI extends BaseAPI {
   public async login(loginData: LoginToAPI): Promise<LoginFromAPI> {
     const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.NO, loginData)
 
-    const resp: Response = await APIHelper.doFetchAt(`/auth/login`, config)
+    const resp: Response = await this.doFetchAt(`/auth/login`, config)
 
-    const data = await APIHelper.parseJSON<LoginFromAPI>(resp)
+    const data = await this.parseJSON<LoginFromAPI>(resp)
 
     return data
   }
@@ -38,9 +38,9 @@ export default class AuthAPI extends BaseAPI {
   public async signup(signupData: SignupToAPI): Promise<SignupFromAPI> {
     const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.NO, signupData)
 
-    const resp: Response = await APIHelper.doFetchAt(`/auth/register`, config)
+    const resp: Response = await this.doFetchAt(`/auth/register`, config)
 
-    const data = await APIHelper.parseJSON<SignupFromAPI>(resp)
+    const data = await this.parseJSON<SignupFromAPI>(resp)
 
     return data
   }
@@ -51,9 +51,9 @@ export default class AuthAPI extends BaseAPI {
   public async sendForgotPasswordRequest(emailData: ForgotPasswordRequestToAPI): Promise<ForgotPasswordRequestFromAPI> {
     const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.NO, emailData)
 
-    const resp: Response = await APIHelper.doFetchAt(`/auth/forgot-password/request`, config)
+    const resp: Response = await this.doFetchAt(`/auth/forgot-password/request`, config)
 
-    const data = await APIHelper.parseJSON<ForgotPasswordRequestFromAPI>(resp)
+    const data = await this.parseJSON<ForgotPasswordRequestFromAPI>(resp)
 
     return data
   }
@@ -64,9 +64,9 @@ export default class AuthAPI extends BaseAPI {
   public async verifyForgotPasswordCode(authCode: ForgotPasswordVerifyCodeToAPI): Promise<ForgotPasswordVerifyCodeFromAPI> {
     const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.NO, authCode)
 
-    const resp: Response = await APIHelper.doFetchAt(`/auth/forgot-password/verify`, config)
+    const resp: Response = await this.doFetchAt(`/auth/forgot-password/verify`, config)
 
-    const data = await APIHelper.parseJSON<ForgotPasswordVerifyCodeFromAPI>(resp)
+    const data = await this.parseJSON<ForgotPasswordVerifyCodeFromAPI>(resp)
 
     return data
   }
@@ -79,9 +79,9 @@ export default class AuthAPI extends BaseAPI {
   public async setNewPasswordIfAuthorized(newPassword: ForgotPasswordNewPasswordToAPI): Promise<ForgotPasswordNewPasswordFromAPI> {
     const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.NO, newPassword)
 
-    const resp: Response = await APIHelper.doFetchAt(`/auth/forgot-password/reset`, config)
+    const resp: Response = await this.doFetchAt(`/auth/forgot-password/reset`, config)
 
-    const data = await APIHelper.parseJSON<ForgotPasswordNewPasswordFromAPI>(resp)
+    const data = await this.parseJSON<ForgotPasswordNewPasswordFromAPI>(resp)
 
     return data
   }
