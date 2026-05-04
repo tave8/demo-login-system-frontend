@@ -26,6 +26,7 @@ export enum AppEvent {
 
 export enum AppEventMessage {
   LOGIN_SUCCESS = "Welcome back.",
+  LOGOUT_SUCCESS = "You've been logged out.",
   WRONG_CREDENTIALS = "Wrong credentials.",
   MUST_VERIFY_EMAIL = "You need to verify your email first. We've just sent you a unique verification link in your inbox.",
   NETWORK_ERROR = "There was a network error. Either you are offline, or the server is offline.",

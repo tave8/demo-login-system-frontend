@@ -3,7 +3,11 @@ import { Container, Row, Col, Nav, Navbar, NavDropdown, Image, Dropdown } from "
 import { Search, BellFill } from "react-bootstrap-icons"
 import { Link, useNavigate, NavigateFunction } from "react-router-dom"
 import { useAuth } from "../auth/AuthContext"
-import { AppRoutes } from "../js/my_types"
+import {AppEvent, AppEventMessage, AppRoutes} from "../js/my_types"
+import AppEventDispatcher from "../js/AppEventDispatcher.ts";
+
+const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
+
 
 interface handleLogoutParams {
   login: (token: string) => void
@@ -102,11 +106,12 @@ const handleLogout = () => {
 
     logout()
     navigate(AppRoutes.login)
-    window.dispatchEvent(
-        new CustomEvent("app-success", {
-          detail: "You've been logged out."
-        })
+
+    appEventDispatcher.dispatch(
+        AppEvent.APP_SUCCESS,
+        AppEventMessage.LOGOUT_SUCCESS
     )
+
   }
 }
 
