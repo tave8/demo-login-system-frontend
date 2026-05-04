@@ -2,8 +2,13 @@ import APIHelper from "./APIHelper.ts";
 import NetworkError from "../exceptions/NetworkError.ts";
 import ExpectedJSONPayloadError from "../exceptions/ExpectedJSONPayloadError.ts";
 import ShouldLogoutError from "../exceptions/ShouldLogoutError.ts";
+import AppEventDispatcher from "../AppEventDispatcher.ts";
+import {AppEvent} from "../my_types.ts";
 
 export default abstract class BaseAPI {
+
+    // dependency
+    private readonly appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
 
     /**
      * Use this when you want automatic, app-specific
@@ -33,9 +38,15 @@ export default abstract class BaseAPI {
             // an error is thrown
             if(err instanceof NetworkError) {
                 // console.log("NETWORK ERROR!")
-                const errMsg = "There was a network error. Please check your connection."
-                window.dispatchEvent(new CustomEvent("app-error", { detail: errMsg }));
+
+                this.appEventDispatcher.dispatch(
+                    AppEvent.APP_ERROR,
+                    "There was a network error. Please check your connection."
+                )
+
             }
+
+            // handle other errors here...
 
         })
 
@@ -54,13 +65,17 @@ export default abstract class BaseAPI {
             console.error(err)
 
             if(err instanceof ExpectedJSONPayloadError) {
-                window.dispatchEvent(new CustomEvent("app-error", {
-                    detail: "Internal error (expected JSON payload)"
-                }));
+
+                this.appEventDispatcher.dispatch(
+                    AppEvent.APP_ERROR,
+                    "Internal error (expected JSON payload)"
+                )
 
             } else if (err instanceof ShouldLogoutError) {
 
             }
+
+            // handle other errors here...
 
         })
 

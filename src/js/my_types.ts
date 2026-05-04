@@ -17,6 +17,13 @@ export const AppRoutes = {
   uploadCV: `/cv/upload`
 } as const
 
+// custom events of the app
+// by "events" we mean actual JS events
+export enum AppEvent {
+  APP_SUCCESS = "APP_SUCCESS",
+  APP_ERROR = "APP_ERROR"
+}
+
 // PAGINATION
 
 interface PaginationSort {

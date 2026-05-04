@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { Toast, ToastContainer } from "react-bootstrap";
+import {AppEvent} from "../js/my_types.ts";
 
 type ToastType = "app-error" | "app-success";
 
 interface ToastMessage {
     id: number;
     text: string;
-    type: ToastType;
+    toastType: ToastType;
 }
 
 const config: Record<ToastType, { label: string; color: string }> = {
@@ -18,20 +19,25 @@ export default function AppToast() {
     const [messages, setMessages] = useState<ToastMessage[]>([]);
 
     useEffect(() => {
-        const handler = (type: ToastType) => (e: Event) => {
+        const handler = (toastType: ToastType) => (e: Event) => {
             const detail = (e as CustomEvent).detail ?? "";
-            setMessages((prev) => [{ id: Date.now(), text: detail, type }, ...prev]);
+            setMessages((prev) => [{ id: Date.now(), text: detail, toastType }, ...prev]);
         };
 
+        // bind toast types to app event handlers
         const errorHandler = handler("app-error");
         const successHandler = handler("app-success");
+        // add more toast types & handlers here...
 
-        window.addEventListener("app-error", errorHandler);
-        window.addEventListener("app-success", successHandler);
+        // bind app events to toast type handlers
+        window.addEventListener(AppEvent.APP_ERROR, errorHandler);
+        window.addEventListener(AppEvent.APP_SUCCESS, successHandler);
+        // add more app events & handlers here...
+
 
         return () => {
-            window.removeEventListener("app-error", errorHandler);
-            window.removeEventListener("app-success", successHandler);
+            window.removeEventListener(AppEvent.APP_ERROR, errorHandler);
+            window.removeEventListener(AppEvent.APP_SUCCESS, successHandler);
         };
     }, []);
 
@@ -46,11 +52,11 @@ export default function AppToast() {
                     onClose={() => dismiss(m.id)}
                     delay={10000}
                     autohide
-                    style={{ borderLeft: `3px solid ${config[m.type].color}` }}
+                    style={{ borderLeft: `3px solid ${config[m.toastType].color}` }}
                 >
                     <Toast.Header>
-                        <strong className="me-auto" style={{ fontSize: "13px", color: config[m.type].color }}>
-                            {config[m.type].label}
+                        <strong className="me-auto" style={{ fontSize: "13px", color: config[m.toastType].color }}>
+                            {config[m.toastType].label}
                         </strong>
                     </Toast.Header>
                     <Toast.Body className="text-muted" style={{ fontSize: "13px", padding: "6px 12px" }}>

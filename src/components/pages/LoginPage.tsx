@@ -1,11 +1,14 @@
-import { useState } from "react"
-import { Container, Row, Col, Form, Button } from "react-bootstrap"
-import { AppRoutes, type LoginToAPI } from "../../js/my_types"
+import {useState} from "react"
+import {Button, Col, Container, Form, Row} from "react-bootstrap"
+import {AppEvent, AppRoutes, type LoginToAPI} from "../../js/my_types"
 import AuthAPI from "../../js/api/AuthAPI"
-import { useAuth } from "../../auth/AuthContext"
-import {useNavigate, NavigateFunction, Link} from "react-router-dom"
+import {useAuth} from "../../auth/AuthContext"
+import {Link, NavigateFunction, useNavigate} from "react-router-dom"
 import UnauthorizedError from "../../js/exceptions/UnauthorizedError"
 import ForbiddenError from "../../js/exceptions/ForbiddenError.ts";
+import AppEventDispatcher from "../../js/AppEventDispatcher.ts";
+
+const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
 
 interface handleLoginParams {
   setIsLoading: (x:boolean) => void
@@ -29,6 +32,7 @@ const LoginPage = () => {
   const { login, logout, authenticated } = useAuth()
 
   const navigate = useNavigate()
+
 
   return (
     <>
@@ -136,11 +140,12 @@ const handleLogin = (formValues: LoginToAPI) => {
         // after successful login, where route the user
         // is redirected to
         navigate(AppRoutes.dashboard)
-        window.dispatchEvent(
-            new CustomEvent("app-success", {
-              detail: "Welcome back."
-            })
+
+        appEventDispatcher.dispatch(
+            AppEvent.APP_SUCCESS,
+            "Welcome back."
         )
+
       })
       .catch((err) => {
 

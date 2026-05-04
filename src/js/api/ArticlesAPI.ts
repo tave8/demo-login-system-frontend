@@ -65,9 +65,9 @@ export default class ArticlesAPI extends BaseAPI {
   public async getMyArticles(): Promise<ArticlesPageFromAPI> {
     const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
 
-    const resp: Response = await APIHelper.doFetchAt("/articles", config)
+    const resp: Response = await this.doFetchAt("/articles", config)
 
-    const data = await APIHelper.parseJSON<ArticlesPageFromAPI>(resp)
+    const data = await this.parseJSON<ArticlesPageFromAPI>(resp)
 
     return data
   }
