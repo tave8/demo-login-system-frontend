@@ -2,7 +2,7 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import "./App.css"
 
 // import { useState, useEffect } from "react"
-import {BrowserRouter, Routes, Route, Link} from "react-router-dom"
+import {BrowserRouter, Routes, Route, Link, Navigate} from "react-router-dom"
 import { ProtectedRoute } from "./auth/ProtectedRoute.tsx"
 import { PublicOnlyRoute } from "./auth/PublicOnlyRoute.tsx"
 import { AuthGuard } from "./auth/AuthGuard.tsx"
@@ -77,6 +77,9 @@ function App() {
 
                           {/* here go user_pages */}
                           <Routes>
+
+                              {/* redirect / -> dashboard */}
+                              <Route path="/" element={<Navigate to={AppRoutes.dashboard} replace />} />
 
                               <Route
                                   path={AppRoutes.dashboard}
