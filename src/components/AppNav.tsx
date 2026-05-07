@@ -5,6 +5,7 @@ import { Link, useNavigate, NavigateFunction } from "react-router-dom"
 import { useAuth } from "../auth/AuthContext"
 import {AppEvent, AppEventMessage, AppRoutes} from "../js/my_types"
 import AppEventDispatcher from "../js/AppEventDispatcher.ts";
+import NotificationBell from "./NotificationBell.tsx";
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
 
@@ -73,7 +74,12 @@ const MyNav = () => {
 
             {/* settings */}
             {authenticated && (
-                <Nav>
+                <Nav className="align-items-center">
+                  {/* notifications */}
+                  <Nav.Item>
+                    <NotificationBell  />
+                  </Nav.Item>
+
                   <NavDropdown title="Settings" id="basic-nav-dropdown" align="end">
                     {/* my profile */}
                     <NavDropdown.Item onClick={() => navigate(AppRoutes.myProfile)}>
@@ -91,6 +97,7 @@ const MyNav = () => {
                       Logout
                     </NavDropdown.Item>
                   </NavDropdown>
+
                 </Nav>
             )}
 

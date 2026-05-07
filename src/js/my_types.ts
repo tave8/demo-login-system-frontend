@@ -69,7 +69,29 @@ interface Pagination<T> {
   totalPages: number
 }
 
-// LOGIN & SIGNUP
+// NOTIFICATION
+
+export interface NotificationFromAPI {
+  notificationId: string
+  type: string
+  title: string
+  body: string
+  createdAt: string
+  readAt: string | null
+  expiresAt: string | null
+}
+
+export interface EnrichedNotificationFromAPI extends NotificationFromAPI {
+  createdAtAgo: string
+}
+
+export interface NotificationsPageFromAPI extends Pagination<NotificationFromAPI> {}
+
+export interface EnrichedNotificationsPageFromAPI extends Pagination<EnrichedNotificationFromAPI> {}
+
+
+
+// LOGIN
 
 export interface LoginToAPI {
   email: string
@@ -79,6 +101,8 @@ export interface LoginToAPI {
 export interface LoginFromAPI {
   accessToken: string
 }
+
+// SIGNUP
 
 export interface SignupToAPI {
   firstname: string
@@ -90,6 +114,8 @@ export interface SignupToAPI {
 export interface SignupFromAPI {
   userId: string
 }
+
+// FORGOT PASSWORD
 
 export interface ForgotPasswordRequestToAPI {
   email: string
