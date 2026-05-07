@@ -1,20 +1,27 @@
 // ROUTES
 
 export const AppRoutes = {
-  dashboard: "/dashboard",
+  // public routes - company
+  home: "/",
+
+  // public routes - authentication
+
   login: "/login",
   signup: "/signup",
-  home: "/",
-  myProfile: "/me",
-  editMyProfile: "/me/edit",
-  myArticles: "/my-articles",
-  addMyArticle: "/my-articles/add",
-  editMyArticle: "/my-articles/:articleId/edit",
-  editMyArticleWith: (articleId: string) => `/my-articles/${articleId}/edit`,
   forgotPasswordProvideEmail: "/forgot-password",
   forgotPasswordSetNewPassword: "/forgot-password/verify/:code",
   forgotPasswordSetNewPasswordWith: (code: string) => `/forgot-password/verify/${code}`,
-  uploadCV: `/cv/upload`
+
+  // protected routes
+  dashboard: "/u/dashboard",
+  myProfile: "/u/me",
+  editMyProfile: "/u/me/edit",
+  myArticles: "/u/my-articles",
+  addMyArticle: "/u/my-articles/add",
+  editMyArticle: "/u/my-articles/:articleId/edit",
+  editMyArticleWith: (articleId: string) => `/u/my-articles/${articleId}/edit`,
+  uploadCV: `/u/cv/upload`
+
 } as const
 
 // custom events of the app
