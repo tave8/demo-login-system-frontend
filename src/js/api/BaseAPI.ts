@@ -5,6 +5,7 @@ import ShouldLogoutError from "../exceptions/ShouldLogoutError.ts";
 import AppEventDispatcher from "../AppEventDispatcher.ts";
 import {AppEvent, AppEventMessage} from "../my_types.ts";
 import ServerError from "../exceptions/ServerError.ts";
+import BadRequestError from "../exceptions/BadRequestError.ts";
 
 
 /**
@@ -68,6 +69,13 @@ export default abstract class BaseAPI {
                 this.appEventDispatcher.dispatch(
                     AppEvent.APP_ERROR,
                     AppEventMessage.EXPECTED_JSON_PAYLOAD
+                )
+
+            } else if (err instanceof BadRequestError) {
+
+                this.appEventDispatcher.dispatch(
+                    AppEvent.APP_ERROR,
+                    AppEventMessage.BAD_REQUEST
                 )
 
             } else if (err instanceof ShouldLogoutError) {

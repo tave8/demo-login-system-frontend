@@ -585,16 +585,16 @@ export default class APIHelper {
   }
 
   /**
-   * Does the given request method (GET, POST etc)
+   * Does the given request method
    * requires a JSON body?
    *
-   * Methods allowed to have a JSON body: POST, PUT, PATCH
+   * Methods required to have a JSON body: POST, PUT
    */
   public static requestMethodRequiresJSONBody(method: RequestMethod): boolean {
     if (method == null || method == undefined) {
       throw new Error(`A fetch method cannot be nully. ` + `Make sure the caller is passing an actual RequestMethod enum type.`)
     }
-    return method == RequestMethod.POST || method == RequestMethod.PUT || method == RequestMethod.PATCH
+    return method == RequestMethod.POST || method == RequestMethod.PUT
   }
 
   /**

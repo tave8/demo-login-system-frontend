@@ -35,7 +35,9 @@ export enum AppEventMessage {
   SIGNUP_CANNOT_USE_EMAIL =  "You cannot use this email.",
   INVALID_FIELDS = "Some fields are invalid. Details: ",
   SAVED_SUCCESS = "Saved.",
-  SERVER_ERROR = "Your request has successfully reached the server, but there was a problem in the server."
+  SERVER_ERROR = "Your request has successfully reached the server, but there was a problem in the server.",
+  BAD_REQUEST = "Your request could not be processed because it's malformed "
+                +"or this specific action cannot be performed."
 }
 
 // PAGINATION

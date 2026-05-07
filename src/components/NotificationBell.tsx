@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import {NotificationFromAPI} from "../js/my_types.ts";
+import {EnrichedNotificationFromAPI, NotificationFromAPI} from "../js/my_types.ts";
 import NotificationsAPI from "../js/api/NotificationsAPI.ts";
 
 
@@ -8,7 +8,7 @@ import NotificationsAPI from "../js/api/NotificationsAPI.ts";
 export default function NotificationBell() {
 
     const [open, setOpen] = useState(false);
-    const [notifications, setNotifications] = useState<NotificationFromAPI[]>([]);
+    const [notifications, setNotifications] = useState<EnrichedNotificationFromAPI[]>([]);
     const ref = useRef<HTMLDivElement>(null);
 
     /**
@@ -20,8 +20,11 @@ export default function NotificationBell() {
         const notificationsAPI = new NotificationsAPI()
 
         notificationsAPI
-            .getMyNotificationsEnriched()
+            .getMyUnreadNotificationsEnriched()
             .then(notificationsPage => {
+
+                // when the component first renders, load all notifications
+                setNotifications(notificationsPage.content)
 
                 console.log(notificationsPage)
 
@@ -32,35 +35,20 @@ export default function NotificationBell() {
 
     }, [])
 
+
+    const markAsRead = handleMarkAsRead()
+
+
     /*
     * On click outside notification dropdown,
     * hide notification dropdown.
     * */
     useEffect(() => {
-        const handler = (e: MouseEvent) => {
-            if (ref.current && !ref.current.contains(e.target as Node)) {
-                setOpen(false);
-            }
-        };
-        document.addEventListener("mousedown", handler);
-        return () => document.removeEventListener("mousedown", handler);
+        handleOnClickOutsideDropdown({ref, setOpen})
     }, []);
 
     const unreadCount = notifications.filter((n) => n.readAt === null).length;
 
-    // const markAsRead = (id: number) => {
-    //     fetch(`/api/notifications/${id}/read`, { method: "PATCH" });
-    //     setNotifications((prev) =>
-    //         prev.map((n) => (n.id === id ? { ...n, readAt: new Date().toISOString() } : n))
-    //     );
-    // };
-    //
-    // const markAllAsRead = () => {
-    //     fetch("/api/notifications/read-all", { method: "PATCH" });
-    //     setNotifications((prev) =>
-    //         prev.map((n) => ({ ...n, readAt: n.readAt ?? new Date().toISOString() }))
-    //     );
-    // };
 
     return (
         <div ref={ref} className="position-relative d-inline-block">
@@ -93,7 +81,13 @@ export default function NotificationBell() {
                                     key={n.notificationId}
                                     className={`px-3 py-2 border-bottom ${n.readAt === null ? "bg-primary bg-opacity-10" : ""}`}
                                     style={{ cursor: n.readAt === null ? "pointer" : "default" }}
-                                    // onClick={() => n.readAt === null && markAsRead(n.id)}
+                                    onClick={() => {
+
+                                        if(n.readAt == null) {
+                                            markAsRead(n.notificationId)
+                                        }
+
+                                    }}
                                 >
                                     <small className="text-muted text-uppercase">{n.type}</small>
                                     <p className="mb-1 fw-semibold">{n.title}</p>
@@ -114,3 +108,46 @@ export default function NotificationBell() {
         </div>
     );
 }
+
+
+/**
+ * Mark a notification as read.
+ */
+const handleMarkAsRead =  () => {
+    return async (notificationId: string) => {
+
+        /**
+         * Mark a notification as read.
+         */
+
+        // console.log("trying to mark as read: ", notificationId)
+
+        const notificationsAPI = new NotificationsAPI()
+
+        notificationsAPI
+            .markNotificationAsReadEnriched(notificationId)
+            .then(updatedNotification => {
+
+                console.log(updatedNotification)
+
+            })
+            .catch(err => {
+                console.error(err)
+            })
+
+
+    }
+}
+
+const handleOnClickOutsideDropdown = ({ref, setOpen}) => {
+
+    const handler = (e: MouseEvent) => {
+        if (ref.current && !ref.current.contains(e.target as Node)) {
+            setOpen(false);
+        }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+
+}
+
