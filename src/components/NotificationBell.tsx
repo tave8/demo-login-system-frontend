@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import {EnrichedNotificationFromAPI, NotificationFromAPI} from "../js/my_types.ts";
 import NotificationsAPI from "../js/api/NotificationsAPI.ts";
+import {ArrowClockwise} from "react-bootstrap-icons";
 
 
 const notificationsAPI = new NotificationsAPI()
@@ -10,6 +11,12 @@ interface LoadMyNotificationsWithParams {
     setIsNotificationListLoading: (x:boolean) => void
     setIsNotificationListError: (x:boolean) => void
 }
+
+interface HandleMarkAsReadParams {
+    setNotifications: (x: EnrichedNotificationFromAPI[]) => void
+    notifications: EnrichedNotificationFromAPI[]
+}
+
 
 
 export default function NotificationBell() {
@@ -24,7 +31,9 @@ export default function NotificationBell() {
     const [notifications, setNotifications] = useState<EnrichedNotificationFromAPI[]>([]);
     const ref = useRef<HTMLDivElement>(null);
 
-    const loadMyNotifications = loadMyNotificationsWith({ setNotifications, setIsNotificationListError, setIsNotificationListLoading })
+    const loadMyNotifications = loadMyNotificationsWith({ setNotifications,
+                                                                            setIsNotificationListError,
+                                                                            setIsNotificationListLoading })
 
     /**
      * On component first rendering, load
@@ -32,6 +41,7 @@ export default function NotificationBell() {
      */
     useEffect(() => {
 
+        // load notifications at this component's first render
         loadMyNotifications()
 
         // every x time, get my notifications (polling technique)
@@ -40,14 +50,13 @@ export default function NotificationBell() {
 
             loadMyNotifications()
 
-        }, 30000)
-
-
+        //     every minute
+        }, 60000)
 
     }, [])
 
 
-    const markAsRead = handleMarkAsRead()
+    const markAsRead = handleMarkAsRead({notifications, setNotifications})
 
 
     /*
@@ -76,38 +85,55 @@ export default function NotificationBell() {
                 <div className="dropdown-menu show shadow" style={{ width: 320, right: 0, left: "auto" }}>
                     <div className="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
                         <strong>Notifications</strong>
+                        <button className="btn btn-light btn-sm" onClick={loadMyNotifications}>
+                            <ArrowClockwise size={20} />
+                        </button>
                     </div>
 
                     <div style={{ maxHeight: 400, overflowY: "auto" }}>
 
+                        {/* notifications list */}
+                        {!isNotificationListLoading && !isNotificationListError && notifications.map((n) => (
+                            <div
+                                key={n.notificationId}
+                                className={`px-3 py-2 border-bottom d-flex justify-content-between align-items-start ${n.readAt === null ? "bg-primary bg-opacity-10" : ""}`}
+                            >
+                                <div>
+                                    <small className="text-muted text-uppercase">{n.type}</small>
+                                    <p className="mb-1 fw-semibold">{n.title}</p>
+                                    <p className="mb-0 text-muted small">{n.body}</p>
+                                </div>
+
+                                {n.readAt === null && (
+                                    <button
+                                        className="btn btn-link btn-sm p-0 ms-2 text-nowrap"
+                                        onClick={() => markAsRead(n.notificationId)}
+                                    >
+                                        Mark read
+                                    </button>
+                                )}
+                            </div>
+                        ))}
+
+                        {/* loading */}
                         {isNotificationListLoading && (
                             <div className="text-center py-4">
                                 <div className="spinner-border spinner-border-sm text-secondary" />
                             </div>
                         )}
 
+                        {/* error */}
                         {isNotificationListError && (
                             <div className="alert alert-danger m-3 py-2 mb-0">
                                 Something went wrong.
                             </div>
                         )}
 
+                        {/* no notifications */}
                         {!isNotificationListLoading && !isNotificationListError && notifications.length === 0 && (
                             <p className="text-center text-muted py-4 mb-0">No notifications</p>
                         )}
 
-                        {!isNotificationListLoading && !isNotificationListError && notifications.map((n) => (
-                            <div
-                                key={n.notificationId}
-                                className={`px-3 py-2 border-bottom ${n.readAt === null ? "bg-primary bg-opacity-10" : ""}`}
-                                style={{ cursor: n.readAt === null ? "pointer" : "default" }}
-                                onClick={() => { if (n.readAt === null) markAsRead(n.notificationId); }}
-                            >
-                                <small className="text-muted text-uppercase">{n.type}</small>
-                                <p className="mb-1 fw-semibold">{n.title}</p>
-                                <p className="mb-0 text-muted small">{n.body}</p>
-                            </div>
-                        ))}
 
                     </div>
                 </div>
@@ -137,6 +163,7 @@ const loadMyNotificationsWith = (params: LoadMyNotificationsWithParams) => {
                 setNotifications(notificationsPage.content)
 
                 // console.log(notificationsPage)
+                //
 
             })
             .catch(err => {
@@ -151,8 +178,10 @@ const loadMyNotificationsWith = (params: LoadMyNotificationsWithParams) => {
 /**
  * Mark a notification as read.
  */
-const handleMarkAsRead =  () => {
+const handleMarkAsRead =  (params: HandleMarkAsReadParams) => {
     return async (notificationId: string) => {
+
+        const {notifications, setNotifications} = params
 
         /**
          * Mark a notification as read.
@@ -166,7 +195,13 @@ const handleMarkAsRead =  () => {
             .markNotificationAsReadEnriched(notificationId)
             .then(updatedNotification => {
 
-                console.log(updatedNotification)
+                // console.log(updatedNotification)
+
+                const notificationsWithoutThis = notifications.filter(n => n.notificationId != notificationId)
+
+                // remove this notification from the list
+                // @ts-ignore
+                setNotifications(notificationsWithoutThis);
 
             })
             .catch(err => {
