@@ -26,7 +26,7 @@ const MyNav = () => {
       <Navbar expand="lg" className="bg-body-tertiary">
         <Container fluid>
           <Link to={AppRoutes.home} className="nav-item navbar-brand">
-            Demo Login System (preview)
+            Demo Login System (preview )
           </Link>
 
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
