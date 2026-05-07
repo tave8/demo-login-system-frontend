@@ -5,7 +5,7 @@ import { Link, useNavigate, NavigateFunction } from "react-router-dom"
 import { useAuth } from "../auth/AuthContext"
 import {AppEvent, AppEventMessage, AppRoutes} from "../js/my_types"
 import AppEventDispatcher from "../js/AppEventDispatcher.ts";
-import NotificationBell from "./NotificationBell.tsx";
+import AppNotificationBell from "./AppNotificationBell.tsx";
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
 
@@ -23,9 +23,9 @@ const MyNav = () => {
   const { login, logout, authenticated } = useAuth()
 
   return (
-      <Navbar expand="lg" className="bg-body-black">
+      <Navbar expand="lg" className="bg-body-tertiary">
         <Container fluid>
-          <Link to={AppRoutes.home} className="nav-item navbar-brand">
+          <Link to={AppRoutes.dashboard} className="nav-item navbar-brand">
             Operavion CRM
           </Link>
 
@@ -77,7 +77,7 @@ const MyNav = () => {
                 <Nav className="align-items-center">
                   {/* notifications */}
                   <Nav.Item>
-                    <NotificationBell  />
+                    <AppNotificationBell  />
                   </Nav.Item>
 
                   <NavDropdown title="Settings" id="basic-nav-dropdown" align="end">

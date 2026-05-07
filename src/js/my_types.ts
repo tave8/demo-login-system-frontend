@@ -1,11 +1,7 @@
 // ROUTES
 
 export const AppRoutes = {
-  // public routes - company
-  home: "/",
-
   // public routes - authentication
-
   login: "/login",
   signup: "/signup",
   forgotPasswordProvideEmail: "/forgot-password",

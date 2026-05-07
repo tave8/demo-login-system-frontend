@@ -8,20 +8,19 @@ import { PublicOnlyRoute } from "./auth/PublicOnlyRoute.tsx"
 import { AuthGuard } from "./auth/AuthGuard.tsx"
 import { AppRoutes } from "./js/my_types.ts"
 
-// pages
-import SeeMyProfilePage from "./components/pages/SeeMyProfilePage.tsx"
-import EditMyProfilePage from "./components/pages/EditMyProfilePage.tsx"
-import LoginPage from "./components/pages/LoginPage.tsx"
-import HomePage from "./components/pages/HomePage.tsx"
-import SignupPage from "./components/pages/SignupPage.tsx"
-import AddMyArticlePage from "./components/pages/AddMyArticlePage.tsx"
-import EditMyArticlePage from "./components/pages/EditMyArticlePage.tsx"
-import SeeMyArticlesPage from "./components/pages/SeeMyArticlesPage.tsx"
-import UploadCvPage from "./components/pages/UploadCVPage.tsx";
-// standard pages
-import NotFoundPage from "./components/pages/NotFoundPage.jsx"
-import ForgotPasswordProvideEmailPage from "./components/pages/ForgotPasswordProvideEmailPage.tsx";
-import ForgotPasswordSetNewPasswordPage from "./components/pages/ForgotPasswordSetNewPasswordPage.tsx";
+// user_pages
+import SeeMyProfilePage from "./components/user_pages/SeeMyProfilePage.tsx"
+import EditMyProfilePage from "./components/user_pages/EditMyProfilePage.tsx"
+import LoginPage from "./components/auth_pages/LoginPage.tsx"
+import SignupPage from "./components/auth_pages/SignupPage.tsx"
+import AddMyArticlePage from "./components/user_pages/AddMyArticlePage.tsx"
+import EditMyArticlePage from "./components/user_pages/EditMyArticlePage.tsx"
+import SeeMyArticlesPage from "./components/user_pages/SeeMyArticlesPage.tsx"
+import UploadCvPage from "./components/user_pages/UploadCVPage.tsx";
+// standard user_pages
+import NotFoundPage from "./components/NotFoundPage.jsx"
+import ForgotPasswordProvideEmailPage from "./components/auth_pages/ForgotPasswordProvideEmailPage.tsx";
+import ForgotPasswordSetNewPasswordPage from "./components/auth_pages/ForgotPasswordSetNewPasswordPage.tsx";
 
 // components
 import AppNav from "./components/AppNav.tsx"
@@ -29,7 +28,7 @@ import AppFooter from "./components/AppFooter.tsx"
 import AppSidebar from "./components/AppSidebar.tsx";
 import {useAuth} from "./auth/AuthContext.tsx";
 import {Col, Container, Row} from "react-bootstrap";
-import DashboardPage from "./components/pages/DashboardPage.tsx";
+import DashboardPage from "./components/user_pages/DashboardPage.tsx";
 import AppToast from "./components/AppToast.tsx";
 import {Helmet} from "react-helmet";
 
@@ -76,10 +75,8 @@ function App() {
                         {/* "page" */}
                         <Col id="page">
 
-                          {/* here go pages */}
+                          {/* here go user_pages */}
                           <Routes>
-
-                              <Route path="/" element={<HomePage />} />
 
                               <Route
                                   path={AppRoutes.dashboard}

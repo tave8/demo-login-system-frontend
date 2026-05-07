@@ -21,7 +21,7 @@ interface HandleMarkAsReadParams {
 
 
 
-export default function NotificationBell() {
+export default function AppNotificationBell() {
 
     const [open, setOpen] = useState(false);
 
