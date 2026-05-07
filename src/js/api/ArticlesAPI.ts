@@ -67,7 +67,7 @@ export default class ArticlesAPI extends BaseAPI {
 
     const resp: Response = await this.doFetchAt("/articles", config)
 
-    const data = await this.parseJSON<ArticlesPageFromAPI>(resp)
+    const data = await  this.parseJSON<ArticlesPageFromAPI>(resp)
     //
 
     return data
@@ -137,7 +137,9 @@ export default class ArticlesAPI extends BaseAPI {
    * logged in user.
    */
   public async getMyArticlesEnriched(): Promise<EnrichedArticlesPageFromAPI> {
+
     const page = await this.getMyArticles()
     return this.enrichPage(page)
+
   }
 }
