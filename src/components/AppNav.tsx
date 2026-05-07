@@ -23,10 +23,10 @@ const MyNav = () => {
   const { login, logout, authenticated } = useAuth()
 
   return (
-      <Navbar expand="lg" className="bg-body-tertiary">
+      <Navbar expand="lg" className="bg-body-black">
         <Container fluid>
           <Link to={AppRoutes.home} className="nav-item navbar-brand">
-            Demo Login System
+            Operavion CRM
           </Link>
 
           <Navbar.Toggle aria-controls="basic-navbar-nav" />

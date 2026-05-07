@@ -31,6 +31,7 @@ import {useAuth} from "./auth/AuthContext.tsx";
 import {Col, Container, Row} from "react-bootstrap";
 import DashboardPage from "./components/pages/DashboardPage.tsx";
 import AppToast from "./components/AppToast.tsx";
+import {Helmet} from "react-helmet";
 
 
 function App() {
@@ -40,6 +41,10 @@ function App() {
 
   return (
       <>
+          <Helmet>
+              <title>Operavion CRM</title>
+          </Helmet>
+
           <AppToast />
 
         <BrowserRouter>
