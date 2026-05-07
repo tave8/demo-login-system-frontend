@@ -20,10 +20,10 @@ export default function NotificationBell() {
         const notificationsAPI = new NotificationsAPI()
 
         notificationsAPI
-            .getMyNotifications()
+            .getMyNotificationsEnriched()
             .then(notificationsPage => {
 
-
+                console.log(notificationsPage)
 
             })
             .catch(err => {
