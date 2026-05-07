@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import {EnrichedNotificationFromAPI, NotificationFromAPI} from "../js/my_types.ts";
 import NotificationsAPI from "../js/api/NotificationsAPI.ts";
 import {ArrowClockwise} from "react-bootstrap-icons";
+import TimeHelper from "../js/helpers/TimeHelper.ts";
 
 
 const notificationsAPI = new NotificationsAPI()
@@ -10,6 +11,7 @@ interface LoadMyNotificationsWithParams {
     setNotifications: (x: EnrichedNotificationFromAPI[]) => void
     setIsNotificationListLoading: (x:boolean) => void
     setIsNotificationListError: (x:boolean) => void
+    setLastFetchedAt: (x: Date) => void
 }
 
 interface HandleMarkAsReadParams {
@@ -31,9 +33,13 @@ export default function NotificationBell() {
     const [notifications, setNotifications] = useState<EnrichedNotificationFromAPI[]>([]);
     const ref = useRef<HTMLDivElement>(null);
 
+    const [lastFetchedAt, setLastFetchedAt] = useState<Date | null>(null);
+
     const loadMyNotifications = loadMyNotificationsWith({ setNotifications,
                                                                             setIsNotificationListError,
-                                                                            setIsNotificationListLoading })
+                                                                            setIsNotificationListLoading,
+                                                                            setLastFetchedAt })
+
 
     /**
      * On component first rendering, load
@@ -41,17 +47,16 @@ export default function NotificationBell() {
      */
     useEffect(() => {
 
-        // load notifications at this component's first render
-        loadMyNotifications()
+        // load the first time the component is rendered
+        loadMyNotifications();
 
-        // every x time, get my notifications (polling technique)
-
-        setInterval(() => {
-
-            loadMyNotifications()
-
+        const interval = setInterval(() => {
+            loadMyNotifications();
         //     every minute
-        }, 60000)
+        }, 60000);
+
+        // cleanup on unmount
+        return () => clearInterval(interval);
 
     }, [])
 
@@ -67,6 +72,14 @@ export default function NotificationBell() {
         handleOnClickOutsideDropdown({ref, setOpen})
     }, []);
 
+    const [now, setNow] = useState(Date.now());
+
+    useEffect(() => {
+        const ticker = setInterval(() => setNow(Date.now()), 1000);
+        return () => clearInterval(ticker);
+    }, []);
+
+
     const unreadCount = notifications.filter((n) => n.readAt === null).length;
 
 
@@ -75,7 +88,7 @@ export default function NotificationBell() {
             <button className="btn btn-light position-relative" onClick={() => setOpen((o) => !o)}>
                 🔔
                 {unreadCount > 0 && (
-                      <span className="badge bg-danger position-absolute top-0 start-100 translate-middle">
+                      <span className="badge bg-danger position-absolute top-0 start-100 translate-middle" style={{"marginBottom": "-20px"}}>
                         {unreadCount}
                       </span>
                 )}
@@ -85,6 +98,15 @@ export default function NotificationBell() {
                 <div className="dropdown-menu show shadow" style={{ width: 320, right: 0, left: "auto" }}>
                     <div className="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
                         <strong>Notifications</strong>
+
+                        {/* last update */}
+                        {lastFetchedAt && (
+                            <small className="text-muted">
+                                Last updated: {lastFetchedAt ? TimeHelper.toRelativeTime(lastFetchedAt.toString()) : "never"}
+                            </small>
+                        )}
+
+                        {/* sync/manual load button */}
                         <button className="btn btn-light btn-sm" onClick={loadMyNotifications}>
                             <ArrowClockwise size={20} />
                         </button>
@@ -147,7 +169,10 @@ export default function NotificationBell() {
 const loadMyNotificationsWith = (params: LoadMyNotificationsWithParams) => {
     return async () => {
 
-        const {setNotifications, setIsNotificationListLoading, setIsNotificationListError} = params
+        const {setNotifications,
+                setIsNotificationListLoading,
+                setIsNotificationListError,
+                setLastFetchedAt} = params
 
         setIsNotificationListLoading(true)
         setIsNotificationListError(false)
@@ -161,6 +186,8 @@ const loadMyNotificationsWith = (params: LoadMyNotificationsWithParams) => {
 
                 // when the component first renders, load all notifications
                 setNotifications(notificationsPage.content)
+
+                setLastFetchedAt(new Date())
 
                 // console.log(notificationsPage)
                 //

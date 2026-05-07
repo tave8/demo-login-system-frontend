@@ -17,6 +17,9 @@ export default class TimeHelper {
     if (months >= 1) return `${months}mo ago`
     if (days >= 1) return `${days}d ago`
     if (hours >= 1) return `${hours}h ago`
-    return `${minutes}m ago`
+    if (minutes >= 1) return `${minutes}m ago`
+
+    const seconds = Math.floor(diff / 1000)
+    return `${seconds}s ago`
   }
 }
