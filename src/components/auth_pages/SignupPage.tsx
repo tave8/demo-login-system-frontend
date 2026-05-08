@@ -4,7 +4,7 @@ import { Container, Row, Col, Form, Button } from "react-bootstrap"
 // import { Link } from "react-router-dom"
 import { useState } from "react"
 import AuthAPI from "../../js/api/AuthAPI"
-import {AppEvent, AppEventMessage, AppRoutes, SignupToAPI} from "../../js/my_types"
+import {AppEvent, AppEventMessage, AppEventMessageType, AppRoutes, SignupToAPI} from "../../js/my_types"
 import {Link, NavigateFunction, useNavigate} from "react-router-dom"
 import UnauthorizedError from "../../js/exceptions/UnauthorizedError"
 import BadRequestError from "../../js/exceptions/BadRequestError.ts";
@@ -14,13 +14,14 @@ import AppEventDispatcher from "../../js/AppEventDispatcher.ts";
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
 
 
-interface handleSignupParams {
+interface HandleSignupParams {
   navigate: NavigateFunction
   setIsLoading: (x:boolean) => void
   setIsError: (x:boolean) => void
 }
 
 const initialFormValues: SignupToAPI = {
+  legalName: "",
   firstname: "",
   lastname: "",
   email: "",
@@ -40,123 +41,146 @@ const SignupPage = () => {
       <Container fluid>
         <Row className="d-flex justify-content-center">
           <Col xs={12} md={6} lg={4}>
+
             {/* title */}
-            <Row>
+            <Row className={"mb-3"}>
               <Col>
-                <h1 className="text-center">Sign up</h1>
+                <h1 className="text-center">Iscriviti - Per le Aziende</h1>
               </Col>
             </Row>
 
-            {/*form */}
-            <Form onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  handleSignup(formValues)({ navigate, setIsError, setIsLoading });
-                }
-              }}>
-              {/* firstname */}
-              <Row>
-                <Col>
-                  <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                    <Form.Label>Firstname</Form.Label>
-                    <Form.Control
-                      type="text"
-                      disabled={isLoading}
-                      placeholder="My firstname"
-                      value={formValues.firstname}
-                      onChange={(event) => {
-                        setFormValues({
-                          ...formValues,
-                          firstname: event.target.value,
-                        })
+            <Row>
+              {/*form */}
+              <Form onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleSignup(formValues)({ navigate, setIsError, setIsLoading });
+                  }
+                }}>
+                {/* legal name */}
+                <Row>
+                  <Col>
+                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                      <Form.Label>Ragione sociale</Form.Label>
+                      <Form.Control
+                          type="text"
+                          disabled={isLoading}
+                          placeholder="La mia azienda SRL"
+                          value={formValues.legalName}
+                          onChange={(event) => {
+                            setFormValues({
+                              ...formValues,
+                              legalName: event.target.value,
+                            })
+                          }}
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+                {/* firstname */}
+                <Row>
+                  <Col>
+                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                      <Form.Label>Nome del titolare</Form.Label>
+                      <Form.Control
+                        type="text"
+                        disabled={isLoading}
+                        placeholder="Mario"
+                        value={formValues.firstname}
+                        onChange={(event) => {
+                          setFormValues({
+                            ...formValues,
+                            firstname: event.target.value,
+                          })
+                        }}
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+                {/* lastname */}
+                <Row>
+                  <Col>
+                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                      <Form.Label>Cognome del titolare</Form.Label>
+                      <Form.Control
+                        type="text"
+                        disabled={isLoading}
+                        placeholder="Rossi"
+                        value={formValues.lastname}
+                        onChange={(event) => {
+                          setFormValues({
+                            ...formValues,
+                            lastname: event.target.value,
+                          })
+                        }}
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+                {/* email */}
+                <Row>
+                  <Col>
+                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                      <Form.Label>Email</Form.Label>
+                      <Form.Control
+                        type="email"
+                        disabled={isLoading}
+                        placeholder="azienda@gmail.com"
+                        value={formValues.email}
+                        onChange={(event) => {
+                          setFormValues({
+                            ...formValues,
+                            email: event.target.value,
+                          })
+                        }}
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+                {/* password */}
+                <Row>
+                  <Col>
+                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
+                      <Form.Label>Password</Form.Label>
+                      <Form.Control
+                        type="password"
+                        disabled={isLoading}
+                        placeholder="La mia password"
+                        value={formValues.password}
+                        onChange={(event) => {
+                          setFormValues({
+                            ...formValues,
+                            password: event.target.value,
+                          })
+                        }}
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+                {/* submit */}
+                <Row>
+                  <Col className="text-center">
+                    <Button
+                      variant="primary"
+                      onClick={() => {
+                        handleSignup(formValues)({ navigate, setIsError, setIsLoading })
                       }}
-                    />
-                  </Form.Group>
-                </Col>
-              </Row>
-              {/* lastname */}
-              <Row>
-                <Col>
-                  <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                    <Form.Label>Lastname</Form.Label>
-                    <Form.Control
-                      type="text"
-                      disabled={isLoading}
-                      placeholder="My lastname"
-                      value={formValues.lastname}
-                      onChange={(event) => {
-                        setFormValues({
-                          ...formValues,
-                          lastname: event.target.value,
-                        })
-                      }}
-                    />
-                  </Form.Group>
-                </Col>
-              </Row>
-              {/* email */}
-              <Row>
-                <Col>
-                  <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                    <Form.Label>Email</Form.Label>
-                    <Form.Control
-                      type="email"
-                      disabled={isLoading}
-                      placeholder="name@example.com"
-                      value={formValues.email}
-                      onChange={(event) => {
-                        setFormValues({
-                          ...formValues,
-                          email: event.target.value,
-                        })
-                      }}
-                    />
-                  </Form.Group>
-                </Col>
-              </Row>
-              {/* password */}
-              <Row>
-                <Col>
-                  <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control
-                      type="password"
-                      disabled={isLoading}
-                      placeholder="Your password"
-                      value={formValues.password}
-                      onChange={(event) => {
-                        setFormValues({
-                          ...formValues,
-                          password: event.target.value,
-                        })
-                      }}
-                    />
-                  </Form.Group>
-                </Col>
-              </Row>
-              {/* submit */}
-              <Row>
-                <Col className="text-center">
-                  <Button
-                    variant="primary"
-                    onClick={() => {
-                      handleSignup(formValues)({ navigate, setIsError, setIsLoading })
-                    }}
-                  >
-                    Sign up
-                  </Button>
-                </Col>
-              </Row>
-              <Row>
-                {/* forgot password */}
-                <Col className="text-center mt-3">
-                  <Link
-                      to={AppRoutes.login}
-                  >
-                    Already have an account?
-                  </Link>
-                </Col>
-              </Row>
-            </Form>
+                    >
+                      Iscriviti
+                    </Button>
+                  </Col>
+                </Row>
+                <Row>
+                  {/* forgot password */}
+                  <Col className="text-center mt-3">
+                    <Link
+                        to={AppRoutes.login}
+                    >
+                      Hai già un account?
+                    </Link>
+                  </Col>
+                </Row>
+              </Form>
+            </Row>
           </Col>
         </Row>
       </Container>
@@ -165,7 +189,7 @@ const SignupPage = () => {
 }
 
 const handleSignup = (formValues: SignupToAPI) => {
-  return async (params: handleSignupParams) => {
+  return async (params: HandleSignupParams) => {
     const { navigate, setIsError, setIsLoading } = params
 
     const authAPI = new AuthAPI()
@@ -180,12 +204,13 @@ const handleSignup = (formValues: SignupToAPI) => {
         setIsError(false)
 
 
-        appEventDispatcher.dispatch(
+        appEventDispatcher.dispatchStandard(
             AppEvent.APP_SUCCESS,
-            AppEventMessage.SIGNUP_SUCCESS
+            AppEventMessageType.SIGNUP_SUCCESS
         )
 
         navigate(AppRoutes.login)
+
       })
         .catch((err: unknown) => {
           setIsLoading(false)
@@ -193,17 +218,18 @@ const handleSignup = (formValues: SignupToAPI) => {
 
             if (err instanceof UnauthorizedError) {
 
-              appEventDispatcher.dispatch(
+              appEventDispatcher.dispatchStandard(
                   AppEvent.APP_ERROR,
-                  AppEventMessage.SIGNUP_CANNOT_USE_EMAIL
+                  AppEventMessageType.SIGNUP_CANNOT_USE_EMAIL
               )
 
             } else if (err instanceof BadRequestError) {
               const badRequest = err as BadRequestError;
 
-              appEventDispatcher.dispatch(
+              appEventDispatcher.dispatchStandard(
                   AppEvent.APP_ERROR,
-                  AppEventMessage.INVALID_FIELDS + badRequest.getErrorsAsStr()
+                  AppEventMessageType.INVALID_FIELDS,
+                  badRequest.getErrorsAsStr()
               )
 
             }

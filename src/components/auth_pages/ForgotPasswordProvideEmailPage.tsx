@@ -31,7 +31,7 @@ const ForgotPasswordProvideEmailPage = () => {
                         {/* title */}
                         <Row className="mb-3">
                             <Col>
-                                <h1 className="text-center">Forgot password</h1>
+                                <h1 className="text-center">Crea una nuova password</h1>
                             </Col>
                         </Row>
 
@@ -42,10 +42,10 @@ const ForgotPasswordProvideEmailPage = () => {
                                 <Row className="g-3">
                                     <Col xs={12}>
                                         <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                            <Form.Label>Your email</Form.Label>
+                                            <Form.Label>La tua email</Form.Label>
                                             <Form.Control
                                                 type="email"
-                                                placeholder="mary@mail.com"
+                                                placeholder="nome.cognome@gmail.com"
                                                 value={emailData.email}
                                                 onChange={(event) => {
                                                     setEmailData({
@@ -65,7 +65,7 @@ const ForgotPasswordProvideEmailPage = () => {
                                                 handleForgotPasswordRequest(emailData)({ setIsLoading, setIsError })
                                             }}
                                         >
-                                            Submit request
+                                            Invia
                                         </Button>
                                     </Col>
                                 </Row>

@@ -29,6 +29,7 @@ import {Col, Container, Row} from "react-bootstrap";
 import DashboardPage from "./components/user_pages/DashboardPage.tsx";
 import AppToast from "./components/AppToast.tsx";
 import {Helmet} from "react-helmet";
+import LoginOperatorPage from "./components/auth_pages/LoginOperatorPage.tsx";
 
 
 function App() {
@@ -52,7 +53,7 @@ function App() {
             <main className={"d-flex flex-column"}>
 
 
-                <Container fluid className={""}>
+                <Container fluid className={"mt-3"}>
                     <Row>
 
                         {/* "page" */}
@@ -136,6 +137,15 @@ function App() {
                                     </PublicOnlyRoute>
                                   }
                                 />
+
+                              <Route
+                                  path={AppRoutes.loginOperator}
+                                  element={
+                                      <PublicOnlyRoute>
+                                          <LoginOperatorPage />
+                                      </PublicOnlyRoute>
+                                  }
+                              />
 
                                 <Route
                                   path={AppRoutes.signup}

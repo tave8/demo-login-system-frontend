@@ -1,6 +1,13 @@
 import {useState} from "react"
 import {Button, Col, Container, Form, Row} from "react-bootstrap"
-import {AppEvent, AppEventMessage, AppEventMessageType, AppRoutes, type LoginToAPI} from "../../js/my_types"
+import {
+  AppEvent,
+  AppEventMessage,
+  AppEventMessageType,
+  AppRoutes,
+  type LoginToAPI,
+  OperatorLoginToAPI
+} from "../../js/my_types"
 import AuthAPI from "../../js/api/AuthAPI"
 import {useAuth} from "../../auth/AuthContext"
 import {Link, NavigateFunction, useNavigate} from "react-router-dom"
@@ -10,7 +17,7 @@ import AppEventDispatcher from "../../js/AppEventDispatcher.ts";
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
 
-interface handleLoginParams {
+interface HandleLoginParams {
   setIsLoading: (x:boolean) => void
   setIsError: (x:boolean) => void
   login: (token: string) => void
@@ -19,8 +26,8 @@ interface handleLoginParams {
   navigate: NavigateFunction
 }
 
-const initialFormValues: LoginToAPI = {
-  email: "",
+const initialFormValues: OperatorLoginToAPI = {
+  username: "",
   password: "",
 }
 
@@ -43,7 +50,7 @@ const LoginPage = () => {
             {/* title */}
             <Row className={"mb-3"}>
               <Col>
-                <h1 className="text-center">Entra - Area Manager</h1>
+                <h1 className="text-center">Entra - Area Operatore</h1>
               </Col>
             </Row>
 
@@ -58,16 +65,16 @@ const LoginPage = () => {
                 <Row>
                   <Col>
                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                      <Form.Label>Email</Form.Label>
+                      <Form.Label>Username</Form.Label>
                       <Form.Control
                         disabled={isLoading}
-                        type="email"
-                        placeholder="nome.cognome@gmail.com"
-                        value={formValues.email}
+                        type="text"
+                        placeholder="maria.rossi"
+                        value={formValues.username}
                         onChange={(event) => {
                           setFormValues({
                             ...formValues,
-                            email: event.target.value,
+                            username: event.target.value,
                           })
                         }}
                       />
@@ -107,14 +114,6 @@ const LoginPage = () => {
               </Form>
             </Row>
 
-            {/* forgot password */}
-            <Col className="text-center mt-3">
-              <Link
-                  to={AppRoutes.forgotPasswordProvideEmail}
-              >
-                Dimenticato password?
-              </Link>
-            </Col>
           </Col>
         </Row>
       </Container>
@@ -122,8 +121,8 @@ const LoginPage = () => {
   )
 }
 
-const handleLogin = (formValues: LoginToAPI) => {
-  return async (params: handleLoginParams) => {
+const handleLogin = (formValues: OperatorLoginToAPI) => {
+  return async (params: HandleLoginParams) => {
     const { login, logout, authenticated, navigate, setIsError, setIsLoading } = params
 
     const authAPI = new AuthAPI()
@@ -132,7 +131,7 @@ const handleLogin = (formValues: LoginToAPI) => {
     setIsError(false)
 
     authAPI
-      .login(formValues)
+      .loginOperator(formValues)
       .then((loginInfo) => {
 
         setIsLoading(false)

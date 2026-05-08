@@ -1,4 +1,5 @@
-import {AppEvent} from "./my_types.ts";
+import {AppEvent, AppEventMessage, AppEventMessageType, Language} from "./my_types.ts";
+import LanguageHelper from "./helpers/LanguageHelper.ts";
 
 /**
  * App Event Dispatcher.
@@ -19,14 +20,35 @@ export default class AppEventDispatcher {
      * @param eventName
      * @param msg
      */
-    public dispatch(eventName: AppEvent, msg: string): void {
+    public dispatch(eventName: AppEvent, msg: string): void
+    {
 
         // here you can do any checks
 
-        // dispatch a custom event
-        window.dispatchEvent(new CustomEvent(eventName, {
+        const customEvent = new CustomEvent(eventName, {
             detail: msg
-        }))
+        })
+
+        // dispatch a custom event
+        window.dispatchEvent(customEvent)
+
+    }
+
+    /**
+     * Dispatch a standard app event using
+     * current app's language.
+     */
+    public dispatchStandard(eventName: AppEvent,
+                            eventType: AppEventMessageType,
+                            details: string = ""): void
+    {
+
+        const lang = LanguageHelper.getLanguage()
+
+        this.dispatch(
+            eventName,
+            AppEventMessage[lang][eventType] + details
+        )
 
     }
 

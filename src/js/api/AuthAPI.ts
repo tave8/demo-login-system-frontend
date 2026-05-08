@@ -10,7 +10,7 @@ import {
   LoginToAPI,
   LoginFromAPI,
   ForgotPasswordRequestToAPI, ForgotPasswordRequestFromAPI, ForgotPasswordNewPasswordToAPI,
-  ForgotPasswordNewPasswordFromAPI, ForgotPasswordVerifyCodeToAPI, ForgotPasswordVerifyCodeFromAPI
+  ForgotPasswordNewPasswordFromAPI, ForgotPasswordVerifyCodeToAPI, ForgotPasswordVerifyCodeFromAPI, OperatorLoginToAPI
 } from "../my_types"
 
 export default class AuthAPI extends BaseAPI {
@@ -20,9 +20,22 @@ export default class AuthAPI extends BaseAPI {
   }
 
   /**
-   * Login a user.
+   * Login a manager.
    */
   public async login(loginData: LoginToAPI): Promise<LoginFromAPI> {
+    const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.NO, loginData)
+
+    const resp: Response = await this.doFetchAt(`/auth/login`, config)
+
+    const data = await this.parseJSON<LoginFromAPI>(resp)
+
+    return data
+  }
+
+  /**
+   * Login an operator.
+   */
+  public async loginOperator(loginData: OperatorLoginToAPI): Promise<LoginFromAPI> {
     const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.NO, loginData)
 
     const resp: Response = await this.doFetchAt(`/auth/login`, config)

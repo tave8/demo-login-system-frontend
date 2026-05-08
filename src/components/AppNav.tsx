@@ -3,7 +3,7 @@ import { Container, Row, Col, Nav, Navbar, NavDropdown, Image, Dropdown } from "
 import { Search, BellFill } from "react-bootstrap-icons"
 import { Link, useNavigate, NavigateFunction } from "react-router-dom"
 import { useAuth } from "../auth/AuthContext"
-import {AppEvent, AppEventMessage, AppRoutes} from "../js/my_types"
+import {AppEvent, AppEventMessage, AppEventMessageType, AppRoutes} from "../js/my_types"
 import AppEventDispatcher from "../js/AppEventDispatcher.ts";
 import AppNotificationBell from "./AppNotificationBell.tsx";
 
@@ -103,16 +103,16 @@ const MyNav = () => {
             {!authenticated && (
             <Nav className="end">
                   <Link
-                      to={AppRoutes.login}
+                      to={AppRoutes.loginOperator}
                       onClick={closeNav}
                       className="nav-item nav-link">
-                    Entra (utente)
+                    Entra (operatore)
                   </Link>
                 <Link
                     to={AppRoutes.login}
                     onClick={closeNav}
                     className="nav-item nav-link">
-                  Entra (azienda)
+                  Entra (manager)
                 </Link>
                 <Link
                     to={AppRoutes.signup}
@@ -170,11 +170,11 @@ const handleLogout = () => {
     const { login, logout, authenticated, navigate } = params
 
     logout()
-    navigate(AppRoutes.login)
+    navigate(AppRoutes.loginOperator)
 
-    appEventDispatcher.dispatch(
+    appEventDispatcher.dispatchStandard(
         AppEvent.APP_SUCCESS,
-        AppEventMessage.LOGOUT_SUCCESS
+        AppEventMessageType.LOGOUT_SUCCESS
     )
 
   }
