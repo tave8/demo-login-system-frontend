@@ -24,8 +24,6 @@ import ForgotPasswordSetNewPasswordPage from "./components/auth_pages/ForgotPass
 
 // components
 import AppNav from "./components/AppNav.tsx"
-import AppFooter from "./components/AppFooter.tsx"
-import AppSidebar from "./components/AppSidebar.tsx";
 import {useAuth} from "./auth/AuthContext.tsx";
 import {Col, Container, Row} from "react-bootstrap";
 import DashboardPage from "./components/user_pages/DashboardPage.tsx";
@@ -54,22 +52,7 @@ function App() {
             <main className={"d-flex flex-column"}>
 
 
-                {/* sidebar */}
-                {authenticated && (
-                    <Container id="sidebar">
-                        <Row style={{ minHeight: "100%" }}>
-
-                            <Col style={{ minHeight: "100%" }}>
-
-                                <AppSidebar />
-
-                            </Col>
-                        </Row>
-                    </Container>
-                )}
-
-
-                <Container fluid id="page-without-sidebar" className={authenticated ? "has-sidebar" : ""}>
+                <Container fluid className={""}>
                     <Row>
 
                         {/* "page" */}
@@ -187,6 +170,7 @@ function App() {
                               </Routes>
 
                         </Col>
+
                     </Row>
                 </Container>
 
