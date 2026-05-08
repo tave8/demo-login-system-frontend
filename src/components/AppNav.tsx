@@ -35,25 +35,37 @@ const MyNav = () => {
             <Nav className="me-auto">
               {authenticated && (
                   <Link to={AppRoutes.dashboard} className="nav-item nav-link">
-                    Dashboard
+                    Oggi
                   </Link>
               )}
 
               {authenticated && (
                   <Link to={AppRoutes.myArticles} className="nav-item nav-link">
-                    My articles
+                    Turni
                   </Link>
               )}
 
               {authenticated && (
                   <Link to={AppRoutes.addMyArticle} className="nav-item nav-link">
-                    Add article
+                    Clienti
                   </Link>
               )}
 
               {authenticated && (
                   <Link to={AppRoutes.uploadCV} className="nav-item nav-link">
-                    Upload CV
+                    Team
+                  </Link>
+              )}
+
+              {authenticated && (
+                  <Link to={AppRoutes.uploadCV} className="nav-item nav-link">
+                    Attività
+                  </Link>
+              )}
+
+              {authenticated && (
+                  <Link to={AppRoutes.uploadCV} className="nav-item nav-link">
+                    Report
                   </Link>
               )}
 
@@ -63,11 +75,14 @@ const MyNav = () => {
             {!authenticated && (
             <Nav className="end">
                   <Link to={AppRoutes.login} className="nav-item nav-link">
-                    Login
+                    Entra (utente)
                   </Link>
-                  <Link to={AppRoutes.signup} className="nav-item nav-link">
-                    Sign up
-                  </Link>
+                <Link to={AppRoutes.login} className="nav-item nav-link">
+                  Entra (azienda)
+                </Link>
+                <Link to={AppRoutes.signup} className="nav-item nav-link">
+                  Iscriviti (azienda)
+                </Link>
             </Nav>
             )}
 
@@ -80,10 +95,10 @@ const MyNav = () => {
                     <AppNotificationBell  />
                   </Nav.Item>
 
-                  <NavDropdown title="Settings" id="basic-nav-dropdown" align="end">
+                  <NavDropdown title="Impostazioni" id="basic-nav-dropdown" align="end">
                     {/* my profile */}
                     <NavDropdown.Item onClick={() => navigate(AppRoutes.myProfile)}>
-                      My profile
+                      Il mio profilo
                     </NavDropdown.Item>
 
                     {/* divider */}
