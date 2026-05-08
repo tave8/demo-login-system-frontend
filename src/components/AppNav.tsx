@@ -1,4 +1,4 @@
-import { Component } from "react"
+import {Component, useState} from "react"
 import { Container, Row, Col, Nav, Navbar, NavDropdown, Image, Dropdown } from "react-bootstrap"
 import { Search, BellFill } from "react-bootstrap-icons"
 import { Link, useNavigate, NavigateFunction } from "react-router-dom"
@@ -19,13 +19,23 @@ interface handleLogoutParams {
 
 const MyNav = () => {
   const navigate = useNavigate()
+  const [navExpanded, setNavExpanded] = useState(false);
 
   const { login, logout, authenticated } = useAuth()
 
+  const closeNav = () => setNavExpanded(false);
+
   return (
-      <Navbar expand="lg" className="bg-body-tertiary">
+      <Navbar
+          expand="lg"
+          expanded={navExpanded}
+          onToggle={(expanded) => setNavExpanded(expanded)}
+          className="bg-body-tertiary">
         <Container fluid>
-          <Link to={AppRoutes.dashboard} className="nav-item navbar-brand">
+          <Link
+              to={AppRoutes.dashboard}
+              onClick={closeNav}
+              className="nav-item navbar-brand">
             Operavion CRM
           </Link>
 
@@ -34,37 +44,55 @@ const MyNav = () => {
 
             <Nav className="me-auto">
               {authenticated && (
-                  <Link to={AppRoutes.dashboard} className="nav-item nav-link">
+                  <Link
+                      to={AppRoutes.dashboard}
+                      onClick={closeNav}
+                      className="nav-item nav-link">
                     Oggi
                   </Link>
               )}
 
               {authenticated && (
-                  <Link to={AppRoutes.myArticles} className="nav-item nav-link">
+                  <Link
+                      to={AppRoutes.myArticles}
+                      onClick={closeNav}
+                      className="nav-item nav-link">
                     Turni
                   </Link>
               )}
 
               {authenticated && (
-                  <Link to={AppRoutes.addMyArticle} className="nav-item nav-link">
+                  <Link
+                      to={AppRoutes.addMyArticle}
+                      onClick={closeNav}
+                      className="nav-item nav-link">
                     Clienti
                   </Link>
               )}
 
               {authenticated && (
-                  <Link to={AppRoutes.uploadCV} className="nav-item nav-link">
+                  <Link
+                      to={AppRoutes.uploadCV}
+                      onClick={closeNav}
+                      className="nav-item nav-link">
                     Team
                   </Link>
               )}
 
               {authenticated && (
-                  <Link to={AppRoutes.uploadCV} className="nav-item nav-link">
+                  <Link
+                      to={AppRoutes.uploadCV}
+                      onClick={closeNav}
+                      className="nav-item nav-link">
                     Attività
                   </Link>
               )}
 
               {authenticated && (
-                  <Link to={AppRoutes.uploadCV} className="nav-item nav-link">
+                  <Link
+                      to={AppRoutes.uploadCV}
+                      onClick={closeNav}
+                      className="nav-item nav-link">
                     Report
                   </Link>
               )}
@@ -74,13 +102,22 @@ const MyNav = () => {
             {/* login / signup */}
             {!authenticated && (
             <Nav className="end">
-                  <Link to={AppRoutes.login} className="nav-item nav-link">
+                  <Link
+                      to={AppRoutes.login}
+                      onClick={closeNav}
+                      className="nav-item nav-link">
                     Entra (utente)
                   </Link>
-                <Link to={AppRoutes.login} className="nav-item nav-link">
+                <Link
+                    to={AppRoutes.login}
+                    onClick={closeNav}
+                    className="nav-item nav-link">
                   Entra (azienda)
                 </Link>
-                <Link to={AppRoutes.signup} className="nav-item nav-link">
+                <Link
+                    to={AppRoutes.signup}
+                    onClick={closeNav}
+                    className="nav-item nav-link">
                   Iscriviti (azienda)
                 </Link>
             </Nav>
@@ -97,7 +134,12 @@ const MyNav = () => {
 
                   <NavDropdown title="Impostazioni" id="basic-nav-dropdown" align="end">
                     {/* my profile */}
-                    <NavDropdown.Item onClick={() => navigate(AppRoutes.myProfile)}>
+                    <NavDropdown.Item
+                        onClick={() => {
+                          navigate(AppRoutes.myProfile)
+                          closeNav()
+                        }
+                      }>
                       Il mio profilo
                     </NavDropdown.Item>
 
@@ -108,6 +150,7 @@ const MyNav = () => {
                     <NavDropdown.Item
                         onClick={() => {
                           handleLogout()({ login, logout, authenticated, navigate });
+                          closeNav()
                         }}>
                       Logout
                     </NavDropdown.Item>
