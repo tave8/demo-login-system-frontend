@@ -8,6 +8,7 @@ import AppEventDispatcher from "../js/AppEventDispatcher.ts";
 import AppNotificationBell from "./AppNotificationBell.tsx";
 import AppNavContentAuth from "./AppNavContentAuth.tsx";
 import AppNavContentSettings from "./AppNavContentSettings.tsx";
+import AppNavContentAdmin from "./AppNavContentAdmin.tsx";
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
 
@@ -38,73 +39,15 @@ const MyNav = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
 
-            <Nav className="me-auto">
-
-
-
-              {authenticated && (
-                  <Link
-                      to={AppRoutes.dashboard}
-                      onClick={closeNav}
-                      className="nav-item nav-link">
-                    Oggi
-                  </Link>
-              )}
-
-              {authenticated && (
-                  <Link
-                      to={AppRoutes.myArticles}
-                      onClick={closeNav}
-                      className="nav-item nav-link">
-                    Turni
-                  </Link>
-              )}
-
-              {authenticated && (
-                  <Link
-                      to={AppRoutes.addMyArticle}
-                      onClick={closeNav}
-                      className="nav-item nav-link">
-                    Clienti
-                  </Link>
-              )}
-
-              {authenticated && (
-                  <Link
-                      to={AppRoutes.uploadCV}
-                      onClick={closeNav}
-                      className="nav-item nav-link">
-                    Team
-                  </Link>
-              )}
-
-              {authenticated && (
-                  <Link
-                      to={AppRoutes.uploadCV}
-                      onClick={closeNav}
-                      className="nav-item nav-link">
-                    Attività
-                  </Link>
-              )}
-
-              {authenticated && (
-                  <Link
-                      to={AppRoutes.uploadCV}
-                      onClick={closeNav}
-                      className="nav-item nav-link">
-                    Report
-                  </Link>
-              )}
-
-            </Nav>
-
-            {/* login & signup */}
-            <AppNavContentAuth />
+            {/* admin navbar content */}
+            <AppNavContentAdmin />
 
 
             {/* user settings */}
             <AppNavContentSettings />
 
+            {/* login & signup */}
+            <AppNavContentAuth />
 
           </Navbar.Collapse>
         </Container>
