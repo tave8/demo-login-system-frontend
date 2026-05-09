@@ -26,47 +26,47 @@ export default function NavContentForAdmin({ setNavExpanded }: Props) {
 
                 <Nav className="me-auto">
 
-                        <Link
-                            to={AppRoutes.dashboard}
-                            onClick={closeNav}
-                            className="nav-item nav-link">
-                            Oggi
-                        </Link>
+                        {/*<Link*/}
+                        {/*    to={AppRoutes.dashboard}*/}
+                        {/*    onClick={closeNav}*/}
+                        {/*    className="nav-item nav-link">*/}
+                        {/*    Oggi*/}
+                        {/*</Link>*/}
+
+                        {/*<Link*/}
+                        {/*    to={AppRoutes.myArticles}*/}
+                        {/*    onClick={closeNav}*/}
+                        {/*    className="nav-item nav-link">*/}
+                        {/*    Turni*/}
+                        {/*</Link>*/}
+
+                        {/*<Link*/}
+                        {/*    to={AppRoutes.addMyArticle}*/}
+                        {/*    onClick={closeNav}*/}
+                        {/*    className="nav-item nav-link">*/}
+                        {/*    Clienti*/}
+                        {/*</Link>*/}
 
                         <Link
-                            to={AppRoutes.myArticles}
-                            onClick={closeNav}
-                            className="nav-item nav-link">
-                            Turni
-                        </Link>
-
-                        <Link
-                            to={AppRoutes.addMyArticle}
-                            onClick={closeNav}
-                            className="nav-item nav-link">
-                            Clienti
-                        </Link>
-
-                        <Link
-                            to={AppRoutes.uploadCV}
+                            to={AppRoutes.team}
                             onClick={closeNav}
                             className="nav-item nav-link">
                             Team
                         </Link>
 
-                        <Link
-                            to={AppRoutes.uploadCV}
-                            onClick={closeNav}
-                            className="nav-item nav-link">
-                            Attività
-                        </Link>
+                        {/*<Link*/}
+                        {/*    to={AppRoutes.uploadCV}*/}
+                        {/*    onClick={closeNav}*/}
+                        {/*    className="nav-item nav-link">*/}
+                        {/*    Attività*/}
+                        {/*</Link>*/}
 
-                        <Link
-                            to={AppRoutes.uploadCV}
-                            onClick={closeNav}
-                            className="nav-item nav-link">
-                            Report
-                        </Link>
+                        {/*<Link*/}
+                        {/*    to={AppRoutes.uploadCV}*/}
+                        {/*    onClick={closeNav}*/}
+                        {/*    className="nav-item nav-link">*/}
+                        {/*    Report*/}
+                        {/*</Link>*/}
 
                 </Nav>
 

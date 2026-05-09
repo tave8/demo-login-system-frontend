@@ -28,7 +28,9 @@ export const AppRoutes = {
   // LOGGED IN
   // *****************
 
-  // dashboard
+  // admin only
+  team: "/u/team",
+
   dashboard: "/u/dashboard",
   myProfile: "/u/me",
   editMyProfile: "/u/me/edit",

@@ -31,6 +31,7 @@ import AppToast from "./components/AppToast.tsx";
 import {Helmet} from "react-helmet";
 import LoginOperatorPage from "./components/auth_pages/LoginOperatorPage.tsx";
 import UnauthorizedPage from "./components/UnauthorizedPage.jsx";
+import TeamPage from "./components/user_pages/admin/TeamPage.tsx";
 
 
 function App() {
@@ -71,6 +72,15 @@ function App() {
                                   element={
                                       <ProtectedRoute allowOnlyRoles={[UserRole.ADMIN]}>
                                           <DashboardPage />
+                                      </ProtectedRoute>
+                                  }
+                              />
+
+                              <Route
+                                  path={AppRoutes.team}
+                                  element={
+                                      <ProtectedRoute allowOnlyRoles={[UserRole.ADMIN]}>
+                                          <TeamPage />
                                       </ProtectedRoute>
                                   }
                               />
