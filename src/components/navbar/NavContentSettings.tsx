@@ -8,19 +8,20 @@ import AppEventDispatcher from "../../js/AppEventDispatcher.ts";
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
 
+interface Props {
+    setNavExpanded: (x: boolean) => void
+}
 
 interface handleLogoutParams {
-    login: (token: string) => void
     logout: () => void
     authenticated: boolean
     navigate: NavigateFunction
 }
 
 
-export default function NavContentSettings() {
+export default function NavContentSettings({ setNavExpanded }: Props) {
 
     const navigate = useNavigate()
-    const [navExpanded, setNavExpanded] = useState(false);
 
     const { login, logout, authenticated } = useAuth()
 
@@ -53,7 +54,7 @@ export default function NavContentSettings() {
                         {/* logout */}
                         <NavDropdown.Item
                             onClick={() => {
-                                handleLogout()({ login, logout, authenticated, navigate });
+                                handleLogout()({ logout, authenticated, navigate });
                                 closeNav()
                             }}>
                             Logout
@@ -70,7 +71,7 @@ export default function NavContentSettings() {
 
 const handleLogout = () => {
     return (params: handleLogoutParams) => {
-        const { login, logout, authenticated, navigate } = params
+        const { logout, authenticated, navigate } = params
 
         logout()
         navigate(AppRoutes.loginOperator)

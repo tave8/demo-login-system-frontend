@@ -50,10 +50,10 @@ const MyNav = () => {
 
 
             {/* user settings */}
-            <NavContentSettings />
+            <NavContentSettings setNavExpanded={setNavExpanded} />
 
             {/* login & signup */}
-            <NavContentAuth />
+            <NavContentAuth setNavExpanded={setNavExpanded} />
 
           </Navbar.Collapse>
         </Container>

@@ -69,7 +69,7 @@ function App() {
                               <Route
                                   path={AppRoutes.dashboard}
                                   element={
-                                      <ProtectedRoute allowedRoles={[UserRole.ADMIN]}>
+                                      <ProtectedRoute allowOnlyRoles={[UserRole.ADMIN]}>
                                           <DashboardPage />
                                       </ProtectedRoute>
                                   }
@@ -78,7 +78,7 @@ function App() {
                                 <Route
                                   path={AppRoutes.myProfile}
                                   element={
-                                    <ProtectedRoute>
+                                    <ProtectedRoute allowAllRolesExcept={[UserRole.OPERATOR]}>
                                       <SeeMyProfilePage />
                                     </ProtectedRoute>
                                   }
@@ -87,7 +87,7 @@ function App() {
                                 <Route
                                   path={AppRoutes.editMyProfile}
                                   element={
-                                    <ProtectedRoute>
+                                    <ProtectedRoute allowAllRolesExcept={[UserRole.OPERATOR]}>
                                       <EditMyProfilePage />
                                     </ProtectedRoute>
                                   }
