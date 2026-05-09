@@ -1,5 +1,5 @@
 import AppEventDispatcher from "../../../js/AppEventDispatcher.ts";
-import {use, useState} from "react";
+import {useEffect, useState} from "react";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import {UserRole} from "../../../js/my_types.ts";
 import UserRoleHelper from "../../../js/helpers/UserRoleHelper.ts";
@@ -21,10 +21,14 @@ const initialFormValues = {
 export default function AddUserPage () {
     const [formValues, setFormValues] = useState(initialFormValues)
     // user role
-    const [role, setRole] = useState<UserRole | null>(null)
+    const [role, setRole] = useState<UserRole>(UserRole.OPERATOR)
     const [isLoading, setIsLoading] = useState(false)
     const [isError, setIsError] = useState(false)
 
+
+    // useEffect(() => {
+    //     setRole(UserRole.OPERATOR)
+    // }, [])
 
     // const navigate = useNavigate()
     console.log(role)
@@ -45,7 +49,10 @@ export default function AddUserPage () {
                         {/* role */}
                         <Row className={"mb-3"}>
                             <Col>
-                                <Form.Select onChange={(e) => {
+                                <Form.Label>Ruolo</Form.Label>
+                                <Form.Select
+                                    value={role}
+                                    onChange={(e) => {
                                     setRole(e.target.value as UserRole)
                                 }}>
                                     {Object.entries(UserRoleHelper.getAllRolesMapExceptAdmin()).map(([role, label]) => (
@@ -103,23 +110,27 @@ export default function AddUserPage () {
                                 </Col>
 
                                 {/* email */}
-                                <Col>
-                                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                        <Form.Label>Email</Form.Label>
-                                        <Form.Control
-                                            disabled={isLoading}
-                                            type="email"
-                                            placeholder="nome.cognome@gmail.com"
-                                            value={formValues.email}
-                                            onChange={(event) => {
-                                                setFormValues({
-                                                    ...formValues,
-                                                    email: event.target.value,
-                                                })
-                                            }}
-                                        />
-                                    </Form.Group>
-                                </Col>
+                                {/* only coordinators have email */}
+                                {role == UserRole.COORDINATOR && (
+                                    <Col>
+                                        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                                            <Form.Label>Email</Form.Label>
+                                            <Form.Control
+                                                disabled={isLoading}
+                                                type="email"
+                                                placeholder="nome.cognome@gmail.com"
+                                                value={formValues.email}
+                                                onChange={(event) => {
+                                                    setFormValues({
+                                                        ...formValues,
+                                                        email: event.target.value,
+                                                    })
+                                                }}
+                                            />
+                                        </Form.Group>
+                                    </Col>
+                                )}
+
 
 
                                 {/* submit */}
