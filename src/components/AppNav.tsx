@@ -6,6 +6,7 @@ import { useAuth } from "../auth/AuthContext"
 import {AppEvent, AppEventMessage, AppEventMessageType, AppRoutes} from "../js/my_types"
 import AppEventDispatcher from "../js/AppEventDispatcher.ts";
 import AppNotificationBell from "./AppNotificationBell.tsx";
+import AppNavContentAuth from "./AppNavContentAuth.tsx";
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
 
@@ -43,6 +44,9 @@ const MyNav = () => {
           <Navbar.Collapse id="basic-navbar-nav">
 
             <Nav className="me-auto">
+
+
+
               {authenticated && (
                   <Link
                       to={AppRoutes.dashboard}
@@ -99,28 +103,9 @@ const MyNav = () => {
 
             </Nav>
 
-            {/* login / signup */}
+            {/* login & signup */}
             {!authenticated && (
-            <Nav className="end">
-                  <Link
-                      to={AppRoutes.loginOperator}
-                      onClick={closeNav}
-                      className="nav-item nav-link">
-                    Entra (operatore)
-                  </Link>
-                <Link
-                    to={AppRoutes.login}
-                    onClick={closeNav}
-                    className="nav-item nav-link">
-                  Entra (manager)
-                </Link>
-                <Link
-                    to={AppRoutes.signup}
-                    onClick={closeNav}
-                    className="nav-item nav-link">
-                  Iscriviti (azienda)
-                </Link>
-            </Nav>
+                <AppNavContentAuth />
             )}
 
 

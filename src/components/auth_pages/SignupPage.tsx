@@ -45,7 +45,7 @@ const SignupPage = () => {
             {/* title */}
             <Row className={"mb-3"}>
               <Col>
-                <h1 className="text-center">Iscriviti - Per le Aziende</h1>
+                <h1 className="text-center">Iscrivi la tua Azienda</h1>
               </Col>
             </Row>
 

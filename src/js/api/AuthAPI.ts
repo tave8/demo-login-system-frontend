@@ -38,7 +38,7 @@ export default class AuthAPI extends BaseAPI {
   public async loginOperator(loginData: OperatorLoginToAPI): Promise<LoginFromAPI> {
     const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.NO, loginData)
 
-    const resp: Response = await this.doFetchAt(`/auth/login`, config)
+    const resp: Response = await this.doFetchAt(`/auth/login-operator`, config)
 
     const data = await this.parseJSON<LoginFromAPI>(resp)
 
@@ -51,7 +51,7 @@ export default class AuthAPI extends BaseAPI {
   public async signup(signupData: SignupToAPI): Promise<SignupFromAPI> {
     const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.NO, signupData)
 
-    const resp: Response = await this.doFetchAt(`/auth/register`, config)
+    const resp: Response = await this.doFetchAt(`/auth/signup`, config)
 
     const data = await this.parseJSON<SignupFromAPI>(resp)
 

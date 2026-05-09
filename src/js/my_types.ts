@@ -169,6 +169,8 @@ export interface OperatorLoginToAPI {
 
 export interface LoginFromAPI {
   accessToken: string
+  message: string
+  mustChangePasswordNow: boolean
 }
 
 // SIGNUP
