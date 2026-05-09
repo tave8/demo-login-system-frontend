@@ -42,6 +42,7 @@ const EditMyArticlePage = () => {
 
   // fetch the article each time
   // the component is rendered
+  // @ts-ignore
   useState(() => {
     const articleId = params.articleId
     // if no articleId was found

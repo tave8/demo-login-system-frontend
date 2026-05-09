@@ -179,7 +179,7 @@ const handleEditProfile = (updatedUser: UpdatedUserToAPI) => {
 
         appEventDispatcher.dispatchStandard(
             AppEvent.APP_SUCCESS,
-            AppEventMessageType.SAVED_SUCCESS
+            AppEventMessageType.SAVE_SUCCESS
         )
 
       })

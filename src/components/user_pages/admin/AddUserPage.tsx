@@ -1,11 +1,13 @@
 import AppEventDispatcher from "../../../js/AppEventDispatcher.ts";
 import {useState} from "react";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
-import {UserRole, UserToAPI} from "../../../js/my_types.ts";
+import {AppEvent, AppEventMessageType, UserRole, UserToAPI} from "../../../js/my_types.ts";
 import UserRoleHelper from "../../../js/helpers/UserRoleHelper.ts";
+import UsersAPI from "../../../js/api/UsersAPI.ts";
 
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
+const usersAPI = UsersAPI.getInstance()
 
 
 interface HandleAddUserParams {
@@ -157,55 +159,52 @@ const handleAddUser = (formValues: UserToAPI) => {
     return async (params: HandleAddUserParams) => {
         const { setIsError, setIsLoading } = params
 
-        console.log(formValues)
 
-        // const authAPI = new AuthAPI()
-        //
-        // setIsLoading(true)
-        // setIsError(false)
-        //
-        // authAPI
-        //     .login(formValues)
-        //     .then((loginInfo) => {
-        //
-        //         setIsLoading(false)
-        //         setIsError(false)
-        //
-        //         const { accessToken } = loginInfo
-        //
-        //         login(accessToken, loginInfo.user)
-        //
-        //         // after successful login, where route the user
-        //         // is redirected to
-        //         navigate(AppRoutes.dashboard)
-        //
-        //         appEventDispatcher.dispatchStandard(
-        //             AppEvent.APP_SUCCESS,
-        //             AppEventMessageType.LOGIN_SUCCESS
-        //         )
-        //
-        //     })
-        //     .catch((err) => {
-        //
-        //         setIsLoading(false)
-        //         setIsError(true)
-        //
-        //         if (err instanceof UnauthorizedError) {
-        //
-        //             appEventDispatcher.dispatchStandard(
-        //                 AppEvent.APP_ERROR,
-        //                 AppEventMessageType.WRONG_CREDENTIALS
-        //             )
-        //
-        //         } else if (err instanceof ForbiddenError) {
-        //
-        //             appEventDispatcher.dispatchStandard(
-        //                 AppEvent.APP_ERROR,
-        //                 AppEventMessageType.MUST_VERIFY_EMAIL
-        //             )
-        //
-        //         }
-        //     })
+        setIsLoading(true)
+        setIsError(false)
+
+        usersAPI
+            .addUser(formValues)
+            .then((loginInfo) => {
+
+                setIsLoading(false)
+                setIsError(false)
+
+                appEventDispatcher.dispatchStandard(
+                    AppEvent.APP_SUCCESS,
+                    AppEventMessageType.SAVE_SUCCESS
+                )
+
+            })
+            .catch((err) => {
+
+                setIsLoading(false)
+                setIsError(true)
+                //
+                // if (err instanceof UnauthorizedError) {
+                //
+                //     appEventDispatcher.dispatchStandard(
+                //         AppEvent.APP_ERROR,
+                //         AppEventMessageType.WRONG_CREDENTIALS
+                //     )
+                //
+                // } else if (err instanceof ForbiddenError) {
+                //
+                //     appEventDispatcher.dispatchStandard(
+                //         AppEvent.APP_ERROR,
+                //         AppEventMessageType.MUST_VERIFY_EMAIL
+                //     )
+                //
+                // }
+
+
+                appEventDispatcher.dispatchStandard(
+                    AppEvent.APP_ERROR,
+                    AppEventMessageType.SAVE_ERROR
+                )
+
+            })
+
     }
 
 }

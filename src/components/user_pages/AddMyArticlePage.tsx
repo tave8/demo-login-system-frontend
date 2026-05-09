@@ -15,7 +15,7 @@ const AddMyArticlePage = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
 
-  useState(() => {}, [])
+  // useState(() => {}, [])
 
   return (
     <>

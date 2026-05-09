@@ -3,12 +3,25 @@
 import APIHelper from "./APIHelper"
 import BaseAPI from "./BaseAPI"
 import FileHelper from "../helpers/FileHelper"
-import { RequestMethod, RequireLogin, UpdatedUserToAPI, UserFromAPI } from "../my_types"
+import {RequestMethod, RequireLogin, UpdatedUserToAPI, UserFromAPI, UserToAPI} from "../my_types"
 
 export default class UsersAPI extends BaseAPI {
+
+  private static instance: UsersAPI
+
   constructor() {
     // call new BaseAPI()
     super()
+  }
+
+  /**
+   * (Uses singleton design pattern)
+   */
+  public static getInstance(): UsersAPI {
+    if(this.instance == null) {
+      this.instance = new UsersAPI()
+    }
+    return this.instance
   }
 
   /**
@@ -39,6 +52,22 @@ export default class UsersAPI extends BaseAPI {
 
     return data
   }
+
+
+  /**
+   * Add a user.
+   * Only the admin should be allowed to add users.
+   */
+  public async addUser(newUser: UserToAPI): Promise<UserFromAPI> {
+    const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.YES, newUser)
+
+    const resp: Response = await this.doFetchAt("/users", config)
+
+    const data = await this.parseJSON<UserFromAPI>(resp)
+
+    return data
+  }
+
 
   /**
    * Upload my avatar image of the currently

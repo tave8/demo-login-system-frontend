@@ -61,7 +61,8 @@ export enum AppEventMessageType {
   SIGNUP_SUCCESS = "SIGNUP_SUCCESS",
   SIGNUP_CANNOT_USE_EMAIL = "SIGNUP_CANNOT_USE_EMAIL",
   INVALID_FIELDS = "INVALID_FIELDS",
-  SAVED_SUCCESS = "SAVED_SUCCESS",
+  SAVE_SUCCESS = "SAVE_SUCCESS",
+  SAVE_ERROR = "SAVE_ERROR",
   SERVER_ERROR = "SERVER_ERROR",
   BAD_REQUEST = "BAD_REQUEST",
 }
@@ -78,7 +79,8 @@ export const AppEventMessage: Record<Language, Record<AppEventMessageType, strin
     SIGNUP_SUCCESS: "Successful signup. Check your inbox: We've just sent you an email to verify that it's you.",
     SIGNUP_CANNOT_USE_EMAIL:  "You cannot use this email.",
     INVALID_FIELDS: "Some fields are invalid. Details: ",
-    SAVED_SUCCESS: "Saved.",
+    SAVE_SUCCESS: "Saved.",
+    SAVE_ERROR: "There was an error while saving.",
     SERVER_ERROR: "Your request has successfully reached the server, but there was a problem in the server.",
     BAD_REQUEST: "Your request could not be processed because it's malformed "
                   +"or this specific action cannot be performed."
@@ -94,7 +96,8 @@ export const AppEventMessage: Record<Language, Record<AppEventMessageType, strin
     SIGNUP_SUCCESS: "Registrazione completata. Controlla la tua casella email: ti abbiamo inviato un link per verificare la tua identità.",
     SIGNUP_CANNOT_USE_EMAIL: "Non puoi utilizzare questa email.",
     INVALID_FIELDS: "Alcuni campi non sono validi. Dettagli: ",
-    SAVED_SUCCESS: "Salvato.",
+    SAVE_SUCCESS: "Salvato.",
+    SAVE_ERROR: "C'è stato un errore durante il salvataggio.",
     SERVER_ERROR: "La richiesta è arrivata al server, ma si è verificato un errore interno.",
     BAD_REQUEST: "La richiesta non può essere elaborata perché è malformata "
               +"o questa azione non è consentita."
