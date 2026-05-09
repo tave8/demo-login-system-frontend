@@ -1,6 +1,13 @@
 import {useState} from "react"
 import {Button, Col, Container, Form, Row} from "react-bootstrap"
-import {AppEvent, AppEventMessage, AppEventMessageType, AppRoutes, type LoginToAPI} from "../../js/my_types"
+import {
+  AppEvent,
+  AppEventMessage,
+  AppEventMessageType,
+  AppRoutes,
+  type LoginToAPI,
+  UserFromAPI
+} from "../../js/my_types"
 import AuthAPI from "../../js/api/AuthAPI"
 import {useAuth} from "../../auth/AuthContext"
 import {Link, NavigateFunction, useNavigate} from "react-router-dom"
@@ -16,7 +23,8 @@ interface handleLoginParams {
   login: (token: string) => void
   logout: () => void
   authenticated: boolean
-  navigate: NavigateFunction
+  navigate: NavigateFunction,
+  setUser: (user: UserFromAPI) => void
 }
 
 const initialFormValues: LoginToAPI = {
@@ -29,7 +37,7 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
 
-  const { login, logout, authenticated } = useAuth()
+  const { login, logout, authenticated, setUser } = useAuth()
 
   const navigate = useNavigate()
 
@@ -51,7 +59,7 @@ const LoginPage = () => {
               {/* form */}
               <Form onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    handleLogin(formValues)({ login, logout, authenticated, navigate, setIsError, setIsLoading });
+                    handleLogin(formValues)({ login, logout, authenticated, navigate, setIsError, setIsLoading, setUser });
                   }
                 }}>
                 {/* email */}
@@ -98,7 +106,7 @@ const LoginPage = () => {
                     disabled={isLoading}
                     variant="primary"
                     onClick={() => {
-                      handleLogin(formValues)({ login, logout, authenticated, navigate, setIsError, setIsLoading })
+                      handleLogin(formValues)({ login, logout, authenticated, navigate, setIsError, setIsLoading, setUser })
                     }}
                   >
                     Entra
@@ -124,7 +132,7 @@ const LoginPage = () => {
 
 const handleLogin = (formValues: LoginToAPI) => {
   return async (params: handleLoginParams) => {
-    const { login, logout, authenticated, navigate, setIsError, setIsLoading } = params
+    const { login, logout, authenticated, navigate, setIsError, setIsLoading, setUser } = params
 
     const authAPI = new AuthAPI()
 
@@ -139,6 +147,10 @@ const handleLogin = (formValues: LoginToAPI) => {
         setIsError(false)
 
         const { accessToken } = loginInfo
+
+        // set the logged in user
+        setUser(loginInfo.user)
+
         login(accessToken)
         // after successful login, where route the user
         // is redirected to

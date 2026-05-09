@@ -6,7 +6,7 @@ import {
   AppEventMessageType,
   AppRoutes,
   type LoginToAPI,
-  OperatorLoginToAPI
+  OperatorLoginToAPI, UserFromAPI
 } from "../../js/my_types"
 import AuthAPI from "../../js/api/AuthAPI"
 import {useAuth} from "../../auth/AuthContext"
@@ -24,6 +24,7 @@ interface HandleLoginParams {
   logout: () => void
   authenticated: boolean
   navigate: NavigateFunction
+  setUser: (user: UserFromAPI) => void
 }
 
 const initialFormValues: OperatorLoginToAPI = {
@@ -36,7 +37,7 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
 
-  const { login, logout, authenticated } = useAuth()
+  const { login, logout, authenticated, setUser } = useAuth()
 
   const navigate = useNavigate()
 
@@ -58,7 +59,7 @@ const LoginPage = () => {
               {/* form */}
               <Form onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    handleLogin(formValues)({ login, logout, authenticated, navigate, setIsError, setIsLoading });
+                    handleLogin(formValues)({ login, logout, authenticated, navigate, setIsError, setIsLoading, setUser });
                   }
                 }}>
                 {/* email */}
@@ -105,7 +106,7 @@ const LoginPage = () => {
                     disabled={isLoading}
                     variant="primary"
                     onClick={() => {
-                      handleLogin(formValues)({ login, logout, authenticated, navigate, setIsError, setIsLoading })
+                      handleLogin(formValues)({ login, logout, authenticated, navigate, setIsError, setIsLoading, setUser })
                     }}
                   >
                     Entra
@@ -123,7 +124,7 @@ const LoginPage = () => {
 
 const handleLogin = (formValues: OperatorLoginToAPI) => {
   return async (params: HandleLoginParams) => {
-    const { login, logout, authenticated, navigate, setIsError, setIsLoading } = params
+    const { login, logout, authenticated, navigate, setIsError, setIsLoading, setUser } = params
 
     const authAPI = new AuthAPI()
 
@@ -138,6 +139,9 @@ const handleLogin = (formValues: OperatorLoginToAPI) => {
         setIsError(false)
 
         const { accessToken } = loginInfo
+
+        setUser(loginInfo.user)
+
         login(accessToken)
         // after successful login, where route the user
         // is redirected to

@@ -1,9 +1,9 @@
 import {Nav, NavDropdown} from "react-bootstrap";
-import AppNotificationBell from "./AppNotificationBell.tsx";
-import {AppRoutes} from "../js/my_types.ts";
+import AppNotificationBell from "../AppNotificationBell.tsx";
+import {AppRoutes} from "../../js/my_types.ts";
 import {Link, useNavigate} from "react-router-dom";
 import {useState} from "react";
-import {useAuth} from "../auth/AuthContext.tsx";
+import {useAuth} from "../../auth/AuthContext.tsx";
 
 export default function AppNavContentAuth() {
 

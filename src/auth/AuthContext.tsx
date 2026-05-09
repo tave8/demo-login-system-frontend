@@ -1,10 +1,18 @@
 import { createContext, useContext, useState } from "react";
 import { isLoggedIn } from "./isLoggedIn";
+import {UserFromAPI} from "../js/my_types.ts";
 
+/**
+ * This interface represents the
+ * properties that will be accessible
+ * by invoking the useAuth() hook.
+ */
 interface AuthContextType {
     authenticated: boolean;
     login: (token: string) => void;
     logout: () => void;
+    user: UserFromAPI | unknown;
+    setUser: (user: UserFromAPI) => void
 }
 
 /**
@@ -27,6 +35,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [authenticated, setAuthenticated] = useState<boolean>(isLoggedIn);
+    const [user, setUser] = useState({})
 
     const login = (token: string) => {
         localStorage.setItem("token", token);
@@ -39,12 +48,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     return (
-        <AuthContext.Provider value={{ authenticated, login, logout }}>
+        // these "props" will be "passed down"
+        <AuthContext.Provider value={{ authenticated, login, logout, setUser, user }}>
             {children}
         </AuthContext.Provider>
     );
 }
 
+/**
+ * This hook will be globally accessible in the app,
+ * and by calling it, it  will provide access to
+ * the properties specified in AuthContextType interface.
+ */
 export const useAuth = () => {
     const context = useContext(AuthContext);
     if (!context) throw new Error("useAuth must be used inside AuthProvider");

@@ -1,20 +1,23 @@
 import {Link, useNavigate} from "react-router-dom";
-import {AppRoutes} from "../js/my_types.ts";
+import {AppRoutes} from "../../js/my_types.ts";
 import {useState} from "react";
-import {useAuth} from "../auth/AuthContext.tsx";
+import {useAuth} from "../../auth/AuthContext.tsx";
 import {Nav} from "react-bootstrap";
 
-export default function AppNavContentAdmin() {
+export default function AppNavContentForAdmin() {
     const navigate = useNavigate()
     const [navExpanded, setNavExpanded] = useState(false);
 
-    const { login, logout, authenticated } = useAuth()
+    const { login, logout, authenticated, user } = useAuth()
 
     const closeNav = () => setNavExpanded(false);
 
+    console.log(user)
 
     return (
         <>
+            {/* if the role of this user is admin, show this */}
+
             <Nav className="me-auto">
 
                 {authenticated && (

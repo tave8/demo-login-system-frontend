@@ -1,10 +1,10 @@
 import {NavigateFunction, useNavigate} from "react-router-dom";
 import {useState} from "react";
-import {useAuth} from "../auth/AuthContext.tsx";
+import {useAuth} from "../../auth/AuthContext.tsx";
 import {Nav, NavDropdown} from "react-bootstrap";
-import AppNotificationBell from "./AppNotificationBell.tsx";
-import {AppEvent, AppEventMessageType, AppRoutes} from "../js/my_types.ts";
-import AppEventDispatcher from "../js/AppEventDispatcher.ts";
+import AppNotificationBell from "../AppNotificationBell.tsx";
+import {AppEvent, AppEventMessageType, AppRoutes} from "../../js/my_types.ts";
+import AppEventDispatcher from "../../js/AppEventDispatcher.ts";
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
 

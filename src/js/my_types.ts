@@ -150,6 +150,14 @@ export interface NotificationsPageFromAPI extends Pagination<NotificationFromAPI
 export interface EnrichedNotificationsPageFromAPI extends Pagination<EnrichedNotificationFromAPI> {}
 
 
+export interface UserFromAPI {
+  firstname: string
+  lastname: string
+  email: string
+  avatarUrl: string
+  role: string
+}
+
 
 // MANAGER LOGIN
 
@@ -171,6 +179,7 @@ export interface LoginFromAPI {
   accessToken: string
   message: string
   mustChangePasswordNow: boolean
+  user: UserFromAPI
 }
 
 // SIGNUP
@@ -225,12 +234,7 @@ export interface UpdatedUserToAPI {
   lastname: string
 }
 
-export interface UserFromAPI {
-  firstname: string
-  lastname: string
-  email: string
-  avatarUrl: string
-}
+
 
 // ARTICLES
 
