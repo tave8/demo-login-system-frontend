@@ -150,12 +150,21 @@ export interface NotificationsPageFromAPI extends Pagination<NotificationFromAPI
 export interface EnrichedNotificationsPageFromAPI extends Pagination<EnrichedNotificationFromAPI> {}
 
 
+export enum UserRole {
+  ADMIN = "ADMIN",
+  COORDINATOR = "COORDINATOR",
+  OPERATOR = "OPERATOR",
+  // this must only be used internally, to mean
+  // that the user is not logged in yet
+  __NOT_DEFINED = "__NOT_DEFINED"
+}
+
 export interface UserFromAPI {
   firstname: string
   lastname: string
   email: string
   avatarUrl: string
-  role: string
+  role: UserRole
 }
 
 

@@ -17,7 +17,7 @@ interface handleLogoutParams {
 }
 
 
-export default function AppNavContentSettings() {
+export default function NavContentSettings() {
 
     const navigate = useNavigate()
     const [navExpanded, setNavExpanded] = useState(false);

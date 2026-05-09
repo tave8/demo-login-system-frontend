@@ -6,10 +6,10 @@ import { useAuth } from "../auth/AuthContext"
 import {AppEvent, AppEventMessage, AppEventMessageType, AppRoutes} from "../js/my_types"
 import AppEventDispatcher from "../js/AppEventDispatcher.ts";
 import AppNotificationBell from "./AppNotificationBell.tsx";
-import AppNavContentAuth from "./navbar/AppNavContentAuth.tsx";
-import AppNavContentSettings from "./navbar/AppNavContentSettings.tsx";
-import AppNavContentForAdmin from "./navbar/AppNavContentForAdmin.tsx";
-import AppNavContentForOperator from "./navbar/AppNavContentForOperator.tsx";
+import NavContentAuth from "./navbar/NavContentAuth.tsx";
+import NavContentSettings from "./navbar/NavContentSettings.tsx";
+import NavContentForAdmin from "./navbar/NavContentForAdmin.tsx";
+import NavContentForOperator from "./navbar/NavContentForOperator.tsx";
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
 
@@ -41,20 +41,20 @@ const MyNav = () => {
           <Navbar.Collapse id="basic-navbar-nav">
 
             {/* for admin */}
-            <AppNavContentForAdmin />
+            <NavContentForAdmin />
 
             {/* for coordinator */}
             {/* ..add here.. */}
 
             {/* for operator */}
-            <AppNavContentForOperator />
+            <NavContentForOperator />
 
 
             {/* user settings */}
-            <AppNavContentSettings />
+            <NavContentSettings />
 
             {/* login & signup */}
-            <AppNavContentAuth />
+            <NavContentAuth />
 
           </Navbar.Collapse>
         </Container>

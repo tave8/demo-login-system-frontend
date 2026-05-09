@@ -5,7 +5,7 @@ import {Link, useNavigate} from "react-router-dom";
 import {useState} from "react";
 import {useAuth} from "../../auth/AuthContext.tsx";
 
-export default function AppNavContentAuth() {
+export default function NavContentAuth() {
 
     const navigate = useNavigate()
     const [navExpanded, setNavExpanded] = useState(false);

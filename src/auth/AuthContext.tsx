@@ -9,10 +9,13 @@ import {UserFromAPI} from "../js/my_types.ts";
  */
 interface AuthContextType {
     authenticated: boolean;
-    login: (token: string) => void;
+    login: (token: string, user: UserFromAPI) => void;
     logout: () => void;
-    user: UserFromAPI | unknown;
-    setUser: (user: UserFromAPI) => void
+    // get user from local storage
+    getUser: () => UserFromAPI
+    // get user from local storage, only if they're authenticated,
+    // if not,
+    // getUserIfAuthenticated: () => UserFromAPI
 }
 
 /**
@@ -35,21 +38,43 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [authenticated, setAuthenticated] = useState<boolean>(isLoggedIn);
-    const [user, setUser] = useState({})
 
-    const login = (token: string) => {
+    /**
+     * Get user from local storage.
+     */
+    const getUser = () => {
+        // get user from local storage
+        const userAsStr = localStorage.getItem("user")
+
+        if (userAsStr == null) {
+            return {
+
+            }
+            // throw new Error("There's no user in local storage.")
+        }
+
+        // check for parsing error
+        const user: UserFromAPI = JSON.parse(userAsStr)
+
+        return user
+    }
+
+
+    const login = (token: string, user: UserFromAPI) => {
         localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user))
         setAuthenticated(true);
     };
 
     const logout = () => {
         localStorage.removeItem("token");
+        localStorage.removeItem("user")
         setAuthenticated(false);
     };
 
     return (
         // these "props" will be "passed down"
-        <AuthContext.Provider value={{ authenticated, login, logout, setUser, user }}>
+        <AuthContext.Provider value={{ authenticated, login, logout, getUser }}>
             {children}
         </AuthContext.Provider>
     );

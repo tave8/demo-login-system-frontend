@@ -20,11 +20,10 @@ const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
 interface handleLoginParams {
   setIsLoading: (x:boolean) => void
   setIsError: (x:boolean) => void
-  login: (token: string) => void
+  login: (token: string, user: UserFromAPI) => void
   logout: () => void
   authenticated: boolean
   navigate: NavigateFunction,
-  setUser: (user: UserFromAPI) => void
 }
 
 const initialFormValues: LoginToAPI = {
@@ -37,7 +36,7 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
 
-  const { login, logout, authenticated, setUser } = useAuth()
+  const { login, logout, authenticated } = useAuth()
 
   const navigate = useNavigate()
 
@@ -59,7 +58,7 @@ const LoginPage = () => {
               {/* form */}
               <Form onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    handleLogin(formValues)({ login, logout, authenticated, navigate, setIsError, setIsLoading, setUser });
+                    handleLogin(formValues)({ login, logout, authenticated, navigate, setIsError, setIsLoading });
                   }
                 }}>
                 {/* email */}
@@ -106,7 +105,7 @@ const LoginPage = () => {
                     disabled={isLoading}
                     variant="primary"
                     onClick={() => {
-                      handleLogin(formValues)({ login, logout, authenticated, navigate, setIsError, setIsLoading, setUser })
+                      handleLogin(formValues)({ login, logout, authenticated, navigate, setIsError, setIsLoading })
                     }}
                   >
                     Entra
@@ -132,7 +131,7 @@ const LoginPage = () => {
 
 const handleLogin = (formValues: LoginToAPI) => {
   return async (params: handleLoginParams) => {
-    const { login, logout, authenticated, navigate, setIsError, setIsLoading, setUser } = params
+    const { login, logout, authenticated, navigate, setIsError, setIsLoading } = params
 
     const authAPI = new AuthAPI()
 
@@ -148,10 +147,8 @@ const handleLogin = (formValues: LoginToAPI) => {
 
         const { accessToken } = loginInfo
 
-        // set the logged in user
-        setUser(loginInfo.user)
+        login(accessToken, loginInfo.user)
 
-        login(accessToken)
         // after successful login, where route the user
         // is redirected to
         navigate(AppRoutes.dashboard)
