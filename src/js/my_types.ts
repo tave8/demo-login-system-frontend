@@ -22,6 +22,8 @@ export const AppRoutes = {
   forgotPasswordSetNewPassword: "/auth/forgot-password/verify/:code",
   forgotPasswordSetNewPasswordWith: (code: string) => `/auth/forgot-password/verify/${code}`,
 
+  unauthorized: "/auth/unauthorized",
+
   // *****************
   // LOGGED IN
   // *****************

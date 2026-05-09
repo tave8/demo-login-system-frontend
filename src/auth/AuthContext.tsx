@@ -12,10 +12,7 @@ interface AuthContextType {
     login: (token: string, user: UserFromAPI) => void;
     logout: () => void;
     // get user from local storage
-    getUser: () => UserFromAPI
-    // get user from local storage, only if they're authenticated,
-    // if not,
-    // getUserIfAuthenticated: () => UserFromAPI
+    getUser: () => UserFromAPI | null
 }
 
 /**
@@ -46,11 +43,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // get user from local storage
         const userAsStr = localStorage.getItem("user")
 
+        // no user in local storage (no key)
         if (userAsStr == null) {
-            return {
-
-            }
-            // throw new Error("There's no user in local storage.")
+            return null
         }
 
         // check for parsing error

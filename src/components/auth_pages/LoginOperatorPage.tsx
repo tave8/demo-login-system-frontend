@@ -32,7 +32,7 @@ const initialFormValues: OperatorLoginToAPI = {
   password: "",
 }
 
-const LoginPage = () => {
+const LoginOperatorPage = () => {
   const [formValues, setFormValues] = useState(initialFormValues)
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
@@ -178,4 +178,4 @@ const handleLogin = (formValues: OperatorLoginToAPI) => {
 
 }
 
-export default LoginPage
+export default LoginOperatorPage

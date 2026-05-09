@@ -6,7 +6,7 @@ import {BrowserRouter, Routes, Route, Link, Navigate} from "react-router-dom"
 import { ProtectedRoute } from "./auth/ProtectedRoute.tsx"
 import { PublicOnlyRoute } from "./auth/PublicOnlyRoute.tsx"
 import { AuthGuard } from "./auth/AuthGuard.tsx"
-import { AppRoutes } from "./js/my_types.ts"
+import {AppRoutes, UserRole} from "./js/my_types.ts"
 
 // user_pages
 import SeeMyProfilePage from "./components/user_pages/SeeMyProfilePage.tsx"
@@ -30,6 +30,7 @@ import DashboardPage from "./components/user_pages/DashboardPage.tsx";
 import AppToast from "./components/AppToast.tsx";
 import {Helmet} from "react-helmet";
 import LoginOperatorPage from "./components/auth_pages/LoginOperatorPage.tsx";
+import UnauthorizedPage from "./components/UnauthorizedPage.jsx";
 
 
 function App() {
@@ -68,7 +69,7 @@ function App() {
                               <Route
                                   path={AppRoutes.dashboard}
                                   element={
-                                      <ProtectedRoute>
+                                      <ProtectedRoute allowedRoles={[UserRole.ADMIN]}>
                                           <DashboardPage />
                                       </ProtectedRoute>
                                   }
@@ -129,6 +130,8 @@ function App() {
                                   }
                               />
 
+                                {/* PUBLIC ONLY ROUTES */}
+
                                 <Route
                                   path={AppRoutes.login}
                                   element={
@@ -175,8 +178,12 @@ function App() {
                                   }
                               />
 
+                                {/* unauthorized */}
+                                <Route path={AppRoutes.unauthorized} element={<UnauthorizedPage />} />
 
+                                {/* not found */}
                                 <Route path="*" element={<NotFoundPage />} />
+
                               </Routes>
 
                         </Col>
