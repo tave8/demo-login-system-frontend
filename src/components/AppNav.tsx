@@ -7,16 +7,11 @@ import {AppEvent, AppEventMessage, AppEventMessageType, AppRoutes} from "../js/m
 import AppEventDispatcher from "../js/AppEventDispatcher.ts";
 import AppNotificationBell from "./AppNotificationBell.tsx";
 import AppNavContentAuth from "./AppNavContentAuth.tsx";
+import AppNavContentSettings from "./AppNavContentSettings.tsx";
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
 
 
-interface handleLogoutParams {
-  login: (token: string) => void
-  logout: () => void
-  authenticated: boolean
-  navigate: NavigateFunction
-}
 
 const MyNav = () => {
   const navigate = useNavigate()
@@ -104,45 +99,12 @@ const MyNav = () => {
             </Nav>
 
             {/* login & signup */}
-            {!authenticated && (
-                <AppNavContentAuth />
-            )}
+            <AppNavContentAuth />
 
 
-            {/* settings */}
-            {authenticated && (
-                <Nav className="align-items-center">
-                  {/* notifications */}
-                  <Nav.Item>
-                    <AppNotificationBell  />
-                  </Nav.Item>
+            {/* user settings */}
+            <AppNavContentSettings />
 
-                  <NavDropdown title="Impostazioni" id="basic-nav-dropdown" align="end">
-                    {/* my profile */}
-                    <NavDropdown.Item
-                        onClick={() => {
-                          navigate(AppRoutes.myProfile)
-                          closeNav()
-                        }
-                      }>
-                      Il mio profilo
-                    </NavDropdown.Item>
-
-                    {/* divider */}
-                    <NavDropdown.Divider />
-
-                    {/* logout */}
-                    <NavDropdown.Item
-                        onClick={() => {
-                          handleLogout()({ login, logout, authenticated, navigate });
-                          closeNav()
-                        }}>
-                      Logout
-                    </NavDropdown.Item>
-                  </NavDropdown>
-
-                </Nav>
-            )}
 
           </Navbar.Collapse>
         </Container>
@@ -150,19 +112,6 @@ const MyNav = () => {
   )
 }
 
-const handleLogout = () => {
-  return (params: handleLogoutParams) => {
-    const { login, logout, authenticated, navigate } = params
 
-    logout()
-    navigate(AppRoutes.loginOperator)
-
-    appEventDispatcher.dispatchStandard(
-        AppEvent.APP_SUCCESS,
-        AppEventMessageType.LOGOUT_SUCCESS
-    )
-
-  }
-}
 
 export default MyNav

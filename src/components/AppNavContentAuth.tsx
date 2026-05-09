@@ -17,26 +17,28 @@ export default function AppNavContentAuth() {
     return (
         <>
             {/* login / signup */}
-            <Nav className="end">
-                <Link
-                    to={AppRoutes.loginOperator}
-                    onClick={closeNav}
-                    className="nav-item nav-link">
-                    Entra (operatore)
-                </Link>
-                <Link
-                    to={AppRoutes.login}
-                    onClick={closeNav}
-                    className="nav-item nav-link">
-                    Entra (manager)
-                </Link>
-                <Link
-                    to={AppRoutes.signup}
-                    onClick={closeNav}
-                    className="nav-item nav-link">
-                    Iscriviti (azienda)
-                </Link>
-            </Nav>
+            {!authenticated && (
+                <Nav className="end">
+                    <Link
+                        to={AppRoutes.loginOperator}
+                        onClick={closeNav}
+                        className="nav-item nav-link">
+                        Entra (operatore)
+                    </Link>
+                    <Link
+                        to={AppRoutes.login}
+                        onClick={closeNav}
+                        className="nav-item nav-link">
+                        Entra (manager)
+                    </Link>
+                    <Link
+                        to={AppRoutes.signup}
+                        onClick={closeNav}
+                        className="nav-item nav-link">
+                        Iscriviti (azienda)
+                    </Link>
+                </Nav>
+            )}
         </>
     )
 }
