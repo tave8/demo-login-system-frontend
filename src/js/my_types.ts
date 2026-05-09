@@ -159,11 +159,26 @@ export interface EnrichedNotificationsPageFromAPI extends Pagination<EnrichedNot
 export enum UserRole {
   ADMIN = "ADMIN",
   COORDINATOR = "COORDINATOR",
-  OPERATOR = "OPERATOR",
-  // this must only be used internally, to mean
-  // that the user is not logged in yet
-  __NOT_DEFINED = "__NOT_DEFINED"
+  OPERATOR = "OPERATOR"
 }
+
+
+export const UserRoleByLanguage: Record<Language, Record<UserRole, string>>  = {
+
+  [Language.EN]: {
+    [UserRole.ADMIN]: "ADMIN",
+    [UserRole.COORDINATOR]: "COORDINATOR",
+    [UserRole.OPERATOR]: "OPERATOR"
+  },
+
+  [Language.IT]: {
+    [UserRole.ADMIN]: "ADMIN",
+    [UserRole.COORDINATOR]: "COORDINATORE",
+    [UserRole.OPERATOR]: "OPERATORE"
+  },
+
+}
+
 
 export interface UserFromAPI {
   firstname: string
