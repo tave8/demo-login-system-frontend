@@ -3,7 +3,7 @@ import NetworkError from "../exceptions/NetworkError.ts";
 import ExpectedJSONPayloadError from "../exceptions/ExpectedJSONPayloadError.ts";
 import ShouldLogoutError from "../exceptions/ShouldLogoutError.ts";
 import AppEventDispatcher from "../AppEventDispatcher.ts";
-import {AppEvent, AppEventMessage} from "../my_types.ts";
+import {AppEvent, AppEventMessage, AppEventMessageType} from "../my_types.ts";
 import ServerError from "../exceptions/ServerError.ts";
 import BadRequestError from "../exceptions/BadRequestError.ts";
 
@@ -39,9 +39,9 @@ export default abstract class BaseAPI {
             if(err instanceof NetworkError) {
                 // console.log("NETWORK ERROR!")
 
-                this.appEventDispatcher.dispatch(
+                this.appEventDispatcher.dispatchStandard(
                     AppEvent.APP_ERROR,
-                    AppEventMessage.NETWORK_ERROR
+                    AppEventMessageType.NETWORK_ERROR
                 )
 
             }
@@ -66,25 +66,25 @@ export default abstract class BaseAPI {
 
             if(err instanceof ExpectedJSONPayloadError) {
 
-                this.appEventDispatcher.dispatch(
+                this.appEventDispatcher.dispatchStandard(
                     AppEvent.APP_ERROR,
-                    AppEventMessage.EXPECTED_JSON_PAYLOAD
+                    AppEventMessageType.EXPECTED_JSON_PAYLOAD
                 )
 
             } else if (err instanceof BadRequestError) {
 
-                this.appEventDispatcher.dispatch(
+                this.appEventDispatcher.dispatchStandard(
                     AppEvent.APP_ERROR,
-                    AppEventMessage.BAD_REQUEST
+                    AppEventMessageType.BAD_REQUEST
                 )
 
             } else if (err instanceof ShouldLogoutError) {
 
             } else if (err instanceof ServerError) {
 
-                this.appEventDispatcher.dispatch(
+                this.appEventDispatcher.dispatchStandard(
                     AppEvent.APP_ERROR,
-                    AppEventMessage.SERVER_ERROR
+                    AppEventMessageType.SERVER_ERROR
                 )
 
             }

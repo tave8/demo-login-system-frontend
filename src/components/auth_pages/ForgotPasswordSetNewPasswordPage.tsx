@@ -65,7 +65,7 @@ const ForgotPasswordSetNewPasswordPage = () => {
         // if the code does not exist,
         // we redirect the user
         if(!code) {
-            navigate(AppRoutes.home)
+            navigate(AppRoutes.login)
             return
         }
 

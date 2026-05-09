@@ -10,7 +10,6 @@ import {ErrorPayloadFromAPI, FetchConfigType, RequestHeaderContentType, RequestM
 import ForbiddenError from "../exceptions/ForbiddenError.ts";
 import NotFoundError from "../exceptions/NotFoundError.ts";
 import ExpectedJSONPayloadError from "../exceptions/ExpectedJSONPayloadError.ts";
-import {call} from "@vitejs/plugin-react";
 
 // import {logout} from "../auth/AuthContext.tsx"
 

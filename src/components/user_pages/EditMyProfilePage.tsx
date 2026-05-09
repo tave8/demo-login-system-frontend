@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Container, Row, Col, Form, Button, Spinner, Alert, Image } from "react-bootstrap"
-import {AppEvent, AppEventMessage, UpdatedUserToAPI, UserFromAPI} from "../../js/my_types"
+import {AppEvent, AppEventMessage, AppEventMessageType, UpdatedUserToAPI, UserFromAPI} from "../../js/my_types"
 import UsersAPI from "../../js/api/UsersAPI"
 import UnauthorizedError from "../../js/exceptions/UnauthorizedError"
 import { useAuth } from "../../auth/AuthContext"
@@ -177,9 +177,9 @@ const handleEditProfile = (updatedUser: UpdatedUserToAPI) => {
       .updateMyInfo(updatedUser)
       .then((userData) => {
 
-        appEventDispatcher.dispatch(
+        appEventDispatcher.dispatchStandard(
             AppEvent.APP_SUCCESS,
-            AppEventMessage.SAVED_SUCCESS
+            AppEventMessageType.SAVED_SUCCESS
         )
 
       })

@@ -20,11 +20,10 @@ const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
 interface HandleLoginParams {
   setIsLoading: (x:boolean) => void
   setIsError: (x:boolean) => void
-  login: (token: string) => void
+  login: (token: string, user: UserFromAPI) => void
   logout: () => void
   authenticated: boolean
   navigate: NavigateFunction
-  setUser: (user: UserFromAPI) => void
 }
 
 const initialFormValues: OperatorLoginToAPI = {
@@ -37,7 +36,7 @@ const LoginOperatorPage = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
 
-  const { login, logout, authenticated, setUser } = useAuth()
+  const { login, logout, authenticated } = useAuth()
 
   const navigate = useNavigate()
 
@@ -59,7 +58,7 @@ const LoginOperatorPage = () => {
               {/* form */}
               <Form onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    handleLogin(formValues)({ login, logout, authenticated, navigate, setIsError, setIsLoading, setUser });
+                    handleLogin(formValues)({ login, logout, authenticated, navigate, setIsError, setIsLoading });
                   }
                 }}>
                 {/* email */}
@@ -106,7 +105,7 @@ const LoginOperatorPage = () => {
                     disabled={isLoading}
                     variant="primary"
                     onClick={() => {
-                      handleLogin(formValues)({ login, logout, authenticated, navigate, setIsError, setIsLoading, setUser })
+                      handleLogin(formValues)({ login, logout, authenticated, navigate, setIsError, setIsLoading })
                     }}
                   >
                     Entra
@@ -124,7 +123,7 @@ const LoginOperatorPage = () => {
 
 const handleLogin = (formValues: OperatorLoginToAPI) => {
   return async (params: HandleLoginParams) => {
-    const { login, logout, authenticated, navigate, setIsError, setIsLoading, setUser } = params
+    const { login, logout, authenticated, navigate, setIsError, setIsLoading } = params
 
     const authAPI = new AuthAPI()
 
@@ -140,9 +139,8 @@ const handleLogin = (formValues: OperatorLoginToAPI) => {
 
         const { accessToken } = loginInfo
 
-        setUser(loginInfo.user)
 
-        login(accessToken)
+        login(accessToken, loginInfo.user)
         // after successful login, where route the user
         // is redirected to
         navigate(AppRoutes.dashboard)
