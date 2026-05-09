@@ -1,37 +1,31 @@
 import AppEventDispatcher from "../../../js/AppEventDispatcher.ts";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
-import {UserRole} from "../../../js/my_types.ts";
+import {UserRole, UserToAPI} from "../../../js/my_types.ts";
 import UserRoleHelper from "../../../js/helpers/UserRoleHelper.ts";
 
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
 
-interface HandleAddUser {
 
+interface HandleAddUserParams {
+    setIsLoading: (x:boolean) => void
+    setIsError: (x:boolean) => void
 }
 
-const initialFormValues = {
+const initialFormValues: UserToAPI = {
     firstname: "",
     lastname: "",
     email: "",
-    role: ""
+    // we simply set the operator as the default role
+    role: UserRole.OPERATOR
 }
 
 export default function AddUserPage () {
     const [formValues, setFormValues] = useState(initialFormValues)
-    // user role
-    const [role, setRole] = useState<UserRole>(UserRole.OPERATOR)
     const [isLoading, setIsLoading] = useState(false)
     const [isError, setIsError] = useState(false)
 
-
-    // useEffect(() => {
-    //     setRole(UserRole.OPERATOR)
-    // }, [])
-
-    // const navigate = useNavigate()
-    console.log(role)
 
     return (
         <>
@@ -51,9 +45,13 @@ export default function AddUserPage () {
                             <Col>
                                 <Form.Label>Ruolo</Form.Label>
                                 <Form.Select
-                                    value={role}
+                                    value={formValues.role}
                                     onChange={(e) => {
-                                    setRole(e.target.value as UserRole)
+
+                                    setFormValues({
+                                        ...formValues,
+                                        role: e.target.value as UserRole
+                                    })
                                 }}>
                                     {Object.entries(UserRoleHelper.getAllRolesMapExceptAdmin()).map(([role, label]) => (
                                         <option key={role} value={role}>{label}</option>
@@ -66,7 +64,7 @@ export default function AddUserPage () {
                             {/* form */}
                             <Form onKeyDown={(e) => {
                                 if (e.key === "Enter") {
-                                    // handleLogin(formValues)({ login, logout, authenticated, navigate, setIsError, setIsLoading });
+                                    handleAddUser(formValues)({ setIsError, setIsLoading })
                                 }
                             }}>
 
@@ -111,7 +109,7 @@ export default function AddUserPage () {
 
                                 {/* email */}
                                 {/* only coordinators have email */}
-                                {role == UserRole.COORDINATOR && (
+                                {formValues.role == UserRole.COORDINATOR && (
                                     <Col>
                                         <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                                             <Form.Label>Email</Form.Label>
@@ -139,7 +137,7 @@ export default function AddUserPage () {
                                         disabled={isLoading}
                                         variant="primary"
                                         onClick={() => {
-                                            // handleLogin(formValues)({ login, logout, authenticated, navigate, setIsError, setIsLoading })
+                                            handleAddUser(formValues)({ setIsError, setIsLoading })
                                         }}
                                     >
                                         Aggiungi
@@ -155,57 +153,59 @@ export default function AddUserPage () {
     )
 }
 
-// const handleAddUser = (formValues: LoginToAPI) => {
-//     return async (params: handleLoginParams) => {
-//         const { login, logout, authenticated, navigate, setIsError, setIsLoading } = params
-//
-//         const authAPI = new AuthAPI()
-//
-//         setIsLoading(true)
-//         setIsError(false)
-//
-//         authAPI
-//             .login(formValues)
-//             .then((loginInfo) => {
-//
-//                 setIsLoading(false)
-//                 setIsError(false)
-//
-//                 const { accessToken } = loginInfo
-//
-//                 login(accessToken, loginInfo.user)
-//
-//                 // after successful login, where route the user
-//                 // is redirected to
-//                 navigate(AppRoutes.dashboard)
-//
-//                 appEventDispatcher.dispatchStandard(
-//                     AppEvent.APP_SUCCESS,
-//                     AppEventMessageType.LOGIN_SUCCESS
-//                 )
-//
-//             })
-//             .catch((err) => {
-//
-//                 setIsLoading(false)
-//                 setIsError(true)
-//
-//                 if (err instanceof UnauthorizedError) {
-//
-//                     appEventDispatcher.dispatchStandard(
-//                         AppEvent.APP_ERROR,
-//                         AppEventMessageType.WRONG_CREDENTIALS
-//                     )
-//
-//                 } else if (err instanceof ForbiddenError) {
-//
-//                     appEventDispatcher.dispatchStandard(
-//                         AppEvent.APP_ERROR,
-//                         AppEventMessageType.MUST_VERIFY_EMAIL
-//                     )
-//
-//                 }
-//             })
-//     }
-//
-// }
+const handleAddUser = (formValues: UserToAPI) => {
+    return async (params: HandleAddUserParams) => {
+        const { setIsError, setIsLoading } = params
+
+        console.log(formValues)
+
+        // const authAPI = new AuthAPI()
+        //
+        // setIsLoading(true)
+        // setIsError(false)
+        //
+        // authAPI
+        //     .login(formValues)
+        //     .then((loginInfo) => {
+        //
+        //         setIsLoading(false)
+        //         setIsError(false)
+        //
+        //         const { accessToken } = loginInfo
+        //
+        //         login(accessToken, loginInfo.user)
+        //
+        //         // after successful login, where route the user
+        //         // is redirected to
+        //         navigate(AppRoutes.dashboard)
+        //
+        //         appEventDispatcher.dispatchStandard(
+        //             AppEvent.APP_SUCCESS,
+        //             AppEventMessageType.LOGIN_SUCCESS
+        //         )
+        //
+        //     })
+        //     .catch((err) => {
+        //
+        //         setIsLoading(false)
+        //         setIsError(true)
+        //
+        //         if (err instanceof UnauthorizedError) {
+        //
+        //             appEventDispatcher.dispatchStandard(
+        //                 AppEvent.APP_ERROR,
+        //                 AppEventMessageType.WRONG_CREDENTIALS
+        //             )
+        //
+        //         } else if (err instanceof ForbiddenError) {
+        //
+        //             appEventDispatcher.dispatchStandard(
+        //                 AppEvent.APP_ERROR,
+        //                 AppEventMessageType.MUST_VERIFY_EMAIL
+        //             )
+        //
+        //         }
+        //     })
+    }
+
+}

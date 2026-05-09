@@ -179,6 +179,13 @@ export const UserRoleByLanguage: Record<Language, Record<UserRole, string>>  = {
 
 }
 
+export interface UserToAPI {
+  firstname: string
+  lastname: string
+  role: UserRole
+  email: string
+}
+
 
 export interface UserFromAPI {
   firstname: string
