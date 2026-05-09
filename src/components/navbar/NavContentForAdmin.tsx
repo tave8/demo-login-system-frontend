@@ -4,12 +4,16 @@ import {useState} from "react";
 import {useAuth} from "../../auth/AuthContext.tsx";
 import {Nav} from "react-bootstrap";
 
-export default function NavContentForAdmin() {
+interface Props {
+    setNavExpanded: (x: boolean) => void
+}
+
+export default function NavContentForAdmin({ setNavExpanded }: Props) {
     const navigate = useNavigate()
-    const [navExpanded, setNavExpanded] = useState(false);
 
     const { login, logout, authenticated, getUser } = useAuth()
 
+    const user = getUser()
 
     const closeNav = () => setNavExpanded(false);
 
@@ -18,7 +22,7 @@ export default function NavContentForAdmin() {
         <>
             {/* if the role of this user is admin, show this */}
 
-            {authenticated && getUser().role == UserRole.ADMIN && (
+            {authenticated && user && user.role == UserRole.ADMIN && (
 
                 <Nav className="me-auto">
 

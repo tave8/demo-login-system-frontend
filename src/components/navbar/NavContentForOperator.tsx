@@ -4,19 +4,24 @@ import {useState} from "react";
 import {useAuth} from "../../auth/AuthContext.tsx";
 import {Nav} from "react-bootstrap";
 
-export default function NavContentForOperator() {
+
+interface Props {
+    setNavExpanded: (x: boolean) => void
+}
+
+export default function NavContentForOperator({ setNavExpanded }: Props) {
     const navigate = useNavigate()
-    const [navExpanded, setNavExpanded] = useState(false);
 
     const { login, logout, authenticated, getUser } = useAuth()
 
-    const closeNav = () => setNavExpanded(false);
+    const user = getUser()
 
+    const closeNav = () => setNavExpanded(false);
 
     return (
         <>
 
-            {authenticated && getUser().role == UserRole.OPERATOR && (
+            {authenticated && user && user.role == UserRole.OPERATOR && (
 
                 <Nav className="me-auto">
 

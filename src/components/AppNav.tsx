@@ -19,8 +19,6 @@ const MyNav = () => {
   const navigate = useNavigate()
   const [navExpanded, setNavExpanded] = useState(false);
 
-  const { login, logout, authenticated } = useAuth()
-
   const closeNav = () => setNavExpanded(false);
 
   return (
@@ -41,13 +39,14 @@ const MyNav = () => {
           <Navbar.Collapse id="basic-navbar-nav">
 
             {/* for admin */}
-            <NavContentForAdmin />
+            <NavContentForAdmin setNavExpanded={setNavExpanded} />
+
+            {/* for operator */}
+            <NavContentForOperator setNavExpanded={setNavExpanded} />
 
             {/* for coordinator */}
             {/* ..add here.. */}
 
-            {/* for operator */}
-            <NavContentForOperator />
 
 
             {/* user settings */}
