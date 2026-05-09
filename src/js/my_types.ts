@@ -29,7 +29,9 @@ export const AppRoutes = {
   // *****************
 
   // admin only
-  team: "/u/team",
+  users: "/u/users",
+  addUser: "/u/users/add",
+
 
   dashboard: "/u/dashboard",
   myProfile: "/u/me",

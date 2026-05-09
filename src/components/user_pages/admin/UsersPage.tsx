@@ -1,4 +1,4 @@
-export default function TeamPage() {
+export default function UsersPage() {
     return (
         <>
         <p>Team page</p>

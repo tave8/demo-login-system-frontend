@@ -2,7 +2,7 @@ import {Link, useNavigate} from "react-router-dom";
 import {AppRoutes, UserRole} from "../../js/my_types.ts";
 import {useState} from "react";
 import {useAuth} from "../../auth/AuthContext.tsx";
-import {Nav} from "react-bootstrap";
+import {Nav, NavDropdown} from "react-bootstrap";
 
 interface Props {
     setNavExpanded: (x: boolean) => void
@@ -47,12 +47,30 @@ export default function NavContentForAdmin({ setNavExpanded }: Props) {
                         {/*    Clienti*/}
                         {/*</Link>*/}
 
-                        <Link
-                            to={AppRoutes.team}
-                            onClick={closeNav}
-                            className="nav-item nav-link">
-                            Team
-                        </Link>
+                        <NavDropdown title="Team" id="basic-nav-dropdown" align="end">
+                            {/* add user */}
+                            <NavDropdown.Item
+                                onClick={() => {
+                                    navigate(AppRoutes.users)
+                                    closeNav()
+                                }
+                                }>
+                                Vedi
+                            </NavDropdown.Item>
+
+                            {/* divider */}
+                            <NavDropdown.Divider />
+
+                            {/* see users */}
+                            <NavDropdown.Item
+                                onClick={() => {
+                                    navigate(AppRoutes.addUser)
+                                    closeNav()
+                                }}>
+                                Aggiungi utente
+                            </NavDropdown.Item>
+                        </NavDropdown>
+
 
                         {/*<Link*/}
                         {/*    to={AppRoutes.uploadCV}*/}
