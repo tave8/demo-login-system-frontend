@@ -34,7 +34,7 @@ export function MustChangePasswordRoute({ children }: Params)
     // however the user might see that they're not authorized,
     // because they cannot access that page
     if (!user.mustChangePasswordNow) {
-        return <Navigate to={AppRoutes.myProfile} />
+        return <Navigate to={AppRoutes.unauthorized} />
     }
 
     return children;
