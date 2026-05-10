@@ -46,7 +46,7 @@ export default function ResetPasswordFirstLogin() {
                             }
                         }}>
 
-                        {!isLoading && !isError && (
+                        {!isLoading && (
                             <>
                                 {/* old password */}
                                 <Row className="g-3">
@@ -55,6 +55,7 @@ export default function ResetPasswordFirstLogin() {
                                             <Form.Label>Password temporanea</Form.Label>
                                             <Form.Control
                                                 type="password"
+                                                disabled={isLoading}
                                                 placeholder="Password temporanea"
                                                 value={formValues.oldPassword}
                                                 onChange={(event) => {
@@ -75,6 +76,7 @@ export default function ResetPasswordFirstLogin() {
                                             <Form.Label>Nuova password</Form.Label>
                                             <Form.Control
                                                 type="password"
+                                                disabled={isLoading}
                                                 placeholder="Nuova password"
                                                 value={formValues.newPassword}
                                                 onChange={(event) => {
@@ -93,6 +95,7 @@ export default function ResetPasswordFirstLogin() {
                                     <Col xs={12} className="text-center">
                                         <Button
                                             className="btn btn-primary"
+                                            disabled={isLoading}
                                             onClick={() => {
                                                 handleResetPassword(formValues)({ setIsLoading, setIsError, setUser })
                                             }}
@@ -105,12 +108,6 @@ export default function ResetPasswordFirstLogin() {
                         )}
                         </Form>
 
-                        {/* is loading */}
-                        {isLoading && (
-                            <Spinner animation="border" role="status">
-                                <span className="visually-hidden">Loading...</span>
-                            </Spinner>
-                        )}
 
                         {/* is error */}
                         {isError && <Alert variant="danger">Something went wrong.</Alert>}
