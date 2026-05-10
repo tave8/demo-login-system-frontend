@@ -185,6 +185,9 @@ export const UserRoleByLanguage: Record<Language, Record<UserRole, string>>  = {
 
 }
 
+// "new user" is when the admin adds a user and then
+// gets the temporary password
+
 export interface NewUserToAPI {
   firstname: string
   lastname: string
@@ -203,14 +206,27 @@ export interface NewUserFromAPI {
 }
 
 
+// user from api is what you want to say in general,
+// when getting data from api
 
 export interface UserFromAPI {
+  userId: string
   firstname: string
   lastname: string
   email: string
   avatarUrl: string
   role: UserRole
 }
+
+export interface EnrichedUserFromAPI extends UserFromAPI {
+  // the role of the user in the local language
+  roleInLocalLanguage: string
+}
+
+export interface UsersPageFromAPI extends Pagination<UserFromAPI> {}
+
+export interface EnrichedUsersPageFromAPI extends Pagination<EnrichedUserFromAPI> {}
+
 
 
 // MANAGER LOGIN

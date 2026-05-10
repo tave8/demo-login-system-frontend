@@ -4,13 +4,17 @@ import APIHelper from "./APIHelper"
 import BaseAPI from "./BaseAPI"
 import FileHelper from "../helpers/FileHelper"
 import {
+  ArticleFromAPI,
+  ArticlesPageFromAPI, EnrichedArticleFromAPI, EnrichedArticlesPageFromAPI,
+  EnrichedUserFromAPI, EnrichedUsersPageFromAPI,
   NewUserFromAPI,
   NewUserToAPI,
   RequestMethod,
   RequireLogin,
   UpdatedUserToAPI,
-  UserFromAPI
+  UserFromAPI, UsersPageFromAPI
 } from "../my_types"
+import TimeHelper from "../helpers/TimeHelper.ts";
 
 export default class UsersAPI extends BaseAPI {
 
@@ -30,6 +34,35 @@ export default class UsersAPI extends BaseAPI {
     }
     return this.instance
   }
+
+
+  /**
+   * Enrich a pagination page.
+   */
+  private enrichPage(page: UsersPageFromAPI): EnrichedUsersPageFromAPI {
+    const enrichedItems = this.enrichItems(page.content)
+    return {
+      ...page,
+      content: enrichedItems,
+    }
+  }
+
+  private enrichItems(items: UserFromAPI[]): EnrichedUserFromAPI[] {
+    return items.map((item) => this.enrichItem(item))
+  }
+
+  /**
+   * Enriches an item coming from the API.
+   */
+  private enrichItem(item: UserFromAPI): EnrichedUserFromAPI {
+    return {
+      ...item,
+      // for now i'll keep it as is
+      roleInLocalLanguage: item.role,
+    }
+  }
+
+
 
   /**
    * Get the info/profile of the currently
@@ -79,15 +112,21 @@ export default class UsersAPI extends BaseAPI {
    * Get my users (aka my team).
    * TODO: replace unknown with actual types (you might need to create the pagination etc.)
    */
-  public async getMyUsers(): Promise<unknown> {
+  public async getMyUsers(): Promise<UsersPageFromAPI> {
     const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
 
     const resp: Response = await this.doFetchAt("/users", config)
 
-    const data = await this.parseJSON<unknown>(resp)
+    const data = await this.parseJSON<UsersPageFromAPI>(resp)
 
     return data
   }
+
+  public async getMyUsersEnriched(): Promise<EnrichedUsersPageFromAPI> {
+    const page = await this.getMyUsers()
+    return this.enrichPage(page)
+  }
+
 
 
   /**
