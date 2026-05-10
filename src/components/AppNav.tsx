@@ -21,6 +21,8 @@ const MyNav = () => {
 
   const closeNav = () => setNavExpanded(false);
 
+  const {user} = useAuth()
+
   return (
       <Navbar
           expand="lg"
@@ -32,7 +34,7 @@ const MyNav = () => {
               to={AppRoutes.dashboard}
               onClick={closeNav}
               className="nav-item navbar-brand">
-            Operavion CRM
+            Operavion CRM {user ? `(${user.role})` : ""}
           </Link>
 
           <Navbar.Toggle aria-controls="basic-navbar-nav" />

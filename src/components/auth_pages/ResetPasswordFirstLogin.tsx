@@ -1,12 +1,22 @@
 import {Alert, Button, Col, Container, Form, Row, Spinner} from "react-bootstrap";
 import {useState} from "react";
-import {ForgotPasswordRequestToAPI, ResetPasswordToAPI, UserFromAPI} from "../../js/my_types.ts";
+import {
+    AppEvent,
+    AppEventMessageType,
+    AppRoutes,
+    ForgotPasswordRequestToAPI,
+    ResetPasswordToAPI,
+    UserFromAPI
+} from "../../js/my_types.ts";
 import AuthAPI from "../../js/api/AuthAPI.ts";
 import UnauthorizedError from "../../js/exceptions/UnauthorizedError.ts";
 import ForbiddenError from "../../js/exceptions/ForbiddenError.ts";
 import {useAuth} from "../../auth/AuthContext.tsx";
+import {NavigateFunction, useNavigate} from "react-router-dom";
+import AppEventDispatcher from "../../js/AppEventDispatcher.ts";
 
 const authAPI = AuthAPI.getInstance()
+const appEventDispatcher = AppEventDispatcher.getInstance()
 
 const initialData: ResetPasswordToAPI = {
     oldPassword: "",
@@ -16,7 +26,8 @@ const initialData: ResetPasswordToAPI = {
 interface HandleResetPasswordParams {
     setIsLoading: (x: boolean) => void
     setIsError: (x: boolean) => void
-    setUser: (user: UserFromAPI) => void
+    setUserInLocalStorage: (user: UserFromAPI) => void
+    navigate: NavigateFunction
 }
 
 
@@ -25,7 +36,9 @@ export default function ResetPasswordFirstLogin() {
     const [isLoading, setIsLoading] = useState(false)
     const [isError, setIsError] = useState(false)
 
-    const {setUser} = useAuth()
+    const navigate = useNavigate()
+
+    const {setUserInLocalStorage} = useAuth()
 
     return (
         <>
@@ -42,75 +55,72 @@ export default function ResetPasswordFirstLogin() {
                         {/* form */}
                         <Form onKeyDown={(e) => {
                             if (e.key === "Enter") {
-                                handleResetPassword(formValues)({ setIsLoading, setIsError, setUser })
+                                handleResetPassword(formValues)({ setIsLoading, setIsError, setUserInLocalStorage, navigate })
                             }
                         }}>
 
-                        {!isLoading && (
-                            <>
-                                {/* old password */}
-                                <Row className="g-3">
-                                    <Col xs={12}>
-                                        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                            <Form.Label>Password temporanea</Form.Label>
-                                            <Form.Control
-                                                type="password"
-                                                disabled={isLoading}
-                                                placeholder="Password temporanea"
-                                                value={formValues.oldPassword}
-                                                onChange={(event) => {
-                                                    setFormValues({
-                                                        ...formValues,
-                                                        oldPassword: event.target.value,
-                                                    })
-                                                }}
-                                            />
-                                        </Form.Group>
-                                    </Col>
-                                </Row>
 
-                                {/* new password */}
-                                <Row className="g-3">
-                                    <Col xs={12}>
-                                        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                            <Form.Label>Nuova password</Form.Label>
-                                            <Form.Control
-                                                type="password"
-                                                disabled={isLoading}
-                                                placeholder="Nuova password"
-                                                value={formValues.newPassword}
-                                                onChange={(event) => {
-                                                    setFormValues({
-                                                        ...formValues,
-                                                        newPassword: event.target.value,
-                                                    })
-                                                }}
-                                            />
-                                        </Form.Group>
-                                    </Col>
-                                </Row>
-
-                                {/* submit  */}
-                                <Row className="mt-2">
-                                    <Col xs={12} className="text-center">
-                                        <Button
-                                            className="btn btn-primary"
+                            {/* old password */}
+                            <Row className="g-3">
+                                <Col xs={12}>
+                                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                                        <Form.Label>Password temporanea</Form.Label>
+                                        <Form.Control
+                                            type="password"
                                             disabled={isLoading}
-                                            onClick={() => {
-                                                handleResetPassword(formValues)({ setIsLoading, setIsError, setUser })
+                                            placeholder="Password temporanea"
+                                            value={formValues.oldPassword}
+                                            onChange={(event) => {
+                                                setFormValues({
+                                                    ...formValues,
+                                                    oldPassword: event.target.value,
+                                                })
                                             }}
-                                        >
-                                            Invia
-                                        </Button>
-                                    </Col>
-                                </Row>
-                            </>
-                        )}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+
+                            {/* new password */}
+                            <Row className="g-3">
+                                <Col xs={12}>
+                                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                                        <Form.Label>Nuova password</Form.Label>
+                                        <Form.Control
+                                            type="password"
+                                            disabled={isLoading}
+                                            placeholder="Nuova password"
+                                            value={formValues.newPassword}
+                                            onChange={(event) => {
+                                                setFormValues({
+                                                    ...formValues,
+                                                    newPassword: event.target.value,
+                                                })
+                                            }}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+
+                            {/* submit  */}
+                            <Row className="mt-2">
+                                <Col xs={12} className="text-center">
+                                    <Button
+                                        className="btn btn-primary"
+                                        disabled={isLoading}
+                                        onClick={() => {
+                                            handleResetPassword(formValues)({ setIsLoading, setIsError, setUserInLocalStorage, navigate })
+                                        }}
+                                    >
+                                        Invia
+                                    </Button>
+                                </Col>
+                            </Row>
                         </Form>
 
 
                         {/* is error */}
-                        {isError && <Alert variant="danger">Something went wrong.</Alert>}
+                        {/*{isError && <Alert variant="danger">Something went wrong.</Alert>}*/}
                     </Col>
                 </Row>
             </Container>
@@ -122,7 +132,7 @@ export default function ResetPasswordFirstLogin() {
 const handleResetPassword = (formValues: ResetPasswordToAPI) => {
     return async (params: HandleResetPasswordParams) => {
 
-        const {setIsLoading, setIsError, setUser} = params
+        const {setIsLoading, setIsError, setUserInLocalStorage, navigate} = params
 
         setIsLoading(true)
         setIsError(false)
@@ -135,7 +145,11 @@ const handleResetPassword = (formValues: ResetPasswordToAPI) => {
                 // update user in local storage
                 // if we don't do this, in local storage
                 // will remain the old user data
-                setUser(userFromAPI)
+                setUserInLocalStorage(userFromAPI)
+
+                // where the user will be redirected,
+                // will depend on the user's role.
+                navigate(AppRoutes.myProfile)
 
                 setIsLoading(false)
                 setIsError(false)
@@ -146,14 +160,16 @@ const handleResetPassword = (formValues: ResetPasswordToAPI) => {
                 setIsLoading(false)
                 setIsError(true)
 
-                // if (err instanceof UnauthorizedError || err instanceof ForbiddenError) {
-                //     // logout()
-                //     console.log(err.message)
-                //     alert("You cannot set a new password right now.")
-                // } else {
-                //     console.info("Error during forgot password request")
-                //     console.error(err)
-                // }
+                if (err instanceof UnauthorizedError) {
+
+                    appEventDispatcher.dispatchStandard(
+                        AppEvent.APP_ERROR,
+                        AppEventMessageType.WRONG_CREDENTIALS
+                    )
+
+                }
+
+
             })
 
     }

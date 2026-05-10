@@ -25,9 +25,7 @@ export function ProtectedRoute({ children,
                                  allowAllRoles=false}: Params)
 {
 
-  const { authenticated, getUser } = useAuth()
-
-  const user = getUser()
+  const { authenticated, user } = useAuth()
 
   // console.log("USER: ", user)
   // console.log("AUTHENTICATED: ", authenticated)
@@ -53,10 +51,10 @@ export function ProtectedRoute({ children,
   // if user is logged in but must change their password now
   if(user.mustChangePasswordNow) {
     // we tell the user "must change your password before accessing your area"
-    appEventDispatcher.dispatchStandard(
-        AppEvent.APP_ERROR,
-        AppEventMessageType.MUST_CHANGE_PASSWORD
-    )
+    // appEventDispatcher.dispatchStandard(
+    //     AppEvent.APP_ERROR,
+    //     AppEventMessageType.MUST_CHANGE_PASSWORD
+    // )
     // console.log("must change password now")
     return <Navigate to={AppRoutes.resetPasswordFirstLogin} />
   }

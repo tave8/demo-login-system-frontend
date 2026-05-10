@@ -12,9 +12,7 @@ interface Props {
 export default function NavContentForOperator({ setNavExpanded }: Props) {
     const navigate = useNavigate()
 
-    const { login, logout, authenticated, getUser } = useAuth()
-
-    const user = getUser()
+    const { login, logout, authenticated, user } = useAuth()
 
     const closeNav = () => setNavExpanded(false);
 

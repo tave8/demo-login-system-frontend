@@ -23,7 +23,7 @@ export default function NavContentSettings({ setNavExpanded }: Props) {
 
     const navigate = useNavigate()
 
-    const { login, logout, authenticated } = useAuth()
+    const { login, logout, authenticated, user } = useAuth()
 
     const closeNav = () => setNavExpanded(false);
 

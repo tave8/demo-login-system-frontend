@@ -1,4 +1,4 @@
-import {createContext, useContext, useState} from "react";
+import {createContext, useContext, useEffect, useState} from "react";
 import {isLoggedIn} from "./isLoggedIn";
 import {AppEvent, UserFromAPI} from "../js/my_types.ts";
 import AppEventDispatcher from "../js/AppEventDispatcher.ts";
@@ -15,9 +15,10 @@ interface AuthContextType {
     login: (token: string, user: UserFromAPI) => void;
     logout: () => void;
     // get user from local storage
-    getUser: () => UserFromAPI | null
+    getUserFromLocalStorage: () => UserFromAPI | null
     // set user in local sorage
-    setUser: (user: UserFromAPI) => void
+    setUserInLocalStorage: (user: UserFromAPI) => void
+    user: UserFromAPI|null
 }
 
 /**
@@ -42,11 +43,12 @@ export function AuthProvider({ children }: { children: React.ReactNode })
 {
 
     const [authenticated, setAuthenticated] = useState<boolean>(isLoggedIn);
+    const [user, setUser] = useState<UserFromAPI|null>(null)
 
     /**
      * Get user from local storage.
      */
-    const getUser = () => {
+    const getUserFromLocalStorage = () => {
         // get user from local storage
         const userAsStr = localStorage.getItem("user")
 
@@ -80,25 +82,48 @@ export function AuthProvider({ children }: { children: React.ReactNode })
      * Set user in local storage.
      * Override current one in local storage, if there's one.
      */
-    const setUser = (user: UserFromAPI) => {
+    const setUserInLocalStorage = (user: UserFromAPI) => {
         localStorage.setItem("user", JSON.stringify(user))
+        // also set the user in the app
+        setUser(user)
+    }
+
+
+    const removeUserFromLocalStorage = () => {
+        localStorage.removeItem("user")
+        setUser(null)
     }
 
     const login = (token: string, user: UserFromAPI) => {
         localStorage.setItem("token", token);
+        setUserInLocalStorage(user)
+        // set user in app context
         setUser(user)
         setAuthenticated(true);
     };
 
     const logout = () => {
         localStorage.removeItem("token");
-        localStorage.removeItem("user")
+        removeUserFromLocalStorage()
+        // set user in app context
+        setUser(null)
         setAuthenticated(false);
     };
 
+
+    // every time the route changes, update the user in local storage
+    // makes sure app context correctly represents what's in local storage
+    useEffect(() => {
+
+        // when we set the user, the user property is updated
+        // in the entire app
+        setUser(getUserFromLocalStorage())
+
+    }, [location])
+
     return (
         // these "props" will be "passed down"
-        <AuthContext.Provider value={{ authenticated, login, logout, getUser, setUser }}>
+        <AuthContext.Provider value={{ authenticated, login, logout, setUserInLocalStorage, getUserFromLocalStorage, user }}>
             {children}
         </AuthContext.Provider>
     );

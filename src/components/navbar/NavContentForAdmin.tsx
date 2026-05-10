@@ -1,6 +1,6 @@
 import {Link, useNavigate} from "react-router-dom";
 import {AppRoutes, UserRole} from "../../js/my_types.ts";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useAuth} from "../../auth/AuthContext.tsx";
 import {Nav, NavDropdown} from "react-bootstrap";
 
@@ -11,9 +11,7 @@ interface Props {
 export default function NavContentForAdmin({ setNavExpanded }: Props) {
     const navigate = useNavigate()
 
-    const { login, logout, authenticated, getUser } = useAuth()
-
-    const user = getUser()
+    const { login, logout, authenticated, user } = useAuth()
 
     const closeNav = () => setNavExpanded(false);
 
@@ -22,7 +20,7 @@ export default function NavContentForAdmin({ setNavExpanded }: Props) {
         <>
             {/* if the role of this user is admin, show this */}
 
-            {authenticated && user && user.role == UserRole.ADMIN && (
+            {authenticated && user && (user.role == UserRole.ADMIN) && (
 
                 <Nav className="me-auto">
 

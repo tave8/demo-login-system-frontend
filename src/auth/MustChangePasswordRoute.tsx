@@ -13,9 +13,8 @@ interface Params {
 export function MustChangePasswordRoute({ children }: Params)
 {
 
-    const { getUser, authenticated } = useAuth();
+    const { user, authenticated } = useAuth();
 
-    const user = getUser()
 
     // if the current user does not exist,
     // go to login
