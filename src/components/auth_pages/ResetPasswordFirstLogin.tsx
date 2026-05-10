@@ -1,16 +1,8 @@
-import {Alert, Button, Col, Container, Form, Row, Spinner} from "react-bootstrap";
+import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import {useState} from "react";
-import {
-    AppEvent,
-    AppEventMessageType,
-    AppRoutes,
-    ForgotPasswordRequestToAPI,
-    ResetPasswordToAPI,
-    UserFromAPI
-} from "../../js/my_types.ts";
+import {AppEvent, AppEventMessageType, AppRoutes, ResetPasswordToAPI, UserFromAPI} from "../../js/my_types.ts";
 import AuthAPI from "../../js/api/AuthAPI.ts";
 import UnauthorizedError from "../../js/exceptions/UnauthorizedError.ts";
-import ForbiddenError from "../../js/exceptions/ForbiddenError.ts";
 import {useAuth} from "../../auth/AuthContext.tsx";
 import {NavigateFunction, useNavigate} from "react-router-dom";
 import AppEventDispatcher from "../../js/AppEventDispatcher.ts";
@@ -26,7 +18,7 @@ const initialData: ResetPasswordToAPI = {
 interface HandleResetPasswordParams {
     setIsLoading: (x: boolean) => void
     setIsError: (x: boolean) => void
-    setUserInLocalStorage: (user: UserFromAPI) => void
+    setUserInApp: (user: UserFromAPI, waitMs?:number) => void
     navigate: NavigateFunction
 }
 
@@ -38,7 +30,7 @@ export default function ResetPasswordFirstLogin() {
 
     const navigate = useNavigate()
 
-    const {setUserInLocalStorage} = useAuth()
+    const {setUserInApp} = useAuth()
 
     return (
         <>
@@ -55,7 +47,7 @@ export default function ResetPasswordFirstLogin() {
                         {/* form */}
                         <Form onKeyDown={(e) => {
                             if (e.key === "Enter") {
-                                handleResetPassword(formValues)({ setIsLoading, setIsError, setUserInLocalStorage, navigate })
+                                handleResetPassword(formValues)({ setIsLoading, setIsError, setUserInApp, navigate })
                             }
                         }}>
 
@@ -109,7 +101,7 @@ export default function ResetPasswordFirstLogin() {
                                         className="btn btn-primary"
                                         disabled={isLoading}
                                         onClick={() => {
-                                            handleResetPassword(formValues)({ setIsLoading, setIsError, setUserInLocalStorage, navigate })
+                                            handleResetPassword(formValues)({ setIsLoading, setIsError, setUserInApp, navigate })
                                         }}
                                     >
                                         Invia
@@ -132,7 +124,7 @@ export default function ResetPasswordFirstLogin() {
 const handleResetPassword = (formValues: ResetPasswordToAPI) => {
     return async (params: HandleResetPasswordParams) => {
 
-        const {setIsLoading, setIsError, setUserInLocalStorage, navigate} = params
+        const {setIsLoading, setIsError, setUserInApp, navigate} = params
 
         setIsLoading(true)
         setIsError(false)
@@ -140,16 +132,23 @@ const handleResetPassword = (formValues: ResetPasswordToAPI) => {
         authAPI
             .resetPasswordAtFirstLogin(formValues)
             .then((userFromAPI) => {
-                console.log(userFromAPI)
+                // console.log(userFromAPI)
 
-                // update user in local storage
-                // if we don't do this, in local storage
-                // will remain the old user data
-                setUserInLocalStorage(userFromAPI)
+                setUserInApp(userFromAPI)
 
                 // where the user will be redirected,
                 // will depend on the user's role.
-                navigate(AppRoutes.dashboardOf(userFromAPI.role))
+                setTimeout(() => {
+                    // first we navigate to the route
+                    navigate(AppRoutes.dashboardOf(userFromAPI.role))
+                    //
+                    appEventDispatcher.dispatchStandard(
+                        AppEvent.APP_SUCCESS,
+                        AppEventMessageType.LOGIN_SUCCESS
+                    )
+
+                }, 500)
+
 
                 setIsLoading(false)
                 setIsError(false)

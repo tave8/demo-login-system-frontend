@@ -16,8 +16,13 @@ interface AuthContextType {
     logout: () => void;
     // get user from local storage
     getUserFromLocalStorage: () => UserFromAPI | null
-    // set user in local sorage
+    // set user in local sorage only
     setUserInLocalStorage: (user: UserFromAPI) => void
+    // set user in app and local storage
+    setUserInApp: (user: UserFromAPI, waitMs?:number) => void
+    // accessing this property means always being
+    // in sync with app state, so whenever it gets updated
+    // all components that were using it, will be re-rendered
     user: UserFromAPI|null
 }
 
@@ -43,6 +48,8 @@ export function AuthProvider({ children }: { children: React.ReactNode })
 {
 
     const [authenticated, setAuthenticated] = useState<boolean>(isLoggedIn);
+    // updating user means that every component that has used it,
+    // will be re-rendered, for example a navbar etc.
     const [user, setUser] = useState<UserFromAPI|null>(null)
 
     /**
@@ -84,29 +91,47 @@ export function AuthProvider({ children }: { children: React.ReactNode })
      */
     const setUserInLocalStorage = (user: UserFromAPI) => {
         localStorage.setItem("user", JSON.stringify(user))
-        // also set the user in the app
-        setUser(user)
     }
-
 
     const removeUserFromLocalStorage = () => {
         localStorage.removeItem("user")
+    }
+
+    const setUserInApp = (user: UserFromAPI, waitMs?:number) => {
+        // if waitMs was not passed
+        if(waitMs == undefined) {
+            setUserInLocalStorage(user)
+            // set the user in the app context
+            setUser(user)
+        }
+        // we wait waitMs before we update the local storage and the app state
+        else {
+            if(waitMs < 0) {
+                throw new Error(`waitMs must be >= 0, got ${waitMs} instead`)
+            }
+            // we set a timeout before update local storage and app
+            setTimeout(() => {
+                setUserInLocalStorage(user)
+                // set the user in the app context
+                setUser(user)
+            }, waitMs)
+        }
+    }
+
+    const removeUserFromApp = () => {
+        removeUserFromLocalStorage()
         setUser(null)
     }
 
     const login = (token: string, user: UserFromAPI) => {
         localStorage.setItem("token", token);
-        setUserInLocalStorage(user)
-        // set user in app context
-        setUser(user)
+        setUserInApp(user)
         setAuthenticated(true);
     };
 
     const logout = () => {
         localStorage.removeItem("token");
-        removeUserFromLocalStorage()
-        // set user in app context
-        setUser(null)
+        removeUserFromApp()
         setAuthenticated(false);
     };
 
@@ -123,7 +148,7 @@ export function AuthProvider({ children }: { children: React.ReactNode })
 
     return (
         // these "props" will be "passed down"
-        <AuthContext.Provider value={{ authenticated, login, logout, setUserInLocalStorage, getUserFromLocalStorage, user }}>
+        <AuthContext.Provider value={{ authenticated, login, logout, setUserInLocalStorage, getUserFromLocalStorage, setUserInApp, user }}>
             {children}
         </AuthContext.Provider>
     );

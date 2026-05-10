@@ -19,7 +19,15 @@ export default function UnauthorizedPage() {
 
                     <h3><a href={"#"} onClick={() => {
 
-                        navigate(AppRoutes.dashboardOf(user.role))
+                        // user does not exist
+                        if(user == null) {
+
+                            navigate(AppRoutes.login)
+
+                        } else {
+                            navigate(AppRoutes.dashboardOf(user.role))
+                        }
+
 
                     }}>Go back</a></h3>
 
