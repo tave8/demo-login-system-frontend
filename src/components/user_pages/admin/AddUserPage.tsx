@@ -1,14 +1,7 @@
 import AppEventDispatcher from "../../../js/AppEventDispatcher.ts";
 import {useState} from "react";
 import {Button, Col, Container, Form, Modal, Row} from "react-bootstrap";
-import {
-    AppEvent,
-    AppEventMessageType,
-    UserFromAPI,
-    UserRole,
-    NewUserToAPI,
-    NewUserFromAPI
-} from "../../../js/my_types.ts";
+import {AppEvent, AppEventMessageType, NewUserFromAPI, NewUserToAPI, UserRole} from "../../../js/my_types.ts";
 import UserRoleHelper from "../../../js/helpers/UserRoleHelper.ts";
 import UsersAPI from "../../../js/api/UsersAPI.ts";
 import UnauthorizedError from "../../../js/exceptions/UnauthorizedError.ts";
@@ -171,24 +164,34 @@ export default function AddUserPage () {
             {/* modal to show admin username & password of newly added user */}
             <Modal show={showModal} onHide={() => setShowModal(false)} centered backdrop="static" keyboard={false}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Temporary Password</Modal.Title>
+                    <Modal.Title>Prossimo passo</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <p>Save this password — it won't be shown again.</p>
-                    {/*<Form.Control readOnly value={userFromAPI && userFromAPI. ?? ""} />*/}
+                    <p className="text-muted mb-3">
+                        Copia il messaggio qui sotto e mandalo all'utente.
+                    </p>
+
+                    <Form.Control
+                        as="textarea"
+                        readOnly
+                        rows={10}
+                        onClick={(e) => (e.target as HTMLTextAreaElement).select()}
+                        value={getCopyPasteMessage(userFromAPI)}
+                    />
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={() => {
-                        // navigator.clipboard.writeText(tempPassword ?? "")
+                    <Button variant={"success"} onClick={() => {
+                        // copy text to clipboard
+                        navigator.clipboard.writeText( getCopyPasteMessage(userFromAPI) )
+                        // tell user that text was copied to their clipboard
                         appEventDispatcher.dispatchStandard(
                             AppEvent.APP_SUCCESS,
                             AppEventMessageType.COPIED
                         )
-                    }}>
+                        // close modal
+                        setShowModal(false)
+                    }}>📋
                         Copia
-                    </Button>
-                    <Button variant="primary" onClick={() => setShowModal(false)}>
-                        Fatto
                     </Button>
                 </Modal.Footer>
             </Modal>
@@ -246,5 +249,31 @@ const handleAddUser = (formValues: NewUserToAPI) => {
             })
 
     }
+
+}
+
+
+const getCopyPasteMessage = (userFromAPI: NewUserFromAPI|null): string => {
+
+    if(userFromAPI == null) {
+        appEventDispatcher.dispatch(
+            AppEvent.APP_ERROR,
+            "Internal error in frontend: New user from API was expected "
+            +"to have valid type, got null instead."
+        )
+        return ""
+    }
+
+    return `Ciao ${userFromAPI?.firstname},
+ti ho appena aggiunto al gestionale Operavion.
+
+Ecco le tue credenziali:
+
+Username: ${userFromAPI?.username}
+Password temporanea: ${userFromAPI?.tempPassword}
+
+Al tuo primo login, potrai cambiare la tua password.
+
+Buon proseguimento`
 
 }

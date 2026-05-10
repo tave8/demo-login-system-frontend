@@ -9,8 +9,7 @@ import {
   RequestMethod,
   RequireLogin,
   UpdatedUserToAPI,
-  UserFromAPI,
-  UserToAPI
+  UserFromAPI
 } from "../my_types"
 
 export default class UsersAPI extends BaseAPI {

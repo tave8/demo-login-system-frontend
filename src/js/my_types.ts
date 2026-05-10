@@ -196,9 +196,10 @@ export interface NewUserToAPI {
 export interface NewUserFromAPI {
   firstname: string
   lastname: string
+  username: string
+  tempPassword: string
   role: UserRole
   email: string
-  tempPassword: string
 }
 
 
