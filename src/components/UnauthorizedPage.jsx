@@ -1,8 +1,11 @@
 import {Col, Container, Row} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
 import {AppRoutes} from "../js/my_types.ts";
+import {useAuth} from "../auth/AuthContext.tsx";
 
 export default function UnauthorizedPage() {
+
+    const {user} = useAuth()
 
     const navigate = useNavigate()
 
@@ -16,7 +19,7 @@ export default function UnauthorizedPage() {
 
                     <h3><a href={"#"} onClick={() => {
 
-                        navigate(AppRoutes.dashboard)
+                        navigate(AppRoutes.dashboardOf(user.role))
 
                     }}>Go back</a></h3>
 

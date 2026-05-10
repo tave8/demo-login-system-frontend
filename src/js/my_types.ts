@@ -35,7 +35,22 @@ export const AppRoutes = {
   addUser: "/u/users/add",
 
 
-  dashboard: "/u/dashboard",
+  // DASHBOARDS
+
+  // redirect a user to their dashboard, based on role
+  dashboardOf: (role: UserRole): string => {
+    if(role == UserRole.ADMIN) {
+      return "/u/dashboard-admin"
+    }
+    if(role == UserRole.COORDINATOR) {
+      return "/u/dashboard-coordinator"
+    }
+    if(role == UserRole.OPERATOR) {
+      return "/u/dashboard-operator"
+    }
+    throw new Error(`Dashboard for role ${role} was not mapped.`)
+  },
+
   myProfile: "/u/me",
   editMyProfile: "/u/me/edit",
   myArticles: "/u/my-articles",

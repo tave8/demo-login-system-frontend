@@ -151,7 +151,7 @@ const handleLogin = (formValues: LoginToAPI) => {
 
         // after successful login, where route the user
         // is redirected to
-        navigate(AppRoutes.dashboard)
+        navigate(AppRoutes.dashboardOf(loginInfo.user.role))
 
         appEventDispatcher.dispatchStandard(
             AppEvent.APP_SUCCESS,

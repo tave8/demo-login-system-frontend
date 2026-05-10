@@ -26,7 +26,6 @@ import ForgotPasswordSetNewPasswordPage from "./components/auth_pages/ForgotPass
 import AppNav from "./components/AppNav.tsx"
 import {useAuth} from "./auth/AuthContext.tsx";
 import {Col, Container, Row} from "react-bootstrap";
-import DashboardPage from "./components/user_pages/DashboardPage.tsx";
 import AppToast from "./components/AppToast.tsx";
 import {Helmet} from "react-helmet";
 import LoginOperatorPage from "./components/auth_pages/LoginOperatorPage.tsx";
@@ -35,6 +34,9 @@ import UsersPage from "./components/user_pages/admin/UsersPage.tsx";
 import AddUserPage from "./components/user_pages/admin/AddUserPage.tsx";
 import ResetPasswordFirstLogin from "./components/auth_pages/ResetPasswordFirstLogin.tsx";
 import {MustChangePasswordRoute} from "./auth/MustChangePasswordRoute.tsx";
+import AdminDashboardPage from "./components/user_pages/admin/AdminDashboardPage.tsx";
+import CoordinatorDashboardPage from "./components/user_pages/coordinator/CoordinatorDashboardPage.tsx";
+import OperatorDashboardPage from "./components/user_pages/operator/OperatorDashboardPage.tsx";
 
 
 function App() {
@@ -68,16 +70,42 @@ function App() {
                           <Routes>
 
                               {/* redirect / -> dashboard */}
-                              <Route path="/" element={<Navigate to={AppRoutes.dashboard} replace />} />
+                              <Route path="/" element={<Navigate to={AppRoutes.login} replace />} />
 
+                              {/* ************ START DASHBOARDS */}
+
+                              {/* admin dashboard */}
                               <Route
-                                  path={AppRoutes.dashboard}
+                                  path={AppRoutes.dashboardOf(UserRole.ADMIN)}
                                   element={
                                       <ProtectedRoute allowOnlyRoles={[UserRole.ADMIN]}>
-                                          <DashboardPage />
+                                          <AdminDashboardPage />
                                       </ProtectedRoute>
                                   }
                               />
+
+                              {/* coordinator dashboard */}
+                              <Route
+                                  path={AppRoutes.dashboardOf(UserRole.COORDINATOR)}
+                                  element={
+                                      <ProtectedRoute allowOnlyRoles={[UserRole.COORDINATOR]}>
+                                          <CoordinatorDashboardPage />
+                                      </ProtectedRoute>
+                                  }
+                              />
+
+                              {/* operator dashboard */}
+                              <Route
+                                  path={AppRoutes.dashboardOf(UserRole.OPERATOR)}
+                                  element={
+                                      <ProtectedRoute allowOnlyRoles={[UserRole.OPERATOR]}>
+                                          <OperatorDashboardPage />
+                                      </ProtectedRoute>
+                                  }
+                              />
+
+                              {/* ************ END DASHBOARDS */}
+
 
                               <Route
                                   path={AppRoutes.users}

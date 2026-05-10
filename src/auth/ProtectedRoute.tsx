@@ -11,7 +11,7 @@ interface Params {
   allowOnlyRoles?: UserRole[]
   excludeOnlyRoles?: UserRole[]
   allowAllRolesExcept?: UserRole[]
-  allowAllRoles: boolean
+  allowAllRoles?: boolean
 }
 
 /**
@@ -26,6 +26,13 @@ export function ProtectedRoute({ children,
 {
 
   const { authenticated, user } = useAuth()
+
+  // console.log(user)
+  //
+  // console.log("allowOnlyRoles: ", allowOnlyRoles)
+  // console.log("excludeOnlyRoles: ", excludeOnlyRoles)
+  // console.log("allowAllRolesExcept: ", allowAllRolesExcept)
+  // console.log("allowAllRoles: ", allowAllRoles)
 
   // console.log("USER: ", user)
   // console.log("AUTHENTICATED: ", authenticated)

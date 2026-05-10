@@ -149,7 +149,7 @@ const handleResetPassword = (formValues: ResetPasswordToAPI) => {
 
                 // where the user will be redirected,
                 // will depend on the user's role.
-                navigate(AppRoutes.myProfile)
+                navigate(AppRoutes.dashboardOf(userFromAPI.role))
 
                 setIsLoading(false)
                 setIsError(false)
