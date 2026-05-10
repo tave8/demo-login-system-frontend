@@ -15,6 +15,7 @@ import {
   UserFromAPI, UsersPageFromAPI
 } from "../my_types"
 import TimeHelper from "../helpers/TimeHelper.ts";
+import UserRoleHelper from "../helpers/UserRoleHelper.ts";
 
 export default class UsersAPI extends BaseAPI {
 
@@ -58,7 +59,7 @@ export default class UsersAPI extends BaseAPI {
     return {
       ...item,
       // for now i'll keep it as is
-      roleInLocalLanguage: item.role,
+      roleInLocalLanguage: UserRoleHelper.getRole(item.role),
     }
   }
 

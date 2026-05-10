@@ -66,7 +66,7 @@ export default function UsersPage() {
                                     {users.map(user => (
                                         <tr key={user.userId}>
                                             <td>{user.firstname} {user.lastname}</td>
-                                            <td>{user.role}</td>
+                                            <td>{user.roleInLocalLanguage}</td>
                                             <td>
                                                 {/*<Button variant="outline-primary" size="sm">Modifica</Button>*/}
                                                 {/*{' '}*/}
