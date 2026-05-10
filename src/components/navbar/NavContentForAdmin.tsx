@@ -55,7 +55,7 @@ export default function NavContentForAdmin({ setNavExpanded }: Props) {
                                     closeNav()
                                 }
                                 }>
-                                Vedi
+                                Il mio Team
                             </NavDropdown.Item>
 
                             {/* divider */}
