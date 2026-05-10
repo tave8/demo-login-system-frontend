@@ -305,21 +305,30 @@ const handleAddUser = (formValues: NewUserToAPI) => {
 const getCopyPasteMessage = (userFromAPI: NewUserFromAPI|null): string => {
 
     if(userFromAPI == null) {
-        appEventDispatcher.dispatch(
-            AppEvent.APP_ERROR,
-            "Internal error in frontend: New user from API was expected "
-            +"to have valid type, got null instead."
-        )
+        // appEventDispatcher.dispatch(
+        //     AppEvent.APP_ERROR,
+        //     "Internal error in frontend: New user from API was expected "
+        //     +"to have valid type, got null instead."
+        // )
         return ""
     }
 
     // the login changes based on whether the user is a coordinator
     // or operator
     let linkLogin = "https://app.operavion.com/login"
+
     if(userFromAPI.role == UserRole.OPERATOR) {
         linkLogin = "https://app.operavion.com/login-operator"
     }
 
+    // if user is coordinator, we let them know that they've also received
+    // an email to confirm it's theirs
+    let details = ""
+
+    if(userFromAPI.role == UserRole.COORDINATOR) {
+        details = `Inoltre, il gestionale ti ha appena mandato un `
+                +`link alla tua email ${userFromAPI.email} per verificare che sei tu, semplicemente cliccalo.`
+    }
 
     return `Ciao ${userFromAPI?.firstname},
 ti ho appena aggiunto al gestionale Operavion.
@@ -337,6 +346,9 @@ Al tuo primo login, potrai cambiare la tua password.
 Fai login qui: 
 ${linkLogin}
 
+${details}
+
 Buon proseguimento`
+
 
 }
