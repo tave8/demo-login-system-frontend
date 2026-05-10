@@ -33,6 +33,8 @@ import LoginOperatorPage from "./components/auth_pages/LoginOperatorPage.tsx";
 import UnauthorizedPage from "./components/UnauthorizedPage.jsx";
 import UsersPage from "./components/user_pages/admin/UsersPage.tsx";
 import AddUserPage from "./components/user_pages/admin/AddUserPage.tsx";
+import ResetPasswordFirstLogin from "./components/auth_pages/ResetPasswordFirstLogin.tsx";
+import {MustChangePasswordRoute} from "./auth/MustChangePasswordRoute.tsx";
 
 
 function App() {
@@ -195,6 +197,16 @@ function App() {
                                       <PublicOnlyRoute>
                                           <ForgotPasswordSetNewPasswordPage />
                                       </PublicOnlyRoute>
+                                  }
+                              />
+
+
+                              <Route
+                                  path={AppRoutes.resetPasswordFirstLogin}
+                                  element={
+                                      <MustChangePasswordRoute>
+                                          <ResetPasswordFirstLogin />
+                                      </MustChangePasswordRoute>
                                   }
                               />
 

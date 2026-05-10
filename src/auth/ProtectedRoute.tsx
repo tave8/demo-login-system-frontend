@@ -8,16 +8,27 @@ interface Params {
   allowOnlyRoles?: UserRole[]
   excludeOnlyRoles?: UserRole[]
   allowAllRolesExcept?: UserRole[]
+  allowAllRoles: boolean
 }
 
 /**
  * Wrapper for components/routes that must be protected by login.
  * Therefore, the user must be logged in, to access this component/route.
  */
-export function ProtectedRoute({ children, allowOnlyRoles=[], excludeOnlyRoles=[], allowAllRolesExcept=[] }: Params) {
+export function ProtectedRoute({ children,
+                                 allowOnlyRoles=[],
+                                 excludeOnlyRoles=[],
+                                 allowAllRolesExcept=[],
+                                 allowAllRoles=false}: Params)
+{
+
   const { authenticated, getUser } = useAuth()
 
   const user = getUser()
+
+  console.log("USER: ", user)
+  console.log("AUTHENTICATED: ", authenticated)
+
 
   // if for some reason, current user was not saved
   if (user == null) {
@@ -34,6 +45,17 @@ export function ProtectedRoute({ children, allowOnlyRoles=[], excludeOnlyRoles=[
   // if user is not authenticated,
   if (!authenticated) {
     return <Navigate to={AppRoutes.login} />
+  }
+
+  // if user is logged in but must change their password now
+  if(user.mustChangePasswordNow) {
+    // console.log("must change password now")
+    return <Navigate to={AppRoutes.resetPasswordFirstLogin} />
+  }
+
+  // if any user can access this route
+  if(allowAllRoles) {
+    return children
   }
 
   // if allowAllRolesExcept is specified, allow everyone except those roles

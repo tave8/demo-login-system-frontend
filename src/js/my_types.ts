@@ -22,6 +22,8 @@ export const AppRoutes = {
   forgotPasswordSetNewPassword: "/auth/forgot-password/verify/:code",
   forgotPasswordSetNewPasswordWith: (code: string) => `/auth/forgot-password/verify/${code}`,
 
+  resetPasswordFirstLogin: "/u/auth/reset-password-first-login",
+
   unauthorized: "/auth/unauthorized",
 
   // *****************
@@ -216,6 +218,7 @@ export interface UserFromAPI {
   email: string
   avatarUrl: string
   role: UserRole
+  mustChangePasswordNow: boolean
 }
 
 export interface EnrichedUserFromAPI extends UserFromAPI {
