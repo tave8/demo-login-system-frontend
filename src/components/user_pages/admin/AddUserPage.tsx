@@ -6,6 +6,7 @@ import UserRoleHelper from "../../../js/helpers/UserRoleHelper.ts";
 import UsersAPI from "../../../js/api/UsersAPI.ts";
 import UnauthorizedError from "../../../js/exceptions/UnauthorizedError.ts";
 import {FaWhatsapp} from "react-icons/fa"
+import StringHelper from "../../../js/helpers/StringHelper.ts";
 
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
@@ -16,7 +17,9 @@ interface HandleAddUserParams {
     setIsLoading: (x:boolean) => void
     setIsError: (x:boolean) => void
     setShowModal: (x: boolean) => void
+    setFormValues: (user: NewUserToAPI) => void
     setUserFromAPI: (user: NewUserFromAPI) => void
+    formValues: NewUserToAPI
 }
 
 const initialFormValues: NewUserToAPI = {
@@ -76,7 +79,7 @@ export default function AddUserPage () {
                             {/* form */}
                             <Form onKeyDown={(e) => {
                                 if (e.key === "Enter") {
-                                    handleAddUser(formValues)({ setIsError, setIsLoading, setShowModal, setUserFromAPI })
+                                    handleAddUser(formValues)({ setIsError, setIsLoading, setShowModal, setUserFromAPI, setFormValues, formValues })
                                 }
                             }}>
 
@@ -89,6 +92,7 @@ export default function AddUserPage () {
                                             type="text"
                                             placeholder="Maria"
                                             value={formValues.firstname}
+                                            autoFocus={true}
                                             onChange={(event) => {
                                                 setFormValues({
                                                     ...formValues,
@@ -149,7 +153,7 @@ export default function AddUserPage () {
                                         disabled={isLoading}
                                         variant="primary"
                                         onClick={() => {
-                                            handleAddUser(formValues)({ setIsError, setIsLoading, setShowModal, setUserFromAPI })
+                                            handleAddUser(formValues)({ setIsError, setIsLoading, setShowModal, setUserFromAPI,setFormValues, formValues })
                                         }}
                                     >
                                         Aggiungi
@@ -221,8 +225,25 @@ export default function AddUserPage () {
 
 const handleAddUser = (formValues: NewUserToAPI) => {
     return async (params: HandleAddUserParams) => {
-        const { setIsError, setIsLoading, setShowModal, setUserFromAPI } = params
+        const { setIsError, setIsLoading, setShowModal, setUserFromAPI, setFormValues, formValues } = params
 
+        const isAddingCoordinator = formValues.role == UserRole.COORDINATOR
+
+
+        // if it's adding a coordinator, must provide email
+        if(isAddingCoordinator) {
+
+            const isValidEmail = StringHelper.isValidEmail(formValues.email)
+
+            if(!isValidEmail) {
+                appEventDispatcher.dispatch(
+                    AppEvent.APP_ERROR,
+                    "Quando aggiungi un coordinatore, deve fornire un email valida."
+                )
+                return
+
+            }
+        }
 
         setIsLoading(true)
         setIsError(false)
@@ -235,6 +256,7 @@ const handleAddUser = (formValues: NewUserToAPI) => {
                 setIsError(false)
 
                 setUserFromAPI(userFromAPI)
+
                 setShowModal(true)
 
                 appEventDispatcher.dispatchStandard(
@@ -242,6 +264,13 @@ const handleAddUser = (formValues: NewUserToAPI) => {
                     AppEventMessageType.SAVE_SUCCESS
                 )
 
+                //  reset form values
+                setFormValues({
+                    ...formValues,
+                    firstname: "",
+                    lastname: "",
+                    email: ""
+                })
 
             })
             .catch((err) => {
