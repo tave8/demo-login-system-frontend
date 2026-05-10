@@ -271,6 +271,14 @@ export interface SignupFromAPI {
   userId: string
 }
 
+// RESET PASSWORD
+
+export interface ResetPasswordToAPI {
+  oldPassword: string
+  newPassword: string
+}
+
+
 // FORGOT PASSWORD
 
 export interface ForgotPasswordRequestToAPI {

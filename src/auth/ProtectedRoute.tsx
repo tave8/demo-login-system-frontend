@@ -26,8 +26,8 @@ export function ProtectedRoute({ children,
 
   const user = getUser()
 
-  console.log("USER: ", user)
-  console.log("AUTHENTICATED: ", authenticated)
+  // console.log("USER: ", user)
+  // console.log("AUTHENTICATED: ", authenticated)
 
 
   // if for some reason, current user was not saved
