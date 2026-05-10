@@ -5,7 +5,6 @@ import {AppEvent, AppEventMessageType, NewUserFromAPI, NewUserToAPI, UserRole} f
 import UserRoleHelper from "../../../js/helpers/UserRoleHelper.ts";
 import UsersAPI from "../../../js/api/UsersAPI.ts";
 import UnauthorizedError from "../../../js/exceptions/UnauthorizedError.ts";
-import {FaWhatsapp} from "react-icons/fa"
 import StringHelper from "../../../js/helpers/StringHelper.ts";
 
 
@@ -206,7 +205,7 @@ export default function AddUserPage () {
                             href={`https://wa.me/?text=${encodeURIComponent(getCopyPasteMessage(userFromAPI))}`}
                             target="_blank"
                     >
-                        <FaWhatsapp /> WhatsApp
+                        💬 WhatsApp
                     </Button>
 
                     {/* done */}

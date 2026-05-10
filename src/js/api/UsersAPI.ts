@@ -75,6 +75,20 @@ export default class UsersAPI extends BaseAPI {
     return data
   }
 
+  /**
+   * Get my users (aka my team).
+   * TODO: replace unknown with actual types (you might need to create the pagination etc.)
+   */
+  public async getMyUsers(): Promise<unknown> {
+    const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
+
+    const resp: Response = await this.doFetchAt("/users", config)
+
+    const data = await this.parseJSON<unknown>(resp)
+
+    return data
+  }
+
 
   /**
    * Upload my avatar image of the currently
