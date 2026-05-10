@@ -1,10 +1,11 @@
 import AppEventDispatcher from "../../../js/AppEventDispatcher.ts";
 import {useState} from "react";
-import {Button, Col, Container, Form, Modal, Row} from "react-bootstrap";
+import {Alert, Button, Col, Container, Form, Modal, Row} from "react-bootstrap";
 import {AppEvent, AppEventMessageType, NewUserFromAPI, NewUserToAPI, UserRole} from "../../../js/my_types.ts";
 import UserRoleHelper from "../../../js/helpers/UserRoleHelper.ts";
 import UsersAPI from "../../../js/api/UsersAPI.ts";
 import UnauthorizedError from "../../../js/exceptions/UnauthorizedError.ts";
+import {FaWhatsapp} from "react-icons/fa"
 
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
@@ -167,9 +168,10 @@ export default function AddUserPage () {
                     <Modal.Title>Prossimo passo</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <p className="text-muted mb-3">
+                    <Alert variant="info" className="mb-3">
                         Copia il messaggio qui sotto e mandalo all'utente.
-                    </p>
+                        Puoi vedere questa password temporanea solo una volta.
+                    </Alert>
 
                     <Form.Control
                         as="textarea"
@@ -180,6 +182,8 @@ export default function AddUserPage () {
                     />
                 </Modal.Body>
                 <Modal.Footer>
+
+                    {/* copy to clipboard */}
                     <Button variant={"success"} onClick={() => {
                         // copy text to clipboard
                         navigator.clipboard.writeText( getCopyPasteMessage(userFromAPI) )
@@ -188,11 +192,27 @@ export default function AddUserPage () {
                             AppEvent.APP_SUCCESS,
                             AppEventMessageType.COPIED
                         )
-                        // close modal
-                        setShowModal(false)
+
                     }}>📋
                         Copia
                     </Button>
+
+                    {/* send with whatsapp */}
+                    <Button variant={"success"}
+                            href={`https://wa.me/?text=${encodeURIComponent(getCopyPasteMessage(userFromAPI))}`}
+                            target="_blank"
+                    >
+                        <FaWhatsapp /> WhatsApp
+                    </Button>
+
+                    {/* done */}
+                    <Button variant={"secondary"} onClick={() => {
+                        // close modal
+                        setShowModal(false)
+                    }}>
+                        Fatto
+                    </Button>
+
                 </Modal.Footer>
             </Modal>
         </>
@@ -264,15 +284,29 @@ const getCopyPasteMessage = (userFromAPI: NewUserFromAPI|null): string => {
         return ""
     }
 
+    // the login changes based on whether the user is a coordinator
+    // or operator
+    let linkLogin = "https://app.operavion.com/login"
+    if(userFromAPI.role == UserRole.OPERATOR) {
+        linkLogin = "https://app.operavion.com/login-operator"
+    }
+
+
     return `Ciao ${userFromAPI?.firstname},
 ti ho appena aggiunto al gestionale Operavion.
 
 Ecco le tue credenziali:
 
-Username: ${userFromAPI?.username}
-Password temporanea: ${userFromAPI?.tempPassword}
+Username: 
+${userFromAPI?.username}
+
+Password temporanea: 
+${userFromAPI?.tempPassword}
 
 Al tuo primo login, potrai cambiare la tua password.
+
+Fai login qui: 
+${linkLogin}
 
 Buon proseguimento`
 
