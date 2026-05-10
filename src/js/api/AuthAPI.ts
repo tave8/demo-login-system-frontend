@@ -10,13 +10,24 @@ import {
   LoginToAPI,
   LoginFromAPI,
   ForgotPasswordRequestToAPI, ForgotPasswordRequestFromAPI, ForgotPasswordNewPasswordToAPI,
-  ForgotPasswordNewPasswordFromAPI, ForgotPasswordVerifyCodeToAPI, ForgotPasswordVerifyCodeFromAPI, OperatorLoginToAPI
+  ForgotPasswordNewPasswordFromAPI, ForgotPasswordVerifyCodeToAPI, ForgotPasswordVerifyCodeFromAPI, OperatorLoginToAPI,
+  ResetPasswordToAPI, UserFromAPI
 } from "../my_types"
 
 export default class AuthAPI extends BaseAPI {
+
+  private static instance: AuthAPI
+
   constructor() {
     // call new BaseAPI()
     super()
+  }
+
+  public static getInstance(): AuthAPI {
+    if(this.instance == null) {
+      this.instance = new AuthAPI()
+    }
+    return this.instance
   }
 
   /**
@@ -57,6 +68,21 @@ export default class AuthAPI extends BaseAPI {
 
     return data
   }
+
+  /**
+   * Reset password at first login.
+   */
+  public async resetPasswordAtFirstLogin(passwordData: ResetPasswordToAPI): Promise<UserFromAPI> {
+    // resetting a passwod requires login
+    const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.YES, passwordData)
+
+    const resp: Response = await this.doFetchAt(`/auth/reset-password-first-login`, config)
+
+    const data = await this.parseJSON<UserFromAPI>(resp)
+
+    return data
+  }
+
 
   /**
    * Send a forgot password request, if user can set a new password.

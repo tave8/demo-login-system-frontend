@@ -1,6 +1,9 @@
-import { createContext, useContext, useState } from "react";
-import { isLoggedIn } from "./isLoggedIn";
-import {UserFromAPI} from "../js/my_types.ts";
+import {createContext, useContext, useState} from "react";
+import {isLoggedIn} from "./isLoggedIn";
+import {AppEvent, UserFromAPI} from "../js/my_types.ts";
+import AppEventDispatcher from "../js/AppEventDispatcher.ts";
+
+const appEventDispatcher = AppEventDispatcher.getInstance()
 
 /**
  * This interface represents the
@@ -13,6 +16,8 @@ interface AuthContextType {
     logout: () => void;
     // get user from local storage
     getUser: () => UserFromAPI | null
+    // set user in local sorage
+    setUser: (user: UserFromAPI) => void
 }
 
 /**
@@ -33,7 +38,9 @@ interface AuthContextType {
  */
 const AuthContext = createContext<AuthContextType | null>(null);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({ children }: { children: React.ReactNode })
+{
+
     const [authenticated, setAuthenticated] = useState<boolean>(isLoggedIn);
 
     /**
@@ -48,16 +55,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             return null
         }
 
-        // check for parsing error
-        const user: UserFromAPI = JSON.parse(userAsStr)
+        // error while parsing JSON from local storage
+        try {
 
-        return user
+            const user: UserFromAPI = JSON.parse(userAsStr)
+
+            return user
+
+        } catch (err) {
+
+            appEventDispatcher.dispatch(
+                AppEvent.APP_ERROR,
+                "Error while getting user from local storage, specifically while "
+                +"parsing it from string to JSON. DETAILS: " + String(err)
+            )
+
+            // re-throw error
+            throw err
+
+        }
     }
 
+    /**
+     * Set user in local storage.
+     * Override current one in local storage, if there's one.
+     */
+    const setUser = (user: UserFromAPI) => {
+        localStorage.setItem("user", JSON.stringify(user))
+    }
 
     const login = (token: string, user: UserFromAPI) => {
         localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(user))
+        setUser(user)
         setAuthenticated(true);
     };
 
@@ -69,7 +98,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     return (
         // these "props" will be "passed down"
-        <AuthContext.Provider value={{ authenticated, login, logout, getUser }}>
+        <AuthContext.Provider value={{ authenticated, login, logout, getUser, setUser }}>
             {children}
         </AuthContext.Provider>
     );

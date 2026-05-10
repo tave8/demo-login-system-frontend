@@ -1,7 +1,10 @@
-import { Navigate } from "react-router-dom"
-import { useAuth } from "./AuthContext"
-import {AppRoutes, UserRole} from "../js/my_types"
+import {Navigate} from "react-router-dom"
+import {useAuth} from "./AuthContext"
+import {AppEvent, AppEventMessageType, AppRoutes, UserRole} from "../js/my_types"
 import UserRoleHelper from "../js/helpers/UserRoleHelper.ts";
+import AppEventDispatcher from "../js/AppEventDispatcher.ts";
+
+const appEventDispatcher = AppEventDispatcher.getInstance()
 
 interface Params {
   children: React.ReactNode
@@ -49,6 +52,11 @@ export function ProtectedRoute({ children,
 
   // if user is logged in but must change their password now
   if(user.mustChangePasswordNow) {
+    // we tell the user "must change your password before accessing your area"
+    appEventDispatcher.dispatchStandard(
+        AppEvent.APP_ERROR,
+        AppEventMessageType.MUST_CHANGE_PASSWORD
+    )
     // console.log("must change password now")
     return <Navigate to={AppRoutes.resetPasswordFirstLogin} />
   }

@@ -1,9 +1,12 @@
 import {Alert, Button, Col, Container, Form, Row, Spinner} from "react-bootstrap";
 import {useState} from "react";
-import {ForgotPasswordRequestToAPI, ResetPasswordToAPI} from "../../js/my_types.ts";
+import {ForgotPasswordRequestToAPI, ResetPasswordToAPI, UserFromAPI} from "../../js/my_types.ts";
 import AuthAPI from "../../js/api/AuthAPI.ts";
 import UnauthorizedError from "../../js/exceptions/UnauthorizedError.ts";
 import ForbiddenError from "../../js/exceptions/ForbiddenError.ts";
+import {useAuth} from "../../auth/AuthContext.tsx";
+
+const authAPI = AuthAPI.getInstance()
 
 const initialData: ResetPasswordToAPI = {
     oldPassword: "",
@@ -13,6 +16,7 @@ const initialData: ResetPasswordToAPI = {
 interface HandleResetPasswordParams {
     setIsLoading: (x: boolean) => void
     setIsError: (x: boolean) => void
+    setUser: (user: UserFromAPI) => void
 }
 
 
@@ -20,6 +24,8 @@ export default function ResetPasswordFirstLogin() {
     const [formValues, setFormValues] = useState(initialData)
     const [isLoading, setIsLoading] = useState(false)
     const [isError, setIsError] = useState(false)
+
+    const {setUser} = useAuth()
 
     return (
         <>
@@ -36,7 +42,7 @@ export default function ResetPasswordFirstLogin() {
                         {/* form */}
                         <Form onKeyDown={(e) => {
                             if (e.key === "Enter") {
-                                handleResetPassword(formValues)({ setIsLoading, setIsError })
+                                handleResetPassword(formValues)({ setIsLoading, setIsError, setUser })
                             }
                         }}>
 
@@ -88,7 +94,7 @@ export default function ResetPasswordFirstLogin() {
                                         <Button
                                             className="btn btn-primary"
                                             onClick={() => {
-                                                handleResetPassword(formValues)({ setIsLoading, setIsError })
+                                                handleResetPassword(formValues)({ setIsLoading, setIsError, setUser })
                                             }}
                                         >
                                             Invia
@@ -118,25 +124,40 @@ export default function ResetPasswordFirstLogin() {
 
 const handleResetPassword = (formValues: ResetPasswordToAPI) => {
     return async (params: HandleResetPasswordParams) => {
-        console.log(formValues, params)
 
-        // const authAPI = new AuthAPI();
-        //
-        // authAPI
-        //     .sendForgotPasswordRequest(emailData)
-        //     .then((msgFromServer) => {
-        //         // console.log(userData)
-        //         alert(msgFromServer.message)
-        //     })
-        //     .catch((err: unknown) => {
-        //         if (err instanceof UnauthorizedError || err instanceof ForbiddenError) {
-        //             // logout()
-        //             console.log(err.message)
-        //             alert("You cannot set a new password right now.")
-        //         } else {
-        //             console.info("Error during forgot password request")
-        //             console.error(err)
-        //         }
-        //     })
+        const {setIsLoading, setIsError, setUser} = params
+
+        setIsLoading(true)
+        setIsError(false)
+
+        authAPI
+            .resetPasswordAtFirstLogin(formValues)
+            .then((userFromAPI) => {
+                console.log(userFromAPI)
+
+                // update user in local storage
+                // if we don't do this, in local storage
+                // will remain the old user data
+                setUser(userFromAPI)
+
+                setIsLoading(false)
+                setIsError(false)
+
+            })
+            .catch((err: unknown) => {
+
+                setIsLoading(false)
+                setIsError(true)
+
+                // if (err instanceof UnauthorizedError || err instanceof ForbiddenError) {
+                //     // logout()
+                //     console.log(err.message)
+                //     alert("You cannot set a new password right now.")
+                // } else {
+                //     console.info("Error during forgot password request")
+                //     console.error(err)
+                // }
+            })
+
     }
 }
