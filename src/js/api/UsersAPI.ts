@@ -3,7 +3,15 @@
 import APIHelper from "./APIHelper"
 import BaseAPI from "./BaseAPI"
 import FileHelper from "../helpers/FileHelper"
-import {RequestMethod, RequireLogin, UpdatedUserToAPI, UserFromAPI, UserToAPI} from "../my_types"
+import {
+  NewUserFromAPI,
+  NewUserToAPI,
+  RequestMethod,
+  RequireLogin,
+  UpdatedUserToAPI,
+  UserFromAPI,
+  UserToAPI
+} from "../my_types"
 
 export default class UsersAPI extends BaseAPI {
 
@@ -58,12 +66,12 @@ export default class UsersAPI extends BaseAPI {
    * Add a user.
    * Only the admin should be allowed to add users.
    */
-  public async addUser(newUser: UserToAPI): Promise<UserFromAPI> {
+  public async addUser(newUser: NewUserToAPI): Promise<NewUserFromAPI> {
     const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.YES, newUser)
 
     const resp: Response = await this.doFetchAt("/users", config)
 
-    const data = await this.parseJSON<UserFromAPI>(resp)
+    const data = await this.parseJSON<NewUserFromAPI>(resp)
 
     return data
   }

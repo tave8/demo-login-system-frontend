@@ -220,7 +220,7 @@ const handleSignup = (formValues: SignupToAPI) => {
 
               appEventDispatcher.dispatchStandard(
                   AppEvent.APP_ERROR,
-                  AppEventMessageType.SIGNUP_CANNOT_USE_EMAIL
+                  AppEventMessageType.CANNOT_USE_EMAIL
               )
 
             } else if (err instanceof BadRequestError) {

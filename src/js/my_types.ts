@@ -59,10 +59,11 @@ export enum AppEventMessageType {
   NETWORK_ERROR = "NETWORK_ERROR",
   EXPECTED_JSON_PAYLOAD = "EXPECTED_JSON_PAYLOAD",
   SIGNUP_SUCCESS = "SIGNUP_SUCCESS",
-  SIGNUP_CANNOT_USE_EMAIL = "SIGNUP_CANNOT_USE_EMAIL",
+  CANNOT_USE_EMAIL = "CANNOT_USE_EMAIL",
   INVALID_FIELDS = "INVALID_FIELDS",
   SAVE_SUCCESS = "SAVE_SUCCESS",
   SAVE_ERROR = "SAVE_ERROR",
+  COPIED = "COPIED",
   SERVER_ERROR = "SERVER_ERROR",
   BAD_REQUEST = "BAD_REQUEST",
 }
@@ -77,10 +78,11 @@ export const AppEventMessage: Record<Language, Record<AppEventMessageType, strin
     NETWORK_ERROR: "There was a network error. Either you are offline, or the server is offline.",
     EXPECTED_JSON_PAYLOAD: "Internal error (expected JSON payload)",
     SIGNUP_SUCCESS: "Successful signup. Check your inbox: We've just sent you an email to verify that it's you.",
-    SIGNUP_CANNOT_USE_EMAIL:  "You cannot use this email.",
+    CANNOT_USE_EMAIL:  "You cannot use this email.",
     INVALID_FIELDS: "Some fields are invalid. Details: ",
     SAVE_SUCCESS: "Saved.",
     SAVE_ERROR: "There was an error while saving.",
+    COPIED: "Copied",
     SERVER_ERROR: "Your request has successfully reached the server, but there was a problem in the server.",
     BAD_REQUEST: "Your request could not be processed because it's malformed "
                   +"or this specific action cannot be performed."
@@ -94,10 +96,11 @@ export const AppEventMessage: Record<Language, Record<AppEventMessageType, strin
     NETWORK_ERROR: "Errore di rete. Sei offline o il server non è raggiungibile.",
     EXPECTED_JSON_PAYLOAD: "Errore interno (payload JSON atteso).",
     SIGNUP_SUCCESS: "Registrazione completata. Controlla la tua casella email: ti abbiamo inviato un link per verificare la tua identità.",
-    SIGNUP_CANNOT_USE_EMAIL: "Non puoi utilizzare questa email.",
+    CANNOT_USE_EMAIL: "Non puoi utilizzare questa email.",
     INVALID_FIELDS: "Alcuni campi non sono validi. Dettagli: ",
     SAVE_SUCCESS: "Salvato.",
     SAVE_ERROR: "C'è stato un errore durante il salvataggio.",
+    COPIED: "Copiato.",
     SERVER_ERROR: "La richiesta è arrivata al server, ma si è verificato un errore interno.",
     BAD_REQUEST: "La richiesta non può essere elaborata perché è malformata "
               +"o questa azione non è consentita."
@@ -182,12 +185,22 @@ export const UserRoleByLanguage: Record<Language, Record<UserRole, string>>  = {
 
 }
 
-export interface UserToAPI {
+export interface NewUserToAPI {
   firstname: string
   lastname: string
   role: UserRole
   email: string
 }
+
+
+export interface NewUserFromAPI {
+  firstname: string
+  lastname: string
+  role: UserRole
+  email: string
+  tempPassword: string
+}
+
 
 
 export interface UserFromAPI {

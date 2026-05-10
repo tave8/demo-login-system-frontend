@@ -1,9 +1,17 @@
 import AppEventDispatcher from "../../../js/AppEventDispatcher.ts";
 import {useState} from "react";
-import {Button, Col, Container, Form, Row} from "react-bootstrap";
-import {AppEvent, AppEventMessageType, UserRole, UserToAPI} from "../../../js/my_types.ts";
+import {Button, Col, Container, Form, Modal, Row} from "react-bootstrap";
+import {
+    AppEvent,
+    AppEventMessageType,
+    UserFromAPI,
+    UserRole,
+    NewUserToAPI,
+    NewUserFromAPI
+} from "../../../js/my_types.ts";
 import UserRoleHelper from "../../../js/helpers/UserRoleHelper.ts";
 import UsersAPI from "../../../js/api/UsersAPI.ts";
+import UnauthorizedError from "../../../js/exceptions/UnauthorizedError.ts";
 
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
@@ -13,9 +21,11 @@ const usersAPI = UsersAPI.getInstance()
 interface HandleAddUserParams {
     setIsLoading: (x:boolean) => void
     setIsError: (x:boolean) => void
+    setShowModal: (x: boolean) => void
+    setUserFromAPI: (user: NewUserFromAPI) => void
 }
 
-const initialFormValues: UserToAPI = {
+const initialFormValues: NewUserToAPI = {
     firstname: "",
     lastname: "",
     email: "",
@@ -27,6 +37,12 @@ export default function AddUserPage () {
     const [formValues, setFormValues] = useState(initialFormValues)
     const [isLoading, setIsLoading] = useState(false)
     const [isError, setIsError] = useState(false)
+
+    // what we get back from the server, once
+    // this user is added
+    const [userFromAPI, setUserFromAPI] = useState<NewUserFromAPI|null>(null)
+
+    const [showModal, setShowModal] = useState(false)
 
 
     return (
@@ -66,7 +82,7 @@ export default function AddUserPage () {
                             {/* form */}
                             <Form onKeyDown={(e) => {
                                 if (e.key === "Enter") {
-                                    handleAddUser(formValues)({ setIsError, setIsLoading })
+                                    handleAddUser(formValues)({ setIsError, setIsLoading, setShowModal, setUserFromAPI })
                                 }
                             }}>
 
@@ -139,7 +155,7 @@ export default function AddUserPage () {
                                         disabled={isLoading}
                                         variant="primary"
                                         onClick={() => {
-                                            handleAddUser(formValues)({ setIsError, setIsLoading })
+                                            handleAddUser(formValues)({ setIsError, setIsLoading, setShowModal, setUserFromAPI })
                                         }}
                                     >
                                         Aggiungi
@@ -151,13 +167,38 @@ export default function AddUserPage () {
                     </Col>
                 </Row>
             </Container>
+
+            {/* modal to show admin username & password of newly added user */}
+            <Modal show={showModal} onHide={() => setShowModal(false)} centered backdrop="static" keyboard={false}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Temporary Password</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>Save this password — it won't be shown again.</p>
+                    {/*<Form.Control readOnly value={userFromAPI && userFromAPI. ?? ""} />*/}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => {
+                        // navigator.clipboard.writeText(tempPassword ?? "")
+                        appEventDispatcher.dispatchStandard(
+                            AppEvent.APP_SUCCESS,
+                            AppEventMessageType.COPIED
+                        )
+                    }}>
+                        Copia
+                    </Button>
+                    <Button variant="primary" onClick={() => setShowModal(false)}>
+                        Fatto
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </>
     )
 }
 
-const handleAddUser = (formValues: UserToAPI) => {
+const handleAddUser = (formValues: NewUserToAPI) => {
     return async (params: HandleAddUserParams) => {
-        const { setIsError, setIsLoading } = params
+        const { setIsError, setIsLoading, setShowModal, setUserFromAPI } = params
 
 
         setIsLoading(true)
@@ -165,15 +206,19 @@ const handleAddUser = (formValues: UserToAPI) => {
 
         usersAPI
             .addUser(formValues)
-            .then((loginInfo) => {
+            .then((userFromAPI) => {
 
                 setIsLoading(false)
                 setIsError(false)
+
+                setUserFromAPI(userFromAPI)
+                setShowModal(true)
 
                 appEventDispatcher.dispatchStandard(
                     AppEvent.APP_SUCCESS,
                     AppEventMessageType.SAVE_SUCCESS
                 )
+
 
             })
             .catch((err) => {
@@ -181,27 +226,22 @@ const handleAddUser = (formValues: UserToAPI) => {
                 setIsLoading(false)
                 setIsError(true)
                 //
-                // if (err instanceof UnauthorizedError) {
-                //
-                //     appEventDispatcher.dispatchStandard(
-                //         AppEvent.APP_ERROR,
-                //         AppEventMessageType.WRONG_CREDENTIALS
-                //     )
-                //
-                // } else if (err instanceof ForbiddenError) {
-                //
-                //     appEventDispatcher.dispatchStandard(
-                //         AppEvent.APP_ERROR,
-                //         AppEventMessageType.MUST_VERIFY_EMAIL
-                //     )
-                //
-                // }
+                if (err instanceof UnauthorizedError) {
 
+                    appEventDispatcher.dispatchStandard(
+                        AppEvent.APP_ERROR,
+                        AppEventMessageType.CANNOT_USE_EMAIL
+                    )
 
-                appEventDispatcher.dispatchStandard(
-                    AppEvent.APP_ERROR,
-                    AppEventMessageType.SAVE_ERROR
-                )
+                 } else {
+
+                    appEventDispatcher.dispatchStandard(
+                        AppEvent.APP_ERROR,
+                        AppEventMessageType.SAVE_ERROR
+                    )
+
+                }
+
 
             })
 
