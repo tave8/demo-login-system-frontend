@@ -25,7 +25,7 @@ export default function NavContentForOperator({ setNavExpanded }: Props) {
 
                     {authenticated && (
                         <Link
-                            to={AppRoutes.dashboard}
+                            to={AppRoutes.dashboardOf(user.role)}
                             onClick={closeNav}
                             className="nav-item nav-link">
                             I miei turni
