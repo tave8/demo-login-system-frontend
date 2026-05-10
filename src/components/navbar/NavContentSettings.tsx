@@ -1,9 +1,8 @@
 import {NavigateFunction, useNavigate} from "react-router-dom";
-import {useState} from "react";
 import {useAuth} from "../../auth/AuthContext.tsx";
 import {Nav, NavDropdown} from "react-bootstrap";
 import AppNotificationBell from "../AppNotificationBell.tsx";
-import {AppEvent, AppEventMessageType, AppRoutes} from "../../js/my_types.ts";
+import {AppEvent, AppEventMessageType, AppRoutes, UserRole} from "../../js/my_types.ts";
 import AppEventDispatcher from "../../js/AppEventDispatcher.ts";
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
@@ -37,19 +36,29 @@ export default function NavContentSettings({ setNavExpanded }: Props) {
                         <AppNotificationBell  />
                     </Nav.Item>
 
-                    <NavDropdown title="Impostazioni" id="basic-nav-dropdown" align="end">
-                        {/* my profile */}
-                        <NavDropdown.Item
-                            onClick={() => {
-                                navigate(AppRoutes.myProfile)
-                                closeNav()
-                            }
-                            }>
-                            Il mio profilo
-                        </NavDropdown.Item>
 
-                        {/* divider */}
-                        <NavDropdown.Divider />
+                    <NavDropdown title="Impostazioni" id="basic-nav-dropdown" align="end">
+
+                        {/* operators cannot see their profile */}
+                        {user && user.role != UserRole.OPERATOR && (
+                            <>
+                            {/* my profile */}
+                            <NavDropdown.Item
+                                onClick={() => {
+                                    navigate(AppRoutes.myProfile)
+                                    closeNav()
+                                }
+                                }>
+                                Il mio profilo
+                            </NavDropdown.Item>
+
+
+
+                            {/* divider */}
+                            <NavDropdown.Divider />
+                            </>
+                        )}
+
 
                         {/* logout */}
                         <NavDropdown.Item
@@ -60,6 +69,7 @@ export default function NavContentSettings({ setNavExpanded }: Props) {
                             Logout
                         </NavDropdown.Item>
                     </NavDropdown>
+
 
                 </Nav>
             )}
