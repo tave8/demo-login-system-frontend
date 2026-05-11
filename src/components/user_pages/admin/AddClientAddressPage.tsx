@@ -23,6 +23,8 @@ interface HandleAddClientAddressParams {
     setIsLoading: (x:boolean) => void
     setIsError: (x:boolean) => void
     setFormValues: (user: ClientAddressToAPI) => void
+    setClientId: (x: string) => void
+    setClientName: (x: string) => void
 }
 
 interface HandleAutocompleteAddress {
@@ -87,7 +89,7 @@ export default function AddClientAddressPage () {
                                 }}
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter") {
-                                        handleAddClientAddress(clientId, formValues)({ setIsError, setIsLoading, setFormValues });
+                                        handleAddClientAddress(clientId, formValues)({ setIsError, setIsLoading, setFormValues, setClientId, setClientName });
                                     }
                                 }}>
 
@@ -100,7 +102,7 @@ export default function AddClientAddressPage () {
                                             type="text"
                                             autoComplete="off"
                                             value={clientName}
-                                            placeholder="Inserisci almeno 5 caratteri..."
+                                            placeholder="Inserisci almeno 3 caratteri..."
                                             onChange={(event) => {
 
                                                 const query = event.target.value
@@ -266,7 +268,7 @@ export default function AddClientAddressPage () {
                                         disabled={isLoading}
                                         variant="primary"
                                         onClick={() => {
-                                            handleAddClientAddress(clientId, formValues)({ setIsError, setIsLoading, setFormValues });
+                                            handleAddClientAddress(clientId, formValues)({ setIsError, setIsLoading, setFormValues, setClientId, setClientName });
                                         }}
                                     >
                                         Aggiungi sede
@@ -286,54 +288,53 @@ export default function AddClientAddressPage () {
 const handleAddClientAddress = (clientId: string,  formValues: ClientAddressToAPI) => {
     return async (params: HandleAddClientAddressParams) => {
 
-        const { setIsError, setIsLoading, setFormValues } = params
+        const { setIsError, setIsLoading, setFormValues, setClientId, setClientName } = params
 
-        console.log(clientId, formValues)
+        requireValidFields(formValues, clientId)
 
-        // requireValidFields(formValues)
-        //
-        // setIsLoading(true)
-        // setIsError(false)
-        //
-        // clientsAPI
-        //     .addClient(formValues)
-        //     .then((clientFromAPI) => {
-        //
-        //         setIsLoading(false)
-        //         setIsError(false)
-        //
-        //         // reset form fields
-        //         setFormValues({
-        //             email: "",
-        //             vat: "",
-        //             legalAddressLat: 0,
-        //             legalAddressLon: 0,
-        //             legalName: "",
-        //             legalAddress: "",
-        //             phone: ""
-        //         })
-        //
-        //
-        //         appEventDispatcher.dispatchStandard(
-        //             AppEvent.APP_SUCCESS,
-        //             AppEventMessageType.SAVE_SUCCESS
-        //         )
-        //
-        //     })
-        //     .catch((err) => {
-        //
-        //         setIsLoading(false)
-        //         setIsError(true)
-        //
-        //         if (err instanceof BadRequestError) {
-        //
-        //             appEventDispatcher.dispatchStandard(
-        //                 AppEvent.APP_ERROR,
-        //                 AppEventMessageType.BAD_REQUEST
-        //             )
-        //
-        //         }
-        //     })
+
+        setIsLoading(true)
+        setIsError(false)
+
+        clientAddressesAPI
+            .addAddressToClient(clientId, formValues)
+            .then((clientAddressFromAPI) => {
+
+                setIsLoading(false)
+                setIsError(false)
+
+                // reset form fields
+                setClientName("")
+                setClientId("")
+                setFormValues({
+                    address: "",
+                    addressName: "",
+                    addressLat: 0,
+                    addressLon: 0,
+                })
+
+
+                appEventDispatcher.dispatchStandard(
+                    AppEvent.APP_SUCCESS,
+                    AppEventMessageType.SAVE_SUCCESS
+                )
+
+            })
+            .catch((err) => {
+
+                setIsLoading(false)
+                setIsError(true)
+
+                if (err instanceof BadRequestError) {
+
+                    appEventDispatcher.dispatchStandard(
+                        AppEvent.APP_ERROR,
+                        AppEventMessageType.BAD_REQUEST
+                    )
+
+                }
+            })
+
     }
 
 }
@@ -409,44 +410,34 @@ const handleSearchClient = (query: string) =>
  * If not, an error is thrown and a toast message
  * for to the user is shown.
  */
-const requireValidFields = (formValues: ClientToAPI) => {
+const requireValidFields = (formValues: ClientAddressToAPI, clientId: string) => {
 
-    const isValidEmail = StringHelper.isValidEmail(formValues.email)
-    const isNonEmptyLegalAddress = formValues.legalAddress.trim() != ""
-    const isNonEmptyVat = formValues.vat.trim() != ""
-    const isNonEmptyLegalName = formValues.legalName.trim() != ""
-    const isNonEmptyPhone = formValues.phone.trim() != ""
+    const isNonEmptyClient = clientId.trim() != ""
+    const isNonEmptyAddressName = formValues.addressName.trim() != ""
+    const isNonEmptyAddress = formValues.address.trim() != ""
 
     const errors: string[] = []
 
-    if (!isValidEmail) {
-        errors.push("L'email deve essere valida")
+    if (!isNonEmptyClient) {
+        errors.push("Il cliente non può essere vuoto")
     }
-    if (!isNonEmptyLegalAddress) {
-        errors.push("L'indirizzo sede legale non può essere vuoto")
+    if (!isNonEmptyAddressName) {
+        errors.push("Il nome della sede non può essere vuota")
     }
-    if (!isNonEmptyVat) {
-        errors.push("La partita IVA non può essere vuota")
-    }
-    if (!isNonEmptyLegalName) {
-        errors.push("La ragione sociale non può essere vuota")
-    }
-    if (!isNonEmptyPhone) {
-        errors.push("Il telefono non può essere vuoto")
+    if (!isNonEmptyAddress) {
+        errors.push("L'indirizzo non può essere vuoto")
     }
 
     // if there are errors
     if(errors.length > 0) {
 
-        if(!isValidEmail) {
-            appEventDispatcher.dispatchStandard(
-                AppEvent.INVALID_FIELDS,
-                AppEventMessageType.INVALID_FIELDS,
-                errors.join(", ")
-            )
+        appEventDispatcher.dispatchStandard(
+            AppEvent.INVALID_FIELDS,
+            AppEventMessageType.INVALID_FIELDS,
+            errors.join(", ")
+        )
 
-            throw new Error("At least one field is invalid")
-        }
+        throw new Error("At least one field is invalid")
     }
 
 

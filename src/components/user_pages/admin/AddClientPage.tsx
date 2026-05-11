@@ -376,15 +376,13 @@ const requireValidFields = (formValues: ClientToAPI) => {
     // if there are errors
     if(errors.length > 0) {
 
-        if(!isValidEmail) {
-            appEventDispatcher.dispatchStandard(
-                AppEvent.INVALID_FIELDS,
-                AppEventMessageType.INVALID_FIELDS,
-                errors.join(", ")
-            )
+        appEventDispatcher.dispatchStandard(
+            AppEvent.INVALID_FIELDS,
+            AppEventMessageType.INVALID_FIELDS,
+            errors.join(", ")
+        )
 
-            throw new Error("At least one field is invalid")
-        }
+        throw new Error("At least one field is invalid")
     }
 
 

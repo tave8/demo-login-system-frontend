@@ -48,7 +48,7 @@ export default function ClientsPage() {
                         {/* title */}
                         <Row className={"mb-3"}>
                             <Col>
-                                <h1 className="text-center">Il mio Team</h1>
+                                <h1 className="text-center">Clienti</h1>
                             </Col>
                         </Row>
 
