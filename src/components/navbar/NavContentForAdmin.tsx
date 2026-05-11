@@ -45,6 +45,7 @@ export default function NavContentForAdmin({ setNavExpanded }: Props) {
                         {/*    Clienti*/}
                         {/*</Link>*/}
 
+                        {/* TEAM */}
                         <NavDropdown title="Team" id="basic-nav-dropdown" align="end">
                             {/* add user */}
                             <NavDropdown.Item
@@ -69,6 +70,28 @@ export default function NavContentForAdmin({ setNavExpanded }: Props) {
                             </NavDropdown.Item>
                         </NavDropdown>
 
+                    {/* CLIENTI */}
+                    <NavDropdown title="Clienti" id="basic-nav-dropdown" align="end">
+                        <NavDropdown.Item
+                            onClick={() => {
+                                navigate(AppRoutes.clients)
+                                closeNav()
+                            }
+                            }>
+                            Vedi clienti
+                        </NavDropdown.Item>
+
+                        {/* divider */}
+                        <NavDropdown.Divider />
+
+                        <NavDropdown.Item
+                            onClick={() => {
+                                navigate(AppRoutes.addClient)
+                                closeNav()
+                            }}>
+                            Aggiungi cliente
+                        </NavDropdown.Item>
+                    </NavDropdown>
 
                         {/*<Link*/}
                         {/*    to={AppRoutes.uploadCV}*/}

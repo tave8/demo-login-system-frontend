@@ -34,6 +34,8 @@ export const AppRoutes = {
   users: "/u/users",
   addUser: "/u/users/add",
 
+  clients: "/u/clients",
+  addClient: "/u/clients/add",
 
   // DASHBOARDS
 

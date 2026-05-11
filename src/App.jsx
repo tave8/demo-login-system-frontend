@@ -8,7 +8,6 @@ import { PublicOnlyRoute } from "./auth/PublicOnlyRoute.tsx"
 import { AuthGuard } from "./auth/AuthGuard.tsx"
 import {AppRoutes, UserRole} from "./js/my_types.ts"
 
-// user_pages
 import SeeMyProfilePage from "./components/user_pages/SeeMyProfilePage.tsx"
 import EditMyProfilePage from "./components/user_pages/EditMyProfilePage.tsx"
 import LoginPage from "./components/auth_pages/LoginPage.tsx"
@@ -17,12 +16,9 @@ import AddMyArticlePage from "./components/user_pages/AddMyArticlePage.tsx"
 import EditMyArticlePage from "./components/user_pages/EditMyArticlePage.tsx"
 import SeeMyArticlesPage from "./components/user_pages/SeeMyArticlesPage.tsx"
 import UploadCvPage from "./components/user_pages/UploadCVPage.tsx";
-// standard user_pages
 import NotFoundPage from "./components/NotFoundPage.jsx"
 import ForgotPasswordProvideEmailPage from "./components/auth_pages/ForgotPasswordProvideEmailPage.tsx";
 import ForgotPasswordSetNewPasswordPage from "./components/auth_pages/ForgotPasswordSetNewPasswordPage.tsx";
-
-// components
 import AppNav from "./components/AppNav.tsx"
 import {useAuth} from "./auth/AuthContext.tsx";
 import {Col, Container, Row} from "react-bootstrap";
@@ -37,6 +33,8 @@ import {MustChangePasswordRoute} from "./auth/MustChangePasswordRoute.tsx";
 import AdminDashboardPage from "./components/user_pages/admin/AdminDashboardPage.tsx";
 import CoordinatorDashboardPage from "./components/user_pages/coordinator/CoordinatorDashboardPage.tsx";
 import OperatorDashboardPage from "./components/user_pages/operator/OperatorDashboardPage.tsx";
+import ClientsPage from "./components/user_pages/admin/ClientsPage.tsx";
+import AddClientPage from "./components/user_pages/admin/AddClientPage.tsx";
 
 
 function App() {
@@ -121,6 +119,25 @@ function App() {
                                   element={
                                       <ProtectedRoute allowOnlyRoles={[UserRole.ADMIN]}>
                                           <AddUserPage />
+                                      </ProtectedRoute>
+                                  }
+                              />
+
+
+                              <Route
+                                  path={AppRoutes.clients}
+                                  element={
+                                      <ProtectedRoute allowOnlyRoles={[UserRole.ADMIN]}>
+                                          <ClientsPage />
+                                      </ProtectedRoute>
+                                  }
+                              />
+
+                              <Route
+                                  path={AppRoutes.addClient}
+                                  element={
+                                      <ProtectedRoute allowOnlyRoles={[UserRole.ADMIN]}>
+                                          <AddClientPage />
                                       </ProtectedRoute>
                                   }
                               />
