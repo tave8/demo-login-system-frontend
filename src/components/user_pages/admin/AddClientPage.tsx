@@ -9,12 +9,8 @@ import {useAuth} from "../../../auth/AuthContext.tsx";
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
 
 interface HandleAddClientParams {
-    // setIsLoading: (x:boolean) => void
-    // setIsError: (x:boolean) => void
-    // login: (token: string, user: UserFromAPI) => void
-    // logout: () => void
-    // authenticated: boolean
-    // navigate: NavigateFunction,
+    setIsLoading: (x:boolean) => void
+    setIsError: (x:boolean) => void
 }
 
 const initialFormValues: ClientToAPI = {
@@ -50,7 +46,7 @@ export default function AddClientPage () {
                             {/* form */}
                             <Form onKeyDown={(e) => {
                                 if (e.key === "Enter") {
-                                    // handleLogin(formValues)({ login, logout, authenticated, navigate, setIsError, setIsLoading });
+                                    handleAddClient(formValues)({ setIsError, setIsLoading });
                                 }
                             }}>
                                 {/* legal name */}
@@ -140,7 +136,7 @@ export default function AddClientPage () {
                                             disabled={isLoading}
                                             type="text"
                                             placeholder="via Roma, Milano"
-                                            value={formValues.vat}
+                                            value={formValues.legalAddress}
                                             onChange={(event) => {
                                                 setFormValues({
                                                     ...formValues,
@@ -158,7 +154,7 @@ export default function AddClientPage () {
                                         disabled={isLoading}
                                         variant="primary"
                                         onClick={() => {
-                                            // handleLogin(formValues)({ login, logout, authenticated, navigate, setIsError, setIsLoading })
+                                            handleAddClient(formValues)({ setIsError, setIsLoading });
                                         }}
                                     >
                                         Aggiungi cliente
@@ -175,58 +171,59 @@ export default function AddClientPage () {
     )
 }
 
-// const handleLogin = (formValues: LoginToAPI) => {
-//     return async (params: handleLoginParams) => {
-//         const { login, logout, authenticated, navigate, setIsError, setIsLoading } = params
-//
-//         const authAPI = new AuthAPI()
-//
-//         setIsLoading(true)
-//         setIsError(false)
-//
-//         authAPI
-//             .login(formValues)
-//             .then((loginInfo) => {
-//
-//                 setIsLoading(false)
-//                 setIsError(false)
-//
-//                 const { accessToken } = loginInfo
-//
-//                 login(accessToken, loginInfo.user)
-//
-//                 // after successful login, where route the user
-//                 // is redirected to
-//                 navigate(AppRoutes.dashboardOf(loginInfo.user.role))
-//
-//                 appEventDispatcher.dispatchStandard(
-//                     AppEvent.APP_SUCCESS,
-//                     AppEventMessageType.LOGIN_SUCCESS
-//                 )
-//
-//             })
-//             .catch((err) => {
-//
-//                 setIsLoading(false)
-//                 setIsError(true)
-//
-//                 if (err instanceof UnauthorizedError) {
-//
-//                     appEventDispatcher.dispatchStandard(
-//                         AppEvent.APP_ERROR,
-//                         AppEventMessageType.WRONG_CREDENTIALS
-//                     )
-//
-//                 } else if (err instanceof ForbiddenError) {
-//
-//                     appEventDispatcher.dispatchStandard(
-//                         AppEvent.APP_ERROR,
-//                         AppEventMessageType.MUST_VERIFY_EMAIL
-//                     )
-//
-//                 }
-//             })
-//     }
-//
-// }
+const handleAddClient = (formValues: ClientToAPI) => {
+    return async (params: HandleAddClientParams) => {
+        console.log(formValues, params)
+        // const { login, logout, authenticated, navigate, setIsError, setIsLoading } = params
+        //
+        // const authAPI = new AuthAPI()
+        //
+        // setIsLoading(true)
+        // setIsError(false)
+        //
+        // authAPI
+        //     .login(formValues)
+        //     .then((loginInfo) => {
+        //
+        //         setIsLoading(false)
+        //         setIsError(false)
+        //
+        //         const { accessToken } = loginInfo
+        //
+        //         login(accessToken, loginInfo.user)
+        //
+        //         // after successful login, where route the user
+        //         // is redirected to
+        //         navigate(AppRoutes.dashboardOf(loginInfo.user.role))
+        //
+        //         appEventDispatcher.dispatchStandard(
+        //             AppEvent.APP_SUCCESS,
+        //             AppEventMessageType.LOGIN_SUCCESS
+        //         )
+        //
+        //     })
+        //     .catch((err) => {
+        //
+        //         setIsLoading(false)
+        //         setIsError(true)
+        //
+        //         if (err instanceof UnauthorizedError) {
+        //
+        //             appEventDispatcher.dispatchStandard(
+        //                 AppEvent.APP_ERROR,
+        //                 AppEventMessageType.WRONG_CREDENTIALS
+        //             )
+        //
+        //         } else if (err instanceof ForbiddenError) {
+        //
+        //             appEventDispatcher.dispatchStandard(
+        //                 AppEvent.APP_ERROR,
+        //                 AppEventMessageType.MUST_VERIFY_EMAIL
+        //             )
+        //
+        //         }
+        //     })
+    }
+
+}
 

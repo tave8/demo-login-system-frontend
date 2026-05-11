@@ -39,7 +39,10 @@ export default class APIHelper {
   /**
    * Get the API url plus whatever endpoint.
    * Example of return value:
-   * https://api.giuseppetavella.com/my/custom/endpoint
+   * https://api.giuseppetavella.com/my/custom/endpoint?x=123
+   *
+   * @param endpoint the relative path, for example: /my/custom/endpoint?x=123
+   *  It can be with or without query string params
    */
   public static getAPIUrlAt(endpoint: string = ""): string {
     const trimmed = endpoint.trim()
@@ -496,6 +499,53 @@ export default class APIHelper {
   }
 
 
+
+  /**
+   * Do fetch at with query params,
+   * with error callback.
+   */
+  public static async doFetchAtWithParamsButIfError(relativeURL: string,
+                                                    config: RequestInit,
+                                                    params: Record<string, string>,
+                                                    callbackOnError: Function): Promise<Response>
+  {
+
+    try {
+
+      return await APIHelper.doFetchAtWithParams(relativeURL, config, params)
+
+    } catch(err) {
+
+      callbackOnError(err)
+      throw err
+
+    }
+
+  }
+
+
+  /**
+   * Do fetch at with query params
+   *
+   * Note: the url you provide should not have ? symbol
+   * or anything else. The query param building is done for you.
+   */
+  public static async doFetchAtWithParams(relativeURL: string,
+                                          config: RequestInit,
+                                          params: Record<string, string>): Promise<Response>
+  {
+
+    const paramsObj = new URLSearchParams(params)
+
+    // this will be something like: /my-resources/?x=123&y=abc
+    const relativeURLWithParams = relativeURL + "?" + paramsObj.toString()
+
+    return APIHelper.doFetchAt(relativeURLWithParams, config)
+
+  }
+
+
+
   /**
    * Do a fetch request to a (relative) endpoint,
    * providing a fetch configuration object.
@@ -510,9 +560,15 @@ export default class APIHelper {
    *
    * @throws {NetworkError}
    */
-  public static async doFetchAt(relativeURLPath: string, config: RequestInit): Promise<Response> {
+  public static async doFetchAt(relativeURLPath: string,
+                                config: RequestInit): Promise<Response>
+  {
+
+    // get the the "basi API url" which depends on the environemnt (development, production etc.)
     const absoluteURL = APIHelper.getAPIUrlAt(relativeURLPath)
+
     return APIHelper.doFetch(absoluteURL, config)
+
   }
 
   /**

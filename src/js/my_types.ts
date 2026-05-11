@@ -390,6 +390,36 @@ export interface ClientFromAPI {
 }
 
 
+// GEOCODING (address autocomplete)
+
+export interface GeocodingAutocompleteQueryParamsToAPI {
+    q: string
+    lang: string
+}
+
+
+// this is one result item
+export interface GeocodingAutocompleteFromAPI {
+  lat: number
+  lon: number
+  displayName: string
+  confidence: number
+  country: string
+  county: string
+  state: string
+  resultType: string
+}
+
+
+export interface EnrichedGeocodingAutocompleteFromAPI extends GeocodingAutocompleteFromAPI {
+  resultTypeInLocalLanguage: string
+}
+
+export interface GeocodingAutocompletePageFromAPI extends Pagination<GeocodingAutocompleteFromAPI> {}
+
+export interface EnrichedGeocodingAutocompletePageFromAPI extends Pagination<EnrichedGeocodingAutocompleteFromAPI> {}
+
+
 export type MaybeFile = File | null
 
 // FETCH CONFIG TYPES

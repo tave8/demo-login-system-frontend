@@ -27,6 +27,31 @@ export default abstract class BaseAPI {
 
     // dependency
     private readonly appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
+
+
+    public async doFetchAtWithParams<T extends Record<string, string>>(relativeURL: string,
+                                                                     config: RequestInit,
+                                                                     params: T): Promise<Response>
+    {
+
+        return await APIHelper.doFetchAtWithParamsButIfError(relativeURL, config, params, (err: Error) => {
+            console.error(err)
+
+            if(err instanceof NetworkError) {
+                // console.log("NETWORK ERROR!")
+
+                this.appEventDispatcher.dispatchStandard(
+                    AppEvent.APP_ERROR,
+                    AppEventMessageType.NETWORK_ERROR
+                )
+
+            }
+
+        })
+
+    }
+
+
     public async doFetchAt(relativeURLPath: string,
                            config: RequestInit): Promise<Response>
     {
