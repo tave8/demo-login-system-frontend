@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {Button, Col, Container, Form, ListGroup, Row} from "react-bootstrap";
+import {Alert, Button, Col, Container, Form, ListGroup, Row, Spinner} from "react-bootstrap";
 import AppEventDispatcher from "../../../js/AppEventDispatcher.ts";
 import {ClientToAPI, GeocodingAutocompleteItemFromAPI, Language} from "../../../js/my_types.ts";
 import GeocodingAPI from "../../../js/api/GeocodingAPI.ts";
@@ -59,7 +59,11 @@ export default function AddClientPage () {
 
                         <Row>
                             {/* form */}
-                            <Form onKeyDown={(e) => {
+                            <Form
+                                onSubmit={(e) => {
+                                    e.preventDefault()
+                                }}
+                                onKeyDown={(e) => {
                                 if (e.key === "Enter") {
                                     handleAddClient(formValues)({ setIsError, setIsLoading });
                                 }
@@ -151,46 +155,71 @@ export default function AddClientPage () {
                                             disabled={isLoading}
                                             type="text"
                                             autoComplete="off"
-                                            placeholder="via Roma, Milano"
+                                            placeholder="Inserisci almeno 5 caratteri..."
                                             value={formValues.legalAddress}
                                             onChange={(event) => {
                                                 const query = event.target.value
+
                                                 setFormValues({
                                                     ...formValues,
                                                     legalAddress: query,
                                                 })
 
-                                                // mechanism for delaying autocomplete on typing
-                                                clearTimeout(LAST_AUTOCOMPLETE_TIMEOUT)
+                                                // autocomplete is triggered when user has typed
+                                                // at least 5 chars
+                                                if(query.length >= 5) {
 
-                                                LAST_AUTOCOMPLETE_TIMEOUT = setTimeout(() => {
-                                                    handleAutocompleteAddress(query)({setAutocompleteAddressess,
-                                                                                        setIsAutocompleteError,
-                                                                                        setIsAutocompleteLoading})
-                                                }, 700)
+                                                    // mechanism for delaying autocomplete on typing
+                                                    clearTimeout(LAST_AUTOCOMPLETE_TIMEOUT)
+
+                                                    LAST_AUTOCOMPLETE_TIMEOUT = setTimeout(() => {
+                                                        handleAutocompleteAddress(query)({setAutocompleteAddressess,
+                                                                                            setIsAutocompleteError,
+                                                                                            setIsAutocompleteLoading})
+                                                    }, 1000)
+
+                                                }
+
 
                                             }}
                                         />
                                     </Form.Group>
 
-                                    <ListGroup>
-                                        {autocompleteAddressess.map((address, index) => (
-                                            <ListGroup.Item
-                                                key={index}
-                                                action
-                                                onMouseDown={() => {
-                                                    setFormValues({
-                                                        ...formValues,
-                                                        legalAddress: address.displayName,
-                                                        legalAddressLat: address.lat,
-                                                        legalAddressLon: address.lon,
-                                                    })
-                                                }}
-                                            >
-                                                {address.displayName}
-                                            </ListGroup.Item>
-                                        ))}
-                                    </ListGroup>
+                                    {!isAutocompleteLoading && (
+                                        <ListGroup style={{ maxHeight: "250px", overflowY: "auto", position: "absolute" }}>
+                                            {autocompleteAddressess.map((address, index) => (
+                                                <ListGroup.Item
+                                                    key={index}
+                                                    action
+                                                    onMouseDown={(e) => {
+                                                        e.preventDefault()
+                                                        setFormValues({
+                                                            ...formValues,
+                                                            legalAddress: address.displayName,
+                                                            legalAddressLat: address.lat,
+                                                            legalAddressLon: address.lon,
+                                                        })
+                                                        setAutocompleteAddressess([])
+                                                    }}
+                                                >
+                                                    {address.displayName}
+                                                </ListGroup.Item>
+                                            ))}
+                                        </ListGroup>
+                                    )}
+
+                                    {/* is loading */}
+                                    {isAutocompleteLoading && (
+                                        <Spinner animation="border" role="status">
+                                            <span className="visually-hidden">Loading...</span>
+                                        </Spinner>
+                                    )}
+
+                                    {/* is error */}
+                                    {isAutocompleteError && <Alert variant="danger">Something went wrong.</Alert>}
+
+                                    
+                                    
                                 </Col>
 
 
