@@ -54,6 +54,7 @@ export default function AddClientAddressPage () {
 
     // we keep track of the client id
     const [clientId, setClientId] = useState<string>("")
+    const [clientName, setClientName] = useState<string>("")
 
     // this is for legal address autocomplete
     const [autocompleteAddressess, setAutocompleteAddressess] = useState<EnrichedGeocodingAutocompleteItemFromAPI[]>([])
@@ -69,7 +70,7 @@ export default function AddClientAddressPage () {
         <>
             <Container fluid>
                 <Row className="d-flex justify-content-center">
-                    <Col xs={12} md={6} lg={4}>
+                    <Col xs={12} md={9} lg={6}>
 
                         {/* title */}
                         <Row className={"mb-3"}>
@@ -86,7 +87,7 @@ export default function AddClientAddressPage () {
                                 }}
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter") {
-                                        handleAddClientAddress(formValues)({ setIsError, setIsLoading, setFormValues });
+                                        handleAddClientAddress(clientId, formValues)({ setIsError, setIsLoading, setFormValues });
                                     }
                                 }}>
 
@@ -98,16 +99,17 @@ export default function AddClientAddressPage () {
                                             disabled={isLoading}
                                             type="text"
                                             autoComplete="off"
+                                            value={clientName}
                                             placeholder="Inserisci almeno 5 caratteri..."
                                             onChange={(event) => {
 
                                                 const query = event.target.value
 
-                                                // setClientId()
+                                                setClientName(query)
 
                                                 // autocomplete is triggered when user has typed
-                                                // at least 5 chars
-                                                if(query.length >= 5) {
+                                                // at least 3 chars
+                                                if(query.length >= 3) {
 
                                                     // mechanism for delaying autocomplete on typing
                                                     clearTimeout(LAST_AUTOCOMPLETE_TIMEOUT)
@@ -126,7 +128,7 @@ export default function AddClientAddressPage () {
                                     </Form.Group>
 
                                     {!isSearchClientLoading && (
-                                        <ListGroup style={{ maxHeight: "250px", overflowY: "auto", position: "absolute" }}>
+                                        <ListGroup style={{ maxHeight: "250px", overflowY: "auto", position: "absolute", zIndex: "9999" }}>
                                             {clients.map((client, index) => (
                                                 <ListGroup.Item
                                                     key={index}
@@ -134,10 +136,14 @@ export default function AddClientAddressPage () {
                                                     onMouseDown={(e) => {
                                                         e.preventDefault()
                                                         setClientId(client.clientId)
+                                                        // when the user clicks, we set
+                                                        // both the legal name of the client,
+                                                        // as well as its legal address
+                                                        setClientName(`${client.legalName} (${client.legalAddress})`)
                                                         setClients([])
                                                     }}
                                                 >
-                                                    {client.legalName}
+                                                    {client.legalName} <br/> <small><i>{client.legalAddress}</i></small>
                                                 </ListGroup.Item>
                                             ))}
                                         </ListGroup>
@@ -260,7 +266,7 @@ export default function AddClientAddressPage () {
                                         disabled={isLoading}
                                         variant="primary"
                                         onClick={() => {
-                                            handleAddClientAddress(formValues)({ setIsError, setIsLoading, setFormValues });
+                                            handleAddClientAddress(clientId, formValues)({ setIsError, setIsLoading, setFormValues });
                                         }}
                                     >
                                         Aggiungi sede
@@ -277,12 +283,12 @@ export default function AddClientAddressPage () {
     )
 }
 
-const handleAddClientAddress = (formValues: ClientAddressToAPI) => {
+const handleAddClientAddress = (clientId: string,  formValues: ClientAddressToAPI) => {
     return async (params: HandleAddClientAddressParams) => {
 
         const { setIsError, setIsLoading, setFormValues } = params
 
-        console.log(formValues)
+        console.log(clientId, formValues)
 
         // requireValidFields(formValues)
         //
@@ -372,28 +378,26 @@ const handleSearchClient = (query: string) =>
 
         const {setIsSearchClientLoading, setIsSearchClientError, setClients} = params
 
-        console.log(query)
+        setIsSearchClientLoading(true)
+        setIsSearchClientError(false)
 
-        // setIsAutocompleteLoading(true)
-        // setIsAutocompleteError(false)
+        clientsAPI
+            .searchClients(query)
+            .then((result) => {
 
-        // geocodingAPI
-        //     .autocompleteInLocalLanguageEnriched(query)
-        //     .then((result) => {
-        //
-        //         setIsAutocompleteLoading(false)
-        //         setIsAutocompleteError(false)
-        //
-        //         setAutocompleteAddressess(result.results)
-        //
-        //     })
-        //     .catch(err => {
-        //
-        //         setIsAutocompleteLoading(false)
-        //         setIsAutocompleteError(true)
-        //
-        //
-        //     })
+                setIsSearchClientLoading(false)
+                setIsSearchClientError(false)
+
+                setClients(result.content)
+
+            })
+            .catch(err => {
+
+                setIsSearchClientLoading(false)
+                setIsSearchClientError(true)
+
+
+            })
 
     }
 
