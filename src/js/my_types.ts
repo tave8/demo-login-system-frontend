@@ -399,7 +399,7 @@ export interface GeocodingAutocompleteQueryParamsToAPI {
 
 
 // this is one result item
-export interface GeocodingAutocompleteFromAPI {
+export interface GeocodingAutocompleteItemFromAPI {
   lat: number
   lon: number
   displayName: string
@@ -410,14 +410,17 @@ export interface GeocodingAutocompleteFromAPI {
   resultType: string
 }
 
-
-export interface EnrichedGeocodingAutocompleteFromAPI extends GeocodingAutocompleteFromAPI {
-  resultTypeInLocalLanguage: string
+export interface GeocodingAutocompleteFromAPI {
+  results: GeocodingAutocompleteItemFromAPI[]
 }
 
-export interface GeocodingAutocompletePageFromAPI extends Pagination<GeocodingAutocompleteFromAPI> {}
-
-export interface EnrichedGeocodingAutocompletePageFromAPI extends Pagination<EnrichedGeocodingAutocompleteFromAPI> {}
+// export interface EnrichedGeocodingAutocompleteItemFromAPI extends GeocodingAutocompleteItemFromAPI {
+//   resultTypeInLocalLanguage: string
+// }
+//
+// export interface GeocodingAutocompletePageFromAPI extends Pagination<GeocodingAutocompleteItemFromAPI> {}
+//
+// export interface EnrichedGeocodingAutocompletePageFromAPI extends Pagination<EnrichedGeocodingAutocompleteItemFromAPI> {}
 
 
 export type MaybeFile = File | null

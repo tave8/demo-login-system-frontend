@@ -1,24 +1,13 @@
-
-
 import APIHelper from "./APIHelper"
 import BaseAPI from "./BaseAPI"
-import FileHelper from "../helpers/FileHelper"
 import {
-    ArticleFromAPI,
-    ArticlesPageFromAPI, EnrichedArticleFromAPI, EnrichedArticlesPageFromAPI,
-    EnrichedGeocodingAutocompleteFromAPI, EnrichedGeocodingAutocompletePageFromAPI,
-    EnrichedUserFromAPI, EnrichedUsersPageFromAPI, GeocodingAutocompleteFromAPI, GeocodingAutocompletePageFromAPI,
+    GeocodingAutocompleteFromAPI,
     GeocodingAutocompleteQueryParamsToAPI,
     Language,
-    NewUserFromAPI,
-    NewUserToAPI,
     RequestMethod,
-    RequireLogin,
-    UpdatedUserToAPI,
-    UserFromAPI, UsersPageFromAPI
+    RequireLogin
 } from "../my_types"
-import TimeHelper from "../helpers/TimeHelper.ts";
-import UserRoleHelper from "../helpers/UserRoleHelper.ts";
+import LanguageHelper from "../helpers/LanguageHelper.ts";
 
 
 export default class GeocodingAPI extends BaseAPI {
@@ -44,34 +33,37 @@ export default class GeocodingAPI extends BaseAPI {
     /**
      * Enrich a page.
      */
-    private enrichPage(page: GeocodingAutocompletePageFromAPI): EnrichedGeocodingAutocompletePageFromAPI {
-        const enrichedItems = this.enrichItems(page.content)
-        return {
-            ...page,
-            content: enrichedItems,
-        }
-    }
-
-    private enrichItems(items: GeocodingAutocompleteFromAPI[]): EnrichedGeocodingAutocompleteFromAPI[] {
-        return items.map((item) => this.enrichItem(item))
-    }
-
-    /**
-     * Enrich an item coming from the API.
-     */
-    private enrichItem(item: GeocodingAutocompleteFromAPI): EnrichedGeocodingAutocompleteFromAPI {
-        return {
-            ...item,
-            resultTypeInLocalLanguage: item.resultType,
-        }
-    }
+    // private enrichPage(page: GeocodingAutocompletePageFromAPI): EnrichedGeocodingAutocompletePageFromAPI {
+    //     const enrichedItems = this.enrichItems(page.content)
+    //     return {
+    //         ...page,
+    //         content: enrichedItems,
+    //     }
+    // }
+    //
+    // private enrichItems(items: GeocodingAutocompleteFromAPI[]): EnrichedGeocodingAutocompleteFromAPI[] {
+    //     return items.map((item) => this.enrichItem(item))
+    // }
+    //
+    // /**
+    //  * Enrich an item coming from the API.
+    //  */
+    // private enrichItem(item: GeocodingAutocompleteFromAPI): EnrichedGeocodingAutocompleteFromAPI {
+    //     return {
+    //         ...item,
+    //         resultTypeInLocalLanguage: item.resultType,
+    //     }
+    // }
 
 
 
     /**
      * Get autocomplete result for this query.
      */
-    public async autocomplete(query: string, lang: Language): Promise<GeocodingAutocompleteFromAPI> {
+    public async autocomplete(query: string,
+                              lang: Language = Language.EN): Promise<GeocodingAutocompleteFromAPI>
+    {
+
         // build query params with API helper
         const params: GeocodingAutocompleteQueryParamsToAPI = {
             q: query,
@@ -91,6 +83,17 @@ export default class GeocodingAPI extends BaseAPI {
 
         return data
     }
+
+
+    public async autocompleteInLocalLanguage(query: string): Promise<GeocodingAutocompleteFromAPI>
+    {
+
+        const lang = LanguageHelper.getLanguage()
+
+        return this.autocomplete(query, lang)
+
+    }
+
 
     // public async getMyUsersEnriched(): Promise<EnrichedUsersPageFromAPI> {
     //     const page = await this.getMyUsers()

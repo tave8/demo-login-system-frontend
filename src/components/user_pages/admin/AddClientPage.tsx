@@ -1,12 +1,13 @@
 import {useState} from "react";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
-import {useNavigate} from "react-router-dom";
 import AppEventDispatcher from "../../../js/AppEventDispatcher.ts";
-import {ClientToAPI} from "../../../js/my_types.ts";
-import {useAuth} from "../../../auth/AuthContext.tsx";
+import {ClientToAPI, Language} from "../../../js/my_types.ts";
+import GeocodingAPI from "../../../js/api/GeocodingAPI.ts";
 
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
+const geocodingAPI = GeocodingAPI.getInstance()
+
 
 interface HandleAddClientParams {
     setIsLoading: (x:boolean) => void
@@ -174,6 +175,17 @@ export default function AddClientPage () {
 const handleAddClient = (formValues: ClientToAPI) => {
     return async (params: HandleAddClientParams) => {
         console.log(formValues, params)
+
+        geocodingAPI
+            .autocompleteInLocalLanguage("san calogero, vibo valentia")
+            .then((result) => {
+
+                console.log(result)
+            })
+            .catch(err => {
+
+            })
+
         // const { login, logout, authenticated, navigate, setIsError, setIsLoading } = params
         //
         // const authAPI = new AuthAPI()
