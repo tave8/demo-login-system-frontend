@@ -70,7 +70,7 @@ export default function NavContentForAdmin({ setNavExpanded }: Props) {
                             </NavDropdown.Item>
                         </NavDropdown>
 
-                    {/* CLIENTI */}
+                    {/* CLIENTS */}
                     <NavDropdown title="Clienti" id="basic-nav-dropdown" align="end">
                         <NavDropdown.Item
                             onClick={() => {
@@ -90,6 +90,29 @@ export default function NavContentForAdmin({ setNavExpanded }: Props) {
                                 closeNav()
                             }}>
                             Aggiungi cliente
+                        </NavDropdown.Item>
+                    </NavDropdown>
+
+                    {/* CLIENTS ADDRESSES */}
+                    <NavDropdown title="Sedi clienti" id="basic-nav-dropdown" align="end">
+                        <NavDropdown.Item
+                            onClick={() => {
+                                navigate(AppRoutes.clientAddresses)
+                                closeNav()
+                            }
+                            }>
+                            Vedi sedi
+                        </NavDropdown.Item>
+
+                        {/* divider */}
+                        <NavDropdown.Divider />
+
+                        <NavDropdown.Item
+                            onClick={() => {
+                                navigate(AppRoutes.addClientAddress)
+                                closeNav()
+                            }}>
+                            Aggiungi sede
                         </NavDropdown.Item>
                     </NavDropdown>
 

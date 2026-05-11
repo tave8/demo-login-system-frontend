@@ -35,6 +35,8 @@ import CoordinatorDashboardPage from "./components/user_pages/coordinator/Coordi
 import OperatorDashboardPage from "./components/user_pages/operator/OperatorDashboardPage.tsx";
 import ClientsPage from "./components/user_pages/admin/ClientsPage.tsx";
 import AddClientPage from "./components/user_pages/admin/AddClientPage.tsx";
+import ClientAddressesPage from "./components/user_pages/admin/ClientAddressesPage.tsx";
+import AddClientAddressPage from "./components/user_pages/admin/AddClientAddressPage.tsx";
 
 
 function App() {
@@ -141,6 +143,30 @@ function App() {
                                       </ProtectedRoute>
                                   }
                               />
+
+                              <Route
+                                  path={AppRoutes.clientAddresses}
+                                  element={
+                                      <ProtectedRoute allowOnlyRoles={[UserRole.ADMIN]}>
+                                          <ClientAddressesPage />
+                                      </ProtectedRoute>
+                                  }
+                              />
+
+
+
+                              <Route
+                                  path={AppRoutes.addClientAddress}
+                                  element={
+                                      <ProtectedRoute allowOnlyRoles={[UserRole.ADMIN]}>
+                                          <AddClientAddressPage />
+                                      </ProtectedRoute>
+                                  }
+                              />
+
+
+
+                              {/*-----------------------------------*/}
 
                                 <Route
                                   path={AppRoutes.myProfile}
