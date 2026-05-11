@@ -400,7 +400,33 @@ export interface ClientsPageFromAPI extends Pagination<ClientFromAPI> {}
 
 export interface EnrichedClientsPageFromAPI extends Pagination<EnrichedClientFromAPI> {}
 
+// the query params used to search for clients
+export interface ClientQueryParamsToAPI {
+  legalName: string
+}
 
+
+// CLIENT ADDRESS (associating multiple  addresses to a client)
+
+export interface ClientAddressToAPI {
+  // the actual name of the address, example: street 8, city Milan, country Italy
+  address: string
+  // custom name for this address, example: Hotel The Best
+  // (we also call it "address display name"
+  addressName: string
+  addressLat: number
+  addressLon: number
+}
+
+export interface ClientAddressFromAPI {
+  clientId: string
+  addressId: string
+  addressName: string
+  clientName: string
+  addressDisplayName: string
+  addressLat: number
+  addressLon: number
+}
 
 // GEOCODING (address autocomplete)
 

@@ -5,7 +5,7 @@ import BaseAPI from "./BaseAPI"
 import FileHelper from "../helpers/FileHelper"
 import {
     ArticleFromAPI,
-    ArticlesPageFromAPI, ClientFromAPI, ClientsPageFromAPI,
+    ArticlesPageFromAPI, ClientFromAPI, ClientQueryParamsToAPI, ClientsPageFromAPI,
     ClientToAPI, EnrichedArticleFromAPI, EnrichedArticlesPageFromAPI,
     EnrichedClientFromAPI,
     EnrichedClientsPageFromAPI,
@@ -97,6 +97,34 @@ export default class ClientsAPI extends BaseAPI {
         return this.enrichPage(page)
     }
 
+
+    /**
+     * Search clients by legal name.
+     */
+    public async searchClients(partialLegalName: string): Promise<ClientsPageFromAPI>
+    {
+
+        const params: ClientQueryParamsToAPI = {
+            legalName: partialLegalName
+        }
+
+        const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
+
+        const resp: Response = await this.doFetchAtWithParams(
+            "/clients",
+            config,
+            params as unknown as Record<string, string>
+        )
+
+        const data = await this.parseJSON<ClientsPageFromAPI>(resp)
+
+        return data
+    }
+
+    public async searchClientsEnriched(partialLegalName: string): Promise<EnrichedClientsPageFromAPI> {
+        const page = await this.searchClients(partialLegalName)
+        return this.enrichPage(page)
+    }
 
 
 }
