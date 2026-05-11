@@ -50,7 +50,12 @@ export default function AddUserPage () {
                         {/* title */}
                         <Row className={"mb-3"}>
                             <Col>
-                                <h1 className="text-center">Aggiungi utente</h1>
+                                <h1 className="text-center">Aggiungi Utente</h1>
+                                <Alert variant="primary" className={"mt-4"}>
+                                    Nota: I coordinatori avranno bisogno di un'email,
+                                    mentre gli operatori no. Verrà generata una password temporanea
+                                    con la quale potranno loggarsi, che dovrai mandargli.
+                                </Alert>
                             </Col>
                         </Row>
 
@@ -171,7 +176,7 @@ export default function AddUserPage () {
                     <Modal.Title>Prossimo passo</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Alert variant="info" className="mb-3">
+                    <Alert variant="primary" className="mb-3">
                         Copia il messaggio qui sotto e mandalo all'utente.
                         Puoi vedere questa password temporanea solo una volta.
                     </Alert>

@@ -3,7 +3,7 @@ import {Alert, Button, Col, Container, Form, ListGroup, Row, Spinner} from "reac
 import AppEventDispatcher from "../../../js/AppEventDispatcher.ts";
 import {
     AppEvent,
-    AppEventMessageType,
+    AppEventMessageType, AppRoutes,
     ClientToAPI,
     EnrichedGeocodingAutocompleteItemFromAPI
 } from "../../../js/my_types.ts";
@@ -11,6 +11,7 @@ import GeocodingAPI from "../../../js/api/GeocodingAPI.ts";
 import ClientsAPI from "../../../js/api/ClientsAPI.ts";
 import StringHelper from "../../../js/helpers/StringHelper.ts";
 import BadRequestError from "../../../js/exceptions/BadRequestError.ts";
+import {Link} from "react-router-dom";
 
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
@@ -63,7 +64,9 @@ export default function AddClientPage () {
                         {/* title */}
                         <Row className={"mb-3"}>
                             <Col>
-                                <h1 className="text-center">Aggiungi cliente</h1>
+                                <h1 className="text-center">Aggiungi Cliente</h1>
+                                {/*<p className={"text-center mt-3"}><Link to={AppRoutes.addClientAddress}>Già aggiunto il cliente e vuoi aggiungere una sede?</Link></p>*/}
+
                             </Col>
                         </Row>
 
@@ -161,6 +164,11 @@ export default function AddClientPage () {
                                 <Col style={{ position: "relative" }}>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
                                         <Form.Label>Indirizzo sede legale</Form.Label>
+                                        <Form.Text className="text-muted d-block mb-2">
+                                            Nota: Questo è l'indirizzo della sede legale.
+                                            Potrai aggiungere le sedi operative / cantieri del cliente nella pagina "Aggiungi sede",
+                                            solo dopo aver aggiunto il cliente qui.
+                                        </Form.Text>
                                         <Form.Control
                                             disabled={isLoading}
                                             type="text"

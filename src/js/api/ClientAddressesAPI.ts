@@ -85,17 +85,17 @@ export default class ClientAddressesAPI extends BaseAPI {
     }
 
     /**
-     * Get clients.
+     * Get client addresses.
      */
-    // public async getClients(): Promise<ClientsPageFromAPI> {
-    //     const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
-    //
-    //     const resp: Response = await this.doFetchAt("/clients", config)
-    //
-    //     const data = await this.parseJSON<ClientsPageFromAPI>(resp)
-    //
-    //     return data
-    // }
+    public async getClientAddresses(): Promise<ClientAddressesPageFromAPI> {
+        const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
+
+        const resp: Response = await this.doFetchAt("/clients/addresses", config)
+
+        const data = await this.parseJSON<ClientAddressesPageFromAPI>(resp)
+
+        return data
+    }
     //
     // public async getClientsEnriched(): Promise<EnrichedClientsPageFromAPI> {
     //     const page = await this.getClients()

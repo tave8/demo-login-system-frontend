@@ -3,7 +3,7 @@ import {Alert, Button, Col, Container, Form, ListGroup, Row, Spinner} from "reac
 import AppEventDispatcher from "../../../js/AppEventDispatcher.ts";
 import {
     AppEvent,
-    AppEventMessageType, ClientAddressToAPI,
+    AppEventMessageType, AppRoutes, ClientAddressToAPI,
     ClientToAPI, EnrichedClientFromAPI,
     EnrichedGeocodingAutocompleteItemFromAPI
 } from "../../../js/my_types.ts";
@@ -12,6 +12,7 @@ import ClientsAPI from "../../../js/api/ClientsAPI.ts";
 import StringHelper from "../../../js/helpers/StringHelper.ts";
 import BadRequestError from "../../../js/exceptions/BadRequestError.ts";
 import ClientAddressesAPI from "../../../js/api/ClientAddressesAPI.ts";
+import {Link} from "react-router-dom";
 
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
@@ -77,7 +78,8 @@ export default function AddClientAddressPage () {
                         {/* title */}
                         <Row className={"mb-3"}>
                             <Col>
-                                <h1 className="text-center">Aggiungi sede a cliente</h1>
+                                <h1 className="text-center">Aggiungi Sede a Cliente</h1>
+                                {/*<p className={"text-center mt-3"}><Link to={AppRoutes.addClient}>Aggiungi cliente</Link></p>*/}
                             </Col>
                         </Row>
 
@@ -191,6 +193,10 @@ export default function AddClientAddressPage () {
                                 <Col style={{ position: "relative" }}>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
                                         <Form.Label>Indirizzo sede</Form.Label>
+                                        <Form.Text className="text-muted d-block mb-2">
+                                            Nota: Questo è l'indirizzo della sede operativa / cantiere del cliente che hai scelto.
+                                            Ogni cliente può avere più sedi.
+                                        </Form.Text>
                                         <Form.Control
                                             disabled={isLoading}
                                             type="text"
