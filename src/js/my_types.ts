@@ -400,6 +400,7 @@ export interface ClientsPageFromAPI extends Pagination<ClientFromAPI> {}
 
 export interface EnrichedClientsPageFromAPI extends Pagination<EnrichedClientFromAPI> {}
 
+
 // the query params used to search for clients
 export interface ClientQueryParamsToAPI {
   legalName: string
@@ -427,6 +428,18 @@ export interface ClientAddressFromAPI {
   addressLat: number
   addressLon: number
 }
+
+// enriched item extends item
+export interface EnrichedClientAddressFromAPI extends ClientAddressFromAPI {
+}
+
+// item's page extends page
+export interface ClientAddressesPageFromAPI extends Pagination<ClientAddressFromAPI> {}
+
+// enriched item's page extends enriched page
+export interface EnrichedClientAddressesPageFromAPI extends Pagination<EnrichedClientAddressFromAPI> {}
+
+
 
 // GEOCODING (address autocomplete)
 

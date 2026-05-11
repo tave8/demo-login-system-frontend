@@ -4,19 +4,20 @@ import AppEventDispatcher from "../../../js/AppEventDispatcher.ts";
 import {
     AppEvent,
     AppEventMessageType, ClientAddressToAPI,
-    ClientToAPI,
+    ClientToAPI, EnrichedClientFromAPI,
     EnrichedGeocodingAutocompleteItemFromAPI
 } from "../../../js/my_types.ts";
 import GeocodingAPI from "../../../js/api/GeocodingAPI.ts";
 import ClientsAPI from "../../../js/api/ClientsAPI.ts";
 import StringHelper from "../../../js/helpers/StringHelper.ts";
 import BadRequestError from "../../../js/exceptions/BadRequestError.ts";
+import ClientAddressesAPI from "../../../js/api/ClientAddressesAPI.ts";
 
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
 const geocodingAPI = GeocodingAPI.getInstance()
 const clientsAPI = ClientsAPI.getInstance()
-
+const clientAddressesAPI = ClientAddressesAPI.getInstance()
 
 interface HandleAddClientAddressParams {
     setIsLoading: (x:boolean) => void
@@ -28,6 +29,12 @@ interface HandleAutocompleteAddress {
     setIsAutocompleteLoading: (x:boolean) => void
     setIsAutocompleteError: (x:boolean) => void,
     setAutocompleteAddressess: (addresses: EnrichedGeocodingAutocompleteItemFromAPI[]) => void
+}
+
+interface HandleSearchClientParams {
+    setIsSearchClientLoading: (x:boolean) => void
+    setIsSearchClientError: (x:boolean) => void,
+    setClients: (clients: EnrichedClientFromAPI[]) => void
 }
 
 const initialFormValues: ClientAddressToAPI = {
@@ -45,11 +52,18 @@ export default function AddClientAddressPage () {
     const [isLoading, setIsLoading] = useState(false)
     const [isError, setIsError] = useState(false)
 
+    // we keep track of the client id
+    const [clientId, setClientId] = useState<string>("")
+
     // this is for legal address autocomplete
     const [autocompleteAddressess, setAutocompleteAddressess] = useState<EnrichedGeocodingAutocompleteItemFromAPI[]>([])
     const [isAutocompleteLoading, setIsAutocompleteLoading] = useState(false)
     const [isAutocompleteError, setIsAutocompleteError] = useState(false)
 
+    // this is for searching the client
+    const [clients, setClients] = useState<EnrichedClientFromAPI[]>([])
+    const [isSearchClientLoading, setIsSearchClientLoading] = useState(false)
+    const [isSearchClientError, setIsSearchClientError] = useState(false)
 
     return (
         <>
@@ -72,30 +86,75 @@ export default function AddClientAddressPage () {
                                 }}
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter") {
-                                        // handleAddClient(formValues)({ setIsError, setIsLoading, setFormValues });
+                                        handleAddClientAddress(formValues)({ setIsError, setIsLoading, setFormValues });
                                     }
                                 }}>
 
                                 {/* client */}
-                                {/*<Row>*/}
-                                {/*    <Col>*/}
-                                {/*        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">*/}
-                                {/*            <Form.Label>Cliente (cerca)..</Form.Label>*/}
-                                {/*            <Form.Control*/}
-                                {/*                disabled={isLoading}*/}
-                                {/*                type="text"*/}
-                                {/*                placeholder="Azienda SRL"*/}
-                                {/*                value={formValues.legalName}*/}
-                                {/*                onChange={(event) => {*/}
-                                {/*                    setFormValues({*/}
-                                {/*                        ...formValues,*/}
-                                {/*                        legalName: event.target.value,*/}
-                                {/*                    })*/}
-                                {/*                }}*/}
-                                {/*            />*/}
-                                {/*        </Form.Group>*/}
-                                {/*    </Col>*/}
-                                {/*</Row>*/}
+                                <Col style={{ position: "relative" }}>
+                                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
+                                        <Form.Label>Cliente</Form.Label>
+                                        <Form.Control
+                                            disabled={isLoading}
+                                            type="text"
+                                            autoComplete="off"
+                                            placeholder="Inserisci almeno 5 caratteri..."
+                                            onChange={(event) => {
+
+                                                const query = event.target.value
+
+                                                // setClientId()
+
+                                                // autocomplete is triggered when user has typed
+                                                // at least 5 chars
+                                                if(query.length >= 5) {
+
+                                                    // mechanism for delaying autocomplete on typing
+                                                    clearTimeout(LAST_AUTOCOMPLETE_TIMEOUT)
+
+                                                    LAST_AUTOCOMPLETE_TIMEOUT = setTimeout(() => {
+
+                                                        handleSearchClient(query)({setClients, setIsSearchClientError, setIsSearchClientLoading})
+
+                                                    }, 1000)
+
+                                                }
+
+
+                                            }}
+                                        />
+                                    </Form.Group>
+
+                                    {!isSearchClientLoading && (
+                                        <ListGroup style={{ maxHeight: "250px", overflowY: "auto", position: "absolute" }}>
+                                            {clients.map((client, index) => (
+                                                <ListGroup.Item
+                                                    key={index}
+                                                    action
+                                                    onMouseDown={(e) => {
+                                                        e.preventDefault()
+                                                        setClientId(client.clientId)
+                                                        setClients([])
+                                                    }}
+                                                >
+                                                    {client.legalName}
+                                                </ListGroup.Item>
+                                            ))}
+                                        </ListGroup>
+                                    )}
+
+                                    {/* is loading */}
+                                    {isSearchClientLoading && (
+                                        <Spinner animation="border" role="status">
+                                            <span className="visually-hidden">Loading...</span>
+                                        </Spinner>
+                                    )}
+
+                                    {/* is error */}
+                                    {isSearchClientError && <Alert variant="danger">Something went wrong.</Alert>}
+
+
+                                </Col>
 
                                 {/* address custom name */}
                                 <Col>
@@ -201,7 +260,7 @@ export default function AddClientAddressPage () {
                                         disabled={isLoading}
                                         variant="primary"
                                         onClick={() => {
-                                            // handleAddClient(formValues)({ setIsError, setIsLoading, setFormValues });
+                                            handleAddClientAddress(formValues)({ setIsError, setIsLoading, setFormValues });
                                         }}
                                     >
                                         Aggiungi sede
@@ -222,6 +281,8 @@ const handleAddClientAddress = (formValues: ClientAddressToAPI) => {
     return async (params: HandleAddClientAddressParams) => {
 
         const { setIsError, setIsLoading, setFormValues } = params
+
+        console.log(formValues)
 
         // requireValidFields(formValues)
         //
@@ -303,6 +364,41 @@ const handleAutocompleteAddress = (query: string) =>
     }
 
 }
+
+
+const handleSearchClient = (query: string) =>
+{
+    return async (params: HandleSearchClientParams) => {
+
+        const {setIsSearchClientLoading, setIsSearchClientError, setClients} = params
+
+        console.log(query)
+
+        // setIsAutocompleteLoading(true)
+        // setIsAutocompleteError(false)
+
+        // geocodingAPI
+        //     .autocompleteInLocalLanguageEnriched(query)
+        //     .then((result) => {
+        //
+        //         setIsAutocompleteLoading(false)
+        //         setIsAutocompleteError(false)
+        //
+        //         setAutocompleteAddressess(result.results)
+        //
+        //     })
+        //     .catch(err => {
+        //
+        //         setIsAutocompleteLoading(false)
+        //         setIsAutocompleteError(true)
+        //
+        //
+        //     })
+
+    }
+
+}
+
 
 /**
  * Require that all fields are valid.
