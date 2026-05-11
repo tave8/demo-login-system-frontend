@@ -80,23 +80,22 @@ export default class ClientsAPI extends BaseAPI {
     }
 
     /**
-     * Get my users (aka my team).
-     * TODO: replace unknown with actual types (you might need to create the pagination etc.)
+     * Get clients.
      */
-    // public async getMyUsers(): Promise<UsersPageFromAPI> {
-    //     const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
-    //
-    //     const resp: Response = await this.doFetchAt("/users", config)
-    //
-    //     const data = await this.parseJSON<UsersPageFromAPI>(resp)
-    //
-    //     return data
-    // }
-    //
-    // public async getMyUsersEnriched(): Promise<EnrichedUsersPageFromAPI> {
-    //     const page = await this.getMyUsers()
-    //     return this.enrichPage(page)
-    // }
+    public async getClients(): Promise<ClientsPageFromAPI> {
+        const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
+
+        const resp: Response = await this.doFetchAt("/clients", config)
+
+        const data = await this.parseJSON<ClientsPageFromAPI>(resp)
+
+        return data
+    }
+
+    public async getClientsEnriched(): Promise<EnrichedClientsPageFromAPI> {
+        const page = await this.getClients()
+        return this.enrichPage(page)
+    }
 
 
 
