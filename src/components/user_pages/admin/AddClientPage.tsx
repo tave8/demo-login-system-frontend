@@ -30,6 +30,7 @@ const initialFormValues: ClientToAPI = {
     phone: ""
 }
 
+let LAST_AUTOCOMPLETE_TIMEOUT: number|undefined = undefined
 
 
 export default function AddClientPage () {
@@ -158,7 +159,16 @@ export default function AddClientPage () {
                                                     ...formValues,
                                                     legalAddress: query,
                                                 })
-                                                handleAutocompleteAddress(query)({setAutocompleteAddressess, setIsAutocompleteError, setIsAutocompleteLoading})
+
+                                                // mechanism for delaying autocomplete on typing
+                                                clearTimeout(LAST_AUTOCOMPLETE_TIMEOUT)
+
+                                                LAST_AUTOCOMPLETE_TIMEOUT = setTimeout(() => {
+                                                    handleAutocompleteAddress(query)({setAutocompleteAddressess,
+                                                                                        setIsAutocompleteError,
+                                                                                        setIsAutocompleteLoading})
+                                                }, 700)
+
                                             }}
                                         />
                                     </Form.Group>
