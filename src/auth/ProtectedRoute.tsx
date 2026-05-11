@@ -25,15 +25,16 @@ export function ProtectedRoute({ children,
                                  allowAllRoles=false}: Params)
 {
 
-  const { authenticated, user } = useAuth()
+  const { authenticated, getUserFromLocalStorage } = useAuth()
 
-  // console.log(user)
+  const user = getUserFromLocalStorage()
+
   //
   // console.log("allowOnlyRoles: ", allowOnlyRoles)
   // console.log("excludeOnlyRoles: ", excludeOnlyRoles)
   // console.log("allowAllRolesExcept: ", allowAllRolesExcept)
   // console.log("allowAllRoles: ", allowAllRoles)
-
+  //
   // console.log("USER: ", user)
   // console.log("AUTHENTICATED: ", authenticated)
 

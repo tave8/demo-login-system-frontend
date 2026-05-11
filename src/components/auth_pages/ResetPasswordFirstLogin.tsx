@@ -19,6 +19,7 @@ interface HandleResetPasswordParams {
     setIsLoading: (x: boolean) => void
     setIsError: (x: boolean) => void
     setUserInApp: (user: UserFromAPI, waitMs?:number) => void
+    setUserInLocalStorage: (user: UserFromAPI) => void
     navigate: NavigateFunction
 }
 
@@ -30,7 +31,7 @@ export default function ResetPasswordFirstLogin() {
 
     const navigate = useNavigate()
 
-    const {setUserInApp} = useAuth()
+    const {setUserInApp, setUserInLocalStorage} = useAuth()
 
     return (
         <>
@@ -47,7 +48,7 @@ export default function ResetPasswordFirstLogin() {
                         {/* form */}
                         <Form onKeyDown={(e) => {
                             if (e.key === "Enter") {
-                                handleResetPassword(formValues)({ setIsLoading, setIsError, setUserInApp, navigate })
+                                handleResetPassword(formValues)({ setIsLoading, setIsError, setUserInApp, setUserInLocalStorage, navigate })
                             }
                         }}>
 
@@ -101,7 +102,7 @@ export default function ResetPasswordFirstLogin() {
                                         className="btn btn-primary"
                                         disabled={isLoading}
                                         onClick={() => {
-                                            handleResetPassword(formValues)({ setIsLoading, setIsError, setUserInApp, navigate })
+                                            handleResetPassword(formValues)({ setIsLoading, setIsError, setUserInApp, setUserInLocalStorage, navigate })
                                         }}
                                     >
                                         Invia
@@ -124,7 +125,7 @@ export default function ResetPasswordFirstLogin() {
 const handleResetPassword = (formValues: ResetPasswordToAPI) => {
     return async (params: HandleResetPasswordParams) => {
 
-        const {setIsLoading, setIsError, setUserInApp, navigate} = params
+        const {setIsLoading, setIsError, setUserInApp, setUserInLocalStorage, navigate} = params
 
         setIsLoading(true)
         setIsError(false)
@@ -134,20 +135,24 @@ const handleResetPassword = (formValues: ResetPasswordToAPI) => {
             .then((userFromAPI) => {
                 // console.log(userFromAPI)
 
-                setUserInApp(userFromAPI)
+                // BUG FIX: setting user directly in app
+                // would immediately shut down this page
+                // and redirect to unauthorized page.
+                // the fix: set user in local storage,
+                // if you want the user, retrieve it from local
+                // storage instead of getting it from the app state
 
-                // where the user will be redirected,
-                // will depend on the user's role.
-                setTimeout(() => {
-                    // first we navigate to the route
-                    navigate(AppRoutes.dashboardOf(userFromAPI.role))
-                    //
-                    appEventDispatcher.dispatchStandard(
-                        AppEvent.APP_SUCCESS,
-                        AppEventMessageType.LOGIN_SUCCESS
-                    )
+                // set the user in local storage only
+                setUserInLocalStorage(userFromAPI)
 
-                }, 500)
+
+                navigate(AppRoutes.dashboardOf(userFromAPI.role))
+                //
+                appEventDispatcher.dispatchStandard(
+                    AppEvent.APP_SUCCESS,
+                    AppEventMessageType.LOGIN_SUCCESS
+                )
+
 
 
                 setIsLoading(false)
