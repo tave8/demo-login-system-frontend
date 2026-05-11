@@ -1,7 +1,9 @@
 import APIHelper from "./APIHelper"
 import BaseAPI from "./BaseAPI"
 import {
-    GeocodingAutocompleteFromAPI,
+    EnrichedGeocodingAutocompleteFromAPI,
+    EnrichedGeocodingAutocompleteItemFromAPI,
+    GeocodingAutocompleteFromAPI, GeocodingAutocompleteItemFromAPI,
     GeocodingAutocompleteQueryParamsToAPI,
     Language,
     RequestMethod,
@@ -33,27 +35,29 @@ export default class GeocodingAPI extends BaseAPI {
     /**
      * Enrich a page.
      */
-    // private enrichPage(page: GeocodingAutocompletePageFromAPI): EnrichedGeocodingAutocompletePageFromAPI {
-    //     const enrichedItems = this.enrichItems(page.content)
-    //     return {
-    //         ...page,
-    //         content: enrichedItems,
-    //     }
-    // }
-    //
-    // private enrichItems(items: GeocodingAutocompleteFromAPI[]): EnrichedGeocodingAutocompleteFromAPI[] {
-    //     return items.map((item) => this.enrichItem(item))
-    // }
-    //
-    // /**
-    //  * Enrich an item coming from the API.
-    //  */
-    // private enrichItem(item: GeocodingAutocompleteFromAPI): EnrichedGeocodingAutocompleteFromAPI {
-    //     return {
-    //         ...item,
-    //         resultTypeInLocalLanguage: item.resultType,
-    //     }
-    // }
+    private enrichPage(page: GeocodingAutocompleteFromAPI): EnrichedGeocodingAutocompleteFromAPI {
+        const enrichedItems = this.enrichItems(page.results)
+        return {
+            ...page,
+            results: enrichedItems
+        }
+    }
+
+    private enrichItems(items: GeocodingAutocompleteItemFromAPI[]): EnrichedGeocodingAutocompleteItemFromAPI[] {
+        return items.map((item) => this.enrichItem(item))
+    }
+
+    /**
+     * Enrich an item coming from the API.
+     */
+    private enrichItem(item: GeocodingAutocompleteItemFromAPI): EnrichedGeocodingAutocompleteItemFromAPI {
+        // confidence in percentage
+        const confidenceFormatted: string = Math.trunc(item.confidence * 100) + "%"
+        return {
+            ...item,
+            confidenceFormatted: confidenceFormatted,
+        }
+    }
 
 
 
@@ -93,6 +97,17 @@ export default class GeocodingAPI extends BaseAPI {
         return this.autocomplete(query, lang)
 
     }
+
+    public async autocompleteInLocalLanguageEnriched(query: string): Promise<EnrichedGeocodingAutocompleteFromAPI>
+    {
+
+        const result = await this.autocompleteInLocalLanguage(query)
+
+        return this.enrichPage(result)
+
+    }
+
+
 
 
     // public async getMyUsersEnriched(): Promise<EnrichedUsersPageFromAPI> {

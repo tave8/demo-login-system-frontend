@@ -414,9 +414,16 @@ export interface GeocodingAutocompleteFromAPI {
   results: GeocodingAutocompleteItemFromAPI[]
 }
 
-// export interface EnrichedGeocodingAutocompleteItemFromAPI extends GeocodingAutocompleteItemFromAPI {
-//   resultTypeInLocalLanguage: string
-// }
+export interface EnrichedGeocodingAutocompleteItemFromAPI extends GeocodingAutocompleteItemFromAPI {
+  // resultTypeInLocalLanguage: string
+  confidenceFormatted: string
+}
+
+export interface EnrichedGeocodingAutocompleteFromAPI {
+  results: EnrichedGeocodingAutocompleteItemFromAPI[]
+}
+
+
 //
 // export interface GeocodingAutocompletePageFromAPI extends Pagination<GeocodingAutocompleteItemFromAPI> {}
 //

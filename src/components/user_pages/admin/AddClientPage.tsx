@@ -1,7 +1,12 @@
 import {useState} from "react";
 import {Alert, Button, Col, Container, Form, ListGroup, Row, Spinner} from "react-bootstrap";
 import AppEventDispatcher from "../../../js/AppEventDispatcher.ts";
-import {ClientToAPI, GeocodingAutocompleteItemFromAPI, Language} from "../../../js/my_types.ts";
+import {
+    ClientToAPI,
+    EnrichedGeocodingAutocompleteItemFromAPI,
+    GeocodingAutocompleteItemFromAPI,
+    Language
+} from "../../../js/my_types.ts";
 import GeocodingAPI from "../../../js/api/GeocodingAPI.ts";
 
 
@@ -17,7 +22,7 @@ interface HandleAddClientParams {
 interface HandleAutocompleteAddress {
     setIsAutocompleteLoading: (x:boolean) => void
     setIsAutocompleteError: (x:boolean) => void,
-    setAutocompleteAddressess: (addresses: GeocodingAutocompleteItemFromAPI[]) => void
+    setAutocompleteAddressess: (addresses: EnrichedGeocodingAutocompleteItemFromAPI[]) => void
 }
 
 const initialFormValues: ClientToAPI = {
@@ -39,7 +44,7 @@ export default function AddClientPage () {
     const [isError, setIsError] = useState(false)
 
     // this is for legal address autocomplete
-    const [autocompleteAddressess, setAutocompleteAddressess] = useState<GeocodingAutocompleteItemFromAPI[]>([])
+    const [autocompleteAddressess, setAutocompleteAddressess] = useState<EnrichedGeocodingAutocompleteItemFromAPI[]>([])
     const [isAutocompleteLoading, setIsAutocompleteLoading] = useState(false)
     const [isAutocompleteError, setIsAutocompleteError] = useState(false)
 
@@ -202,7 +207,7 @@ export default function AddClientPage () {
                                                         setAutocompleteAddressess([])
                                                     }}
                                                 >
-                                                    {address.displayName}
+                                                    {address.displayName} <br/> <small><i>(certezza: {address.confidenceFormatted})</i></small>
                                                 </ListGroup.Item>
                                             ))}
                                         </ListGroup>
@@ -317,7 +322,7 @@ const handleAutocompleteAddress = (query: string) =>
         setIsAutocompleteError(false)
 
         geocodingAPI
-            .autocompleteInLocalLanguage(query)
+            .autocompleteInLocalLanguageEnriched(query)
             .then((result) => {
 
                 setIsAutocompleteLoading(false)
