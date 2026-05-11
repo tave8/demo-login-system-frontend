@@ -2,21 +2,26 @@ import {useState} from "react";
 import {Alert, Button, Col, Container, Form, ListGroup, Row, Spinner} from "react-bootstrap";
 import AppEventDispatcher from "../../../js/AppEventDispatcher.ts";
 import {
+    AppEvent,
+    AppEventMessageType,
     ClientToAPI,
-    EnrichedGeocodingAutocompleteItemFromAPI,
-    GeocodingAutocompleteItemFromAPI,
-    Language
+    EnrichedGeocodingAutocompleteItemFromAPI
 } from "../../../js/my_types.ts";
 import GeocodingAPI from "../../../js/api/GeocodingAPI.ts";
+import ClientsAPI from "../../../js/api/ClientsAPI.ts";
+import StringHelper from "../../../js/helpers/StringHelper.ts";
+import BadRequestError from "../../../js/exceptions/BadRequestError.ts";
 
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
 const geocodingAPI = GeocodingAPI.getInstance()
+const clientsAPI = ClientsAPI.getInstance()
 
 
 interface HandleAddClientParams {
     setIsLoading: (x:boolean) => void
     setIsError: (x:boolean) => void
+    setFormValues: (user: ClientToAPI) => void
 }
 
 interface HandleAutocompleteAddress {
@@ -70,7 +75,7 @@ export default function AddClientPage () {
                                 }}
                                 onKeyDown={(e) => {
                                 if (e.key === "Enter") {
-                                    handleAddClient(formValues)({ setIsError, setIsLoading });
+                                    handleAddClient(formValues)({ setIsError, setIsLoading, setFormValues });
                                 }
                             }}>
                                 {/* legal name */}
@@ -234,7 +239,7 @@ export default function AddClientPage () {
                                         disabled={isLoading}
                                         variant="primary"
                                         onClick={() => {
-                                            handleAddClient(formValues)({ setIsError, setIsLoading });
+                                            handleAddClient(formValues)({ setIsError, setIsLoading, setFormValues });
                                         }}
                                     >
                                         Aggiungi cliente
@@ -253,59 +258,53 @@ export default function AddClientPage () {
 
 const handleAddClient = (formValues: ClientToAPI) => {
     return async (params: HandleAddClientParams) => {
-        console.log(formValues, params)
+
+        const { setIsError, setIsLoading, setFormValues } = params
+
+        requireValidFields(formValues)
+
+        setIsLoading(true)
+        setIsError(false)
+
+        clientsAPI
+            .addClient(formValues)
+            .then((clientFromAPI) => {
+
+                setIsLoading(false)
+                setIsError(false)
+
+                // reset form fields
+                setFormValues({
+                    email: "",
+                    vat: "",
+                    legalAddressLat: 0,
+                    legalAddressLon: 0,
+                    legalName: "",
+                    legalAddress: "",
+                    phone: ""
+                })
 
 
+                appEventDispatcher.dispatchStandard(
+                    AppEvent.APP_SUCCESS,
+                    AppEventMessageType.SAVE_SUCCESS
+                )
 
-        // const { login, logout, authenticated, navigate, setIsError, setIsLoading } = params
-        //
-        // const authAPI = new AuthAPI()
-        //
-        // setIsLoading(true)
-        // setIsError(false)
-        //
-        // authAPI
-        //     .login(formValues)
-        //     .then((loginInfo) => {
-        //
-        //         setIsLoading(false)
-        //         setIsError(false)
-        //
-        //         const { accessToken } = loginInfo
-        //
-        //         login(accessToken, loginInfo.user)
-        //
-        //         // after successful login, where route the user
-        //         // is redirected to
-        //         navigate(AppRoutes.dashboardOf(loginInfo.user.role))
-        //
-        //         appEventDispatcher.dispatchStandard(
-        //             AppEvent.APP_SUCCESS,
-        //             AppEventMessageType.LOGIN_SUCCESS
-        //         )
-        //
-        //     })
-        //     .catch((err) => {
-        //
-        //         setIsLoading(false)
-        //         setIsError(true)
-        //
-        //         if (err instanceof UnauthorizedError) {
-        //
-        //             appEventDispatcher.dispatchStandard(
-        //                 AppEvent.APP_ERROR,
-        //                 AppEventMessageType.WRONG_CREDENTIALS
-        //             )
-        //
-        //         } else if (err instanceof ForbiddenError) {
-        //
-        //             appEventDispatcher.dispatchStandard(
-        //                 AppEvent.APP_ERROR,
-        //                 AppEventMessageType.MUST_VERIFY_EMAIL
-        //             )
-        //
-        //         }
-        //     })
+            })
+            .catch((err) => {
+
+                setIsLoading(false)
+                setIsError(true)
+
+                if (err instanceof BadRequestError) {
+
+                    appEventDispatcher.dispatchStandard(
+                        AppEvent.APP_ERROR,
+                        AppEventMessageType.BAD_REQUEST
+                    )
+
+                }
+            })
     }
 
 }
@@ -340,5 +339,53 @@ const handleAutocompleteAddress = (query: string) =>
             })
 
     }
+
+}
+
+/**
+ * Require that all fields are valid.
+ * If not, an error is thrown and a toast message
+ * for to the user is shown.
+ */
+const requireValidFields = (formValues: ClientToAPI) => {
+
+    const isValidEmail = StringHelper.isValidEmail(formValues.email)
+    const isNonEmptyLegalAddress = formValues.legalAddress.trim() != ""
+    const isNonEmptyVat = formValues.vat.trim() != ""
+    const isNonEmptyLegalName = formValues.legalName.trim() != ""
+    const isNonEmptyPhone = formValues.phone.trim() != ""
+
+    const errors: string[] = []
+
+    if (!isValidEmail) {
+        errors.push("L'email deve essere valida")
+    }
+    if (!isNonEmptyLegalAddress) {
+        errors.push("L'indirizzo sede legale non può essere vuoto")
+    }
+    if (!isNonEmptyVat) {
+        errors.push("La partita IVA non può essere vuota")
+    }
+    if (!isNonEmptyLegalName) {
+        errors.push("La ragione sociale non può essere vuota")
+    }
+    if (!isNonEmptyPhone) {
+        errors.push("Il telefono non può essere vuoto")
+    }
+
+    // if there are errors
+    if(errors.length > 0) {
+
+        if(!isValidEmail) {
+            appEventDispatcher.dispatchStandard(
+                AppEvent.INVALID_FIELDS,
+                AppEventMessageType.INVALID_FIELDS,
+                errors.join(", ")
+            )
+
+            throw new Error("At least one field is invalid")
+        }
+    }
+
 
 }

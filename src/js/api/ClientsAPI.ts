@@ -1,0 +1,103 @@
+
+
+import APIHelper from "./APIHelper"
+import BaseAPI from "./BaseAPI"
+import FileHelper from "../helpers/FileHelper"
+import {
+    ArticleFromAPI,
+    ArticlesPageFromAPI, ClientFromAPI, ClientsPageFromAPI,
+    ClientToAPI, EnrichedArticleFromAPI, EnrichedArticlesPageFromAPI,
+    EnrichedClientFromAPI,
+    EnrichedClientsPageFromAPI,
+    EnrichedUserFromAPI, EnrichedUsersPageFromAPI,
+    NewUserFromAPI,
+    NewUserToAPI,
+    RequestMethod,
+    RequireLogin,
+    UpdatedUserToAPI,
+    UserFromAPI, UsersPageFromAPI
+} from "../my_types"
+import TimeHelper from "../helpers/TimeHelper.ts";
+import UserRoleHelper from "../helpers/UserRoleHelper.ts";
+
+export default class ClientsAPI extends BaseAPI {
+
+    private static instance: ClientsAPI
+
+    constructor() {
+        // call new BaseAPI()
+        super()
+    }
+
+    /**
+     * (Uses singleton design pattern)
+     */
+    public static getInstance(): ClientsAPI {
+        if(this.instance == null) {
+            this.instance = new ClientsAPI()
+        }
+        return this.instance
+    }
+
+
+    /**
+     * Enrich a pagination page.
+     */
+    private enrichPage(page: ClientsPageFromAPI): EnrichedClientsPageFromAPI {
+        const enrichedItems = this.enrichItems(page.content)
+        return {
+            ...page,
+            content: enrichedItems,
+        }
+    }
+
+    private enrichItems(items: ClientFromAPI[]): EnrichedClientFromAPI[] {
+        return items.map((item) => this.enrichItem(item))
+    }
+
+    /**
+     * Enriches an item coming from the API.
+     */
+    private enrichItem(item: ClientFromAPI): EnrichedClientFromAPI {
+        return {
+            ...item,
+            // add custom fields to each item
+        }
+    }
+
+
+    /**
+     * Add a client.
+     */
+    public async addClient(newClient: ClientToAPI): Promise<ClientFromAPI> {
+        const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.YES, newClient)
+
+        const resp: Response = await this.doFetchAt("/clients", config)
+
+        const data = await this.parseJSON<ClientFromAPI>(resp)
+
+        return data
+    }
+
+    /**
+     * Get my users (aka my team).
+     * TODO: replace unknown with actual types (you might need to create the pagination etc.)
+     */
+    // public async getMyUsers(): Promise<UsersPageFromAPI> {
+    //     const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
+    //
+    //     const resp: Response = await this.doFetchAt("/users", config)
+    //
+    //     const data = await this.parseJSON<UsersPageFromAPI>(resp)
+    //
+    //     return data
+    // }
+    //
+    // public async getMyUsersEnriched(): Promise<EnrichedUsersPageFromAPI> {
+    //     const page = await this.getMyUsers()
+    //     return this.enrichPage(page)
+    // }
+
+
+
+}

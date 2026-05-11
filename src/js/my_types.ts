@@ -67,7 +67,8 @@ export const AppRoutes = {
 // by "events" we mean actual JS events
 export enum AppEvent {
   APP_SUCCESS = "APP_SUCCESS",
-  APP_ERROR = "APP_ERROR"
+  APP_ERROR = "APP_ERROR",
+  INVALID_FIELDS = "INVALID_FIELDS"
 }
 
 export enum AppEventMessageType {
@@ -388,6 +389,14 @@ export interface ClientFromAPI {
   legalAddressLat: number
   legalAddressLon: number
 }
+
+export interface EnrichedClientFromAPI extends ClientFromAPI {
+}
+
+export interface ClientsPageFromAPI extends Pagination<ClientFromAPI> {}
+
+export interface EnrichedClientsPageFromAPI extends Pagination<EnrichedClientFromAPI> {}
+
 
 
 // GEOCODING (address autocomplete)
