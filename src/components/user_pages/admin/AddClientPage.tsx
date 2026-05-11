@@ -1,7 +1,7 @@
 import {useState} from "react";
-import {Button, Col, Container, Form, Row} from "react-bootstrap";
+import {Button, Col, Container, Form, ListGroup, Row} from "react-bootstrap";
 import AppEventDispatcher from "../../../js/AppEventDispatcher.ts";
-import {ClientToAPI, Language} from "../../../js/my_types.ts";
+import {ClientToAPI, GeocodingAutocompleteItemFromAPI, Language} from "../../../js/my_types.ts";
 import GeocodingAPI from "../../../js/api/GeocodingAPI.ts";
 
 
@@ -14,6 +14,12 @@ interface HandleAddClientParams {
     setIsError: (x:boolean) => void
 }
 
+interface HandleAutocompleteAddress {
+    setIsAutocompleteLoading: (x:boolean) => void
+    setIsAutocompleteError: (x:boolean) => void,
+    setAutocompleteAddressess: (addresses: GeocodingAutocompleteItemFromAPI[]) => void
+}
+
 const initialFormValues: ClientToAPI = {
     legalName: "",
     legalAddress: "",
@@ -24,10 +30,17 @@ const initialFormValues: ClientToAPI = {
     phone: ""
 }
 
+
+
 export default function AddClientPage () {
     const [formValues, setFormValues] = useState(initialFormValues)
     const [isLoading, setIsLoading] = useState(false)
     const [isError, setIsError] = useState(false)
+
+    // this is for legal address autocomplete
+    const [autocompleteAddressess, setAutocompleteAddressess] = useState<GeocodingAutocompleteItemFromAPI[]>([])
+    const [isAutocompleteLoading, setIsAutocompleteLoading] = useState(false)
+    const [isAutocompleteError, setIsAutocompleteError] = useState(false)
 
 
     return (
@@ -130,22 +143,44 @@ export default function AddClientPage () {
                                 </Col>
 
                                 {/* legal address */}
-                                <Col>
+                                <Col style={{ position: "relative" }}>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
                                         <Form.Label>Indirizzo sede legale</Form.Label>
                                         <Form.Control
                                             disabled={isLoading}
                                             type="text"
+                                            autoComplete="off"
                                             placeholder="via Roma, Milano"
                                             value={formValues.legalAddress}
                                             onChange={(event) => {
+                                                const query = event.target.value
                                                 setFormValues({
                                                     ...formValues,
-                                                    legalAddress: event.target.value,
+                                                    legalAddress: query,
                                                 })
+                                                handleAutocompleteAddress(query)({setAutocompleteAddressess, setIsAutocompleteError, setIsAutocompleteLoading})
                                             }}
                                         />
                                     </Form.Group>
+
+                                    <ListGroup>
+                                        {autocompleteAddressess.map((address, index) => (
+                                            <ListGroup.Item
+                                                key={index}
+                                                action
+                                                onMouseDown={() => {
+                                                    setFormValues({
+                                                        ...formValues,
+                                                        legalAddress: address.displayName,
+                                                        legalAddressLat: address.lat,
+                                                        legalAddressLon: address.lon,
+                                                    })
+                                                }}
+                                            >
+                                                {address.displayName}
+                                            </ListGroup.Item>
+                                        ))}
+                                    </ListGroup>
                                 </Col>
 
 
@@ -176,15 +211,7 @@ const handleAddClient = (formValues: ClientToAPI) => {
     return async (params: HandleAddClientParams) => {
         console.log(formValues, params)
 
-        geocodingAPI
-            .autocompleteInLocalLanguage("san calogero, vibo valentia")
-            .then((result) => {
 
-                console.log(result)
-            })
-            .catch(err => {
-
-            })
 
         // const { login, logout, authenticated, navigate, setIsError, setIsLoading } = params
         //
@@ -239,3 +266,35 @@ const handleAddClient = (formValues: ClientToAPI) => {
 
 }
 
+
+
+const handleAutocompleteAddress = (query: string) =>
+{
+    return async (params: HandleAutocompleteAddress) => {
+
+        const {setIsAutocompleteLoading, setIsAutocompleteError, setAutocompleteAddressess} = params
+
+        setIsAutocompleteLoading(true)
+        setIsAutocompleteError(false)
+
+        geocodingAPI
+            .autocompleteInLocalLanguage(query)
+            .then((result) => {
+
+                setIsAutocompleteLoading(false)
+                setIsAutocompleteError(false)
+
+                setAutocompleteAddressess(result.results)
+
+            })
+            .catch(err => {
+
+                setIsAutocompleteLoading(false)
+                setIsAutocompleteError(true)
+
+
+            })
+
+    }
+
+}
