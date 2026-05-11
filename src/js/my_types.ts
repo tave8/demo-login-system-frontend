@@ -365,6 +365,31 @@ export interface ArticlesPageFromAPI extends Pagination<ArticleFromAPI> {}
 
 export interface EnrichedArticlesPageFromAPI extends Pagination<EnrichedArticleFromAPI> {}
 
+
+// CLIENT
+
+export interface ClientToAPI {
+  legalName: string
+  email: string
+  phone: string
+  vat: string
+  legalAddress: string
+  legalAddressLat: number
+  legalAddressLon: number
+}
+
+export interface ClientFromAPI {
+  clientId: string
+  legalName: string
+  email: string
+  phone: string
+  vat: string
+  legalAddress: string
+  legalAddressLat: number
+  legalAddressLon: number
+}
+
+
 export type MaybeFile = File | null
 
 // FETCH CONFIG TYPES
