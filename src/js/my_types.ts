@@ -479,31 +479,33 @@ export interface EnrichedTasksPageFromAPI extends Pagination<EnrichedTaskFromAPI
 // which makes them entries
 
 
-export interface ChecklistEntryToAPI {
+export interface ChecklistSimpleEntryToAPI {
   taskId: string
   position: number
 }
 
-export interface ChecklistEntryFromAPI {
-  taskId: string
-  position: number
-}
+// export interface ChecklistEntryFromAPI {
+//   taskId: string
+//   checklistId: string
+//   position: number
+// }
 
 
-export interface ChecklistToAPI {
+export interface ChecklistWithSimpleEntriesToAPI {
   // the checklist name
   name: string
-  // a list of existing tasks + their position,
-  // so this makes them entries
-  entries: ChecklistEntryToAPI[]
+  // a list of existing tasks from DB + their position,
+  // so this makes them simple entries, because they don't have
+  // the checklist ID associated to it yet
+  entries: ChecklistSimpleEntryToAPI[]
 }
 
 
-export interface ChecklistFromAPI {
-  checklistId: string
-  name: string
-  entries: ChecklistEntryFromAPI[]
-}
+// export interface ChecklistFromAPI {
+//   checklistId: string
+//   name: string
+//   entries: ChecklistEntryFromAPI[]
+// }
 
 
 // *********************************************

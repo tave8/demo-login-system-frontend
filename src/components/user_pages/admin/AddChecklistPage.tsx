@@ -5,7 +5,7 @@ import GeocodingAPI from "../../../js/api/GeocodingAPI.ts";
 import ClientsAPI from "../../../js/api/ClientsAPI.ts";
 import {
     AppEvent, AppEventMessageType,
-    ChecklistToAPI,
+    ChecklistWithSimpleEntriesToAPI,
     ClientToAPI,
     EnrichedGeocodingAutocompleteItemFromAPI,
     TaskFromAPI
@@ -13,6 +13,7 @@ import {
 import TasksAPI from "../../../js/api/TasksAPI.ts";
 import ChecklistsAPI from "../../../js/api/ChecklistsAPI.ts";
 import BadRequestError from "../../../js/exceptions/BadRequestError.ts";
+import StringHelper from "../../../js/helpers/StringHelper.ts";
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
 const tasksAPI = TasksAPI.getInstance()
@@ -25,14 +26,14 @@ const checklistsAPI = ChecklistsAPI.getInstance()
 interface HandleAddChecklistParams {
     setIsLoading: (x:boolean) => void
     setIsError: (x:boolean) => void
-    setFormValues: (checklist: ChecklistToAPI) => void
+    setFormValues: (checklist: ChecklistWithSimpleEntriesToAPI) => void
 }
 
 // ******************
 // INITIAL FORM VALUES
 // ******************
 
-const initialFormValues: ChecklistToAPI = {
+const initialFormValues: ChecklistWithSimpleEntriesToAPI = {
     name: "",
     entries: []
 }
@@ -94,7 +95,7 @@ export default function AddChecklistPage() {
 
 
     // ******************
-    // TRANSFORM TASKS INTO ENTRIES
+    // TRANSFORM TASKS FROM DB INTO SIMPLE CHECKLIST ENTRIES
     // ******************
 
     // every time selected tasks is updated,
@@ -336,60 +337,82 @@ export default function AddChecklistPage() {
 
 
 
-const handleAddChecklist = (formValues: ChecklistToAPI) =>
+const handleAddChecklist = (formValues: ChecklistWithSimpleEntriesToAPI) =>
 {
     return async (params: HandleAddChecklistParams) => {
 
         const { setIsError, setIsLoading, setFormValues } = params
 
-        // before processing
+        requireValidFields(formValues)
 
-        console.log(formValues)
+        setIsLoading(true)
+        setIsError(false)
 
-        // requireValidFields(formValues)
+        checklistsAPI
+            .addChecklist(formValues)
+            .then(() => {
 
-        // setIsLoading(true)
-        // setIsError(false)
-        //
-        // clientsAPI
-        //     .addClient(formValues)
-        //     .then((clientFromAPI) => {
-        //
-        //         setIsLoading(false)
-        //         setIsError(false)
-        //
-        //         // reset form fields
-        //         setFormValues({
-        //             email: "",
-        //             vat: "",
-        //             legalAddressLat: 0,
-        //             legalAddressLon: 0,
-        //             legalName: "",
-        //             legalAddress: "",
-        //             phone: ""
-        //         })
-        //
-        //
-        //         appEventDispatcher.dispatchStandard(
-        //             AppEvent.APP_SUCCESS,
-        //             AppEventMessageType.SAVE_SUCCESS
-        //         )
-        //
-        //     })
-        //     .catch((err) => {
-        //
-        //         setIsLoading(false)
-        //         setIsError(true)
-        //
-        //         if (err instanceof BadRequestError) {
-        //
-        //             appEventDispatcher.dispatchStandard(
-        //                 AppEvent.APP_ERROR,
-        //                 AppEventMessageType.BAD_REQUEST
-        //             )
-        //
-        //         }
-        //     })
+                setIsLoading(false)
+                setIsError(false)
+
+                // reset form fields
+                setFormValues({
+                    name: "",
+                    entries: []
+                })
+
+
+                appEventDispatcher.dispatchStandard(
+                    AppEvent.APP_SUCCESS,
+                    AppEventMessageType.SAVE_SUCCESS
+                )
+
+            })
+            .catch((err) => {
+
+                setIsLoading(false)
+                setIsError(true)
+
+                if (err instanceof BadRequestError) {
+
+                    appEventDispatcher.dispatchStandard(
+                        AppEvent.APP_ERROR,
+                        AppEventMessageType.BAD_REQUEST
+                    )
+
+                }
+            })
     }
+
+}
+
+
+
+const requireValidFields = (formValues: ChecklistWithSimpleEntriesToAPI) => {
+
+    const isNonEmptyChecklistName = formValues.name.trim() != ""
+    const hasAtLeastOneEntry = formValues.entries.length > 0
+
+    const errors: string[] = []
+
+    if (!isNonEmptyChecklistName) {
+        errors.push("Il nome della Scheda attività non può essere vuoto")
+    }
+    if (!hasAtLeastOneEntry) {
+        errors.push("Ci deve essere almeno un'attività nella scheda")
+    }
+
+    // if there are errors
+    if(errors.length > 0) {
+
+        appEventDispatcher.dispatchStandard(
+            AppEvent.INVALID_FIELDS,
+            AppEventMessageType.INVALID_FIELDS,
+            errors.join(", ")
+        )
+
+        throw new Error("At least one field is invalid")
+    }
+
 
 }

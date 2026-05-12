@@ -5,7 +5,7 @@ import BaseAPI from "./BaseAPI"
 import FileHelper from "../helpers/FileHelper"
 import {
     ArticleFromAPI,
-    ArticlesPageFromAPI, ChecklistFromAPI, ChecklistToAPI, ClientAddressesPageFromAPI,
+    ArticlesPageFromAPI, ChecklistWithSimpleEntriesToAPI, ClientAddressesPageFromAPI,
     ClientAddressFromAPI, ClientAddressToAPI, ClientFromAPI, ClientQueryParamsToAPI, ClientsPageFromAPI,
     ClientToAPI, EnrichedArticleFromAPI, EnrichedArticlesPageFromAPI, EnrichedClientAddressesPageFromAPI,
     EnrichedClientAddressFromAPI,
@@ -71,16 +71,15 @@ export default class ChecklistsAPI extends BaseAPI {
     /**
      * Add a checklist.
      */
-    public async addChecklist(checklistData: ChecklistToAPI): Promise<ChecklistFromAPI>
+    public async addChecklist(checklistData: ChecklistWithSimpleEntriesToAPI): Promise<void>
     {
         const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.YES, checklistData)
 
-        const endpoint = `/tasks`
-        // TODO: fix endpoint
+        const endpoint = `/checklists`
 
         const resp: Response = await this.doFetchAt(endpoint, config)
 
-        const data = await this.parseJSON<ChecklistFromAPI>(resp)
+        const data = await this.parseJSON<void>(resp)
 
         return data
     }
