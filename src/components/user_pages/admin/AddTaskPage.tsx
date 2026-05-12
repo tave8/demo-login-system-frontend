@@ -5,7 +5,7 @@ import {
     AppEvent,
     AppEventMessageType,
     NewUserFromAPI,
-    NewUserToAPI,
+    NewUserToAPI, TaskFromAPI,
     TaskToAPI,
     UserRole
 } from "../../../js/my_types.ts";
@@ -23,7 +23,9 @@ const tasksAPI = TasksAPI.getInstance()
 interface HandleAddTaskParams {
     setIsLoading: (x:boolean) => void
     setIsError: (x:boolean) => void
-    setFormValues: (task: TaskToAPI) => void
+    setFormValues: (task: TaskToAPI) => void,
+    tasksJustAdded: TaskFromAPI[],
+    setTasksJustAdded: (tasks: TaskFromAPI[]) => void
 }
 
 const initialFormValues: TaskToAPI = {
@@ -35,6 +37,10 @@ export default function AddTaskPage () {
     const [isLoading, setIsLoading] = useState(false)
     const [isError, setIsError] = useState(false)
 
+    // the tasks just added: helps the user see
+    // which tasks they've added since they've been on this page,
+    // without going back and forth to the tasks list
+    const [tasksJustAdded, setTasksJustAdded] = useState<TaskFromAPI[]>([])
 
     return (
         <>
@@ -48,6 +54,7 @@ export default function AddTaskPage () {
                                 <h1 className="text-center">Aggiungi Attività</h1>
                                 <Alert variant="primary" className={"mt-4"}>
                                     Crea l'attività una sola volta e riutilizzala in qualsiasi Scheda Attività.
+                                    Le attività sono le azioni che gli operatori devono svolgere nel loro turno.
                                 </Alert>
                             </Col>
                         </Row>
@@ -60,7 +67,7 @@ export default function AddTaskPage () {
                                 }}
                                 onKeyDown={(e) => {
                                 if (e.key === "Enter") {
-                                    handleAddTask(formValues)({ setIsError, setIsLoading, setFormValues })
+                                    handleAddTask(formValues)({ setIsError, setIsLoading, setFormValues, setTasksJustAdded, tasksJustAdded })
                                 }
                             }}>
 
@@ -91,7 +98,7 @@ export default function AddTaskPage () {
                                         disabled={isLoading}
                                         variant="primary"
                                         onClick={() => {
-                                            handleAddTask(formValues)({ setIsError, setIsLoading, setFormValues })
+                                            handleAddTask(formValues)({ setIsError, setIsLoading, setFormValues, tasksJustAdded, setTasksJustAdded })
                                         }}
                                     >
                                         Aggiungi
@@ -99,6 +106,30 @@ export default function AddTaskPage () {
                                 </Col>
                             </Form>
                         </Row>
+
+
+                        {/* tasks just added */}
+                        {tasksJustAdded.length > 0 && (
+                            <Row className={"d-flex flex-column mt-3 g-3"}>
+                                {/* title */}
+                                <Col>
+                                    <h4 className="text-left">Appena aggiunte</h4>
+                                </Col>
+                                {/* list */}
+                                <Col>
+                                    <ul>
+                                        {tasksJustAdded.map(task => {
+                                            return (
+                                                <li key={task.taskId}>
+                                                    {task.name}
+                                                </li>
+                                            )
+                                        })}
+                                    </ul>
+                                </Col>
+                            </Row>
+                        )}
+
 
                     </Col>
                 </Row>
@@ -111,7 +142,7 @@ export default function AddTaskPage () {
 const handleAddTask = (formValues: TaskToAPI) => {
     return async (params: HandleAddTaskParams) => {
 
-        const { setIsError, setIsLoading, setFormValues } = params
+        const { setIsError, setIsLoading, setFormValues, setTasksJustAdded, tasksJustAdded } = params
 
         console.log(formValues)
 
@@ -134,6 +165,12 @@ const handleAddTask = (formValues: TaskToAPI) => {
                 setFormValues({
                     name: ""
                 })
+
+                // update the tasks just added
+                setTasksJustAdded([
+                    taskFromAPI,
+                    ...tasksJustAdded
+                ])
 
             })
             .catch((err) => {
