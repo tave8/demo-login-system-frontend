@@ -40,6 +40,9 @@ export const AppRoutes = {
   clientAddresses: "/u/clients/addresses",
   addClientAddress: "/u/clients/addresses/add",
 
+  tasks: "/u/tasks",
+  addTask: "/u/tasks/add",
+
   // DASHBOARDS
 
   // redirect a user to their dashboard, based on role

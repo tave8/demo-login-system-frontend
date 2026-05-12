@@ -116,6 +116,30 @@ export default function NavContentForAdmin({ setNavExpanded }: Props) {
                         </NavDropdown.Item>
                     </NavDropdown>
 
+
+                    {/* TASKS */}
+                    <NavDropdown title="Attività" id="basic-nav-dropdown" align="end">
+                        <NavDropdown.Item
+                            onClick={() => {
+                                navigate(AppRoutes.tasks)
+                                closeNav()
+                            }
+                            }>
+                            Vedi attività
+                        </NavDropdown.Item>
+
+                        {/* divider */}
+                        <NavDropdown.Divider />
+
+                        <NavDropdown.Item
+                            onClick={() => {
+                                navigate(AppRoutes.addTask)
+                                closeNav()
+                            }}>
+                            Aggiungi attività
+                        </NavDropdown.Item>
+                    </NavDropdown>
+
                         {/*<Link*/}
                         {/*    to={AppRoutes.uploadCV}*/}
                         {/*    onClick={closeNav}*/}

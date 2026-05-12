@@ -37,6 +37,8 @@ import ClientsPage from "./components/user_pages/admin/ClientsPage.tsx";
 import AddClientPage from "./components/user_pages/admin/AddClientPage.tsx";
 import ClientAddressesPage from "./components/user_pages/admin/ClientAddressesPage.tsx";
 import AddClientAddressPage from "./components/user_pages/admin/AddClientAddressPage.tsx";
+import TasksPage from "./components/user_pages/admin/TasksPage.tsx";
+import AddTaskPage from "./components/user_pages/admin/AddTaskPage.tsx";
 
 
 function App() {
@@ -163,6 +165,27 @@ function App() {
                                       </ProtectedRoute>
                                   }
                               />
+
+
+                              <Route
+                                  path={AppRoutes.tasks}
+                                  element={
+                                      <ProtectedRoute allowOnlyRoles={[UserRole.ADMIN]}>
+                                          <TasksPage />
+                                      </ProtectedRoute>
+                                  }
+                              />
+
+
+                              <Route
+                                  path={AppRoutes.addTask}
+                                  element={
+                                      <ProtectedRoute allowOnlyRoles={[UserRole.ADMIN]}>
+                                          <AddTaskPage />
+                                      </ProtectedRoute>
+                                  }
+                              />
+
 
 
 
