@@ -10,12 +10,12 @@ import {
     ClientToAPI, EnrichedArticleFromAPI, EnrichedArticlesPageFromAPI, EnrichedClientAddressesPageFromAPI,
     EnrichedClientAddressFromAPI,
     EnrichedClientFromAPI,
-    EnrichedClientsPageFromAPI,
+    EnrichedClientsPageFromAPI, EnrichedTaskFromAPI, EnrichedTasksPageFromAPI,
     EnrichedUserFromAPI, EnrichedUsersPageFromAPI,
     NewUserFromAPI,
     NewUserToAPI,
     RequestMethod,
-    RequireLogin, TaskFromAPI, TaskToAPI,
+    RequireLogin, TaskFromAPI, TasksPageFromAPI, TaskToAPI,
     UpdatedUserToAPI,
     UserFromAPI, UsersPageFromAPI
 } from "../my_types"
@@ -45,27 +45,27 @@ export default class TasksAPI extends BaseAPI {
     /**
      * Enrich a pagination page.
      */
-    // private enrichPage(page: ClientAddressesPageFromAPI): EnrichedClientAddressesPageFromAPI {
-    //     const enrichedItems = this.enrichItems(page.content)
-    //     return {
-    //         ...page,
-    //         content: enrichedItems,
-    //     }
-    // }
-    //
-    // private enrichItems(items: ClientAddressFromAPI[]): EnrichedClientAddressFromAPI[] {
-    //     return items.map((item) => this.enrichItem(item))
-    // }
-    //
-    // /**
-    //  * Enriches an item coming from the API.
-    //  */
-    // private enrichItem(item: ClientAddressFromAPI): EnrichedClientAddressFromAPI {
-    //     return {
-    //         ...item,
-    //         // add custom fields to each item
-    //     }
-    // }
+    private enrichPage(page: TasksPageFromAPI): EnrichedTasksPageFromAPI {
+        const enrichedItems = this.enrichItems(page.content)
+        return {
+            ...page,
+            content: enrichedItems,
+        }
+    }
+
+    private enrichItems(items: TaskFromAPI[]): EnrichedTaskFromAPI[] {
+        return items.map((item) => this.enrichItem(item))
+    }
+
+    /**
+     * Enriches an item coming from the API.
+     */
+    private enrichItem(item: TaskFromAPI): EnrichedTaskFromAPI {
+        return {
+            ...item,
+            // add custom fields to each item
+        }
+    }
 
 
     /**
@@ -85,17 +85,21 @@ export default class TasksAPI extends BaseAPI {
     }
 
     /**
-     * Get client addresses.
+     * Get tasks.
      */
-    // public async getClientAddresses(): Promise<ClientAddressesPageFromAPI> {
-    //     const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
-    //
-    //     const resp: Response = await this.doFetchAt("/clients/addresses", config)
-    //
-    //     const data = await this.parseJSON<ClientAddressesPageFromAPI>(resp)
-    //
-    //     return data
-    // }
+    public async getTasks(): Promise<TasksPageFromAPI> {
+        const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
+
+        const endpoint = `/tasks`
+
+        const resp: Response = await this.doFetchAt(endpoint, config)
+
+        const data = await this.parseJSON<TasksPageFromAPI>(resp)
+
+        return data
+    }
+
+
 
 
 

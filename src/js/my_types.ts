@@ -410,6 +410,7 @@ export interface ClientQueryParamsToAPI {
 }
 
 
+// *********************************************
 // CLIENT ADDRESS (associating multiple  addresses to a client)
 
 export interface ClientAddressToAPI {
@@ -443,6 +444,7 @@ export interface ClientAddressesPageFromAPI extends Pagination<ClientAddressFrom
 export interface EnrichedClientAddressesPageFromAPI extends Pagination<EnrichedClientAddressFromAPI> {}
 
 
+// ****************************************
 // TASK (also known as activity)
 // it's something like: clean this room, do this, do that etc.
 
@@ -456,7 +458,18 @@ export interface TaskFromAPI {
   name: string
 }
 
+// enriched item extends item
+export interface EnrichedTaskFromAPI extends TaskFromAPI {
+}
 
+// item's page extends page
+export interface TasksPageFromAPI extends Pagination<TaskFromAPI> {}
+
+// enriched item's page extends enriched page
+export interface EnrichedTasksPageFromAPI extends Pagination<EnrichedTaskFromAPI> {}
+
+
+// *********************************************
 // GEOCODING (address autocomplete)
 
 export interface GeocodingAutocompleteQueryParamsToAPI {
