@@ -240,10 +240,12 @@ const handleAddUser = (formValues: NewUserToAPI) => {
             const isValidEmail = StringHelper.isValidEmail(formValues.email)
 
             if(!isValidEmail) {
+
                 appEventDispatcher.dispatch(
                     AppEvent.APP_ERROR,
                     "Quando aggiungi un coordinatore, deve fornire un email valida."
                 )
+
                 return
 
             }
@@ -261,7 +263,10 @@ const handleAddUser = (formValues: NewUserToAPI) => {
 
                 setUserFromAPI(userFromAPI)
 
-                setShowModal(true)
+                setTimeout(() => {
+                    setShowModal(true)
+                }, 200)
+
 
                 appEventDispatcher.dispatchStandard(
                     AppEvent.APP_SUCCESS,
