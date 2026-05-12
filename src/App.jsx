@@ -61,7 +61,7 @@ function App() {
             <header>
               <AppNav />
             </header>
-            <main className={"d-flex flex-column"}>
+            <main className={"d-flex flex-column mb-5"}>
 
 
                 <Container fluid className={"mt-3"}>
