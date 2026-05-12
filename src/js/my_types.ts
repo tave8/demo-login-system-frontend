@@ -501,11 +501,22 @@ export interface ChecklistWithSimpleEntriesToAPI {
 }
 
 
-// export interface ChecklistFromAPI {
-//   checklistId: string
-//   name: string
-//   entries: ChecklistEntryFromAPI[]
-// }
+export interface ChecklistFromAPI {
+  id: string
+  name: string
+}
+
+
+// enriched item extends item
+export interface EnrichedChecklistFromAPI extends ChecklistFromAPI {
+}
+
+// item's page extends page
+export interface ChecklistsPageFromAPI extends Pagination<ChecklistFromAPI> {}
+
+// enriched item's page extends enriched page
+export interface EnrichedChecklistsPageFromAPI extends Pagination<EnrichedChecklistFromAPI> {}
+
 
 
 // *********************************************

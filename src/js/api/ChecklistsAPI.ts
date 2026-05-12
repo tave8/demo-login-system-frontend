@@ -5,7 +5,7 @@ import BaseAPI from "./BaseAPI"
 import FileHelper from "../helpers/FileHelper"
 import {
     ArticleFromAPI,
-    ArticlesPageFromAPI, ChecklistWithSimpleEntriesToAPI, ClientAddressesPageFromAPI,
+    ArticlesPageFromAPI, ChecklistsPageFromAPI, ChecklistWithSimpleEntriesToAPI, ClientAddressesPageFromAPI,
     ClientAddressFromAPI, ClientAddressToAPI, ClientFromAPI, ClientQueryParamsToAPI, ClientsPageFromAPI,
     ClientToAPI, EnrichedArticleFromAPI, EnrichedArticlesPageFromAPI, EnrichedClientAddressesPageFromAPI,
     EnrichedClientAddressFromAPI,
@@ -85,20 +85,19 @@ export default class ChecklistsAPI extends BaseAPI {
     }
 
     /**
-     * Get tasks.
+     * Get checklists.
      */
-    // public async getTasks(): Promise<TasksPageFromAPI> {
-    //     const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
-    //
-    //     const endpoint = `/tasks`
-    //
-    //     const resp: Response = await this.doFetchAt(endpoint, config)
-    //
-    //     const data = await this.parseJSON<TasksPageFromAPI>(resp)
-    //
-    //     return data
-    // }
+    public async getChecklists(): Promise<ChecklistsPageFromAPI> {
+        const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
 
+        const endpoint = `/checklists`
+
+        const resp: Response = await this.doFetchAt(endpoint, config)
+
+        const data = await this.parseJSON<ChecklistsPageFromAPI>(resp)
+
+        return data
+    }
 
 
 
