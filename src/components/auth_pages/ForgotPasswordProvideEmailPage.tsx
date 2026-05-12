@@ -1,11 +1,14 @@
-import {Alert, Button, Col, Container, Form, Image, Row, Spinner} from "react-bootstrap";
+import {Alert, Button, Col, Container, Form, Row, Spinner} from "react-bootstrap";
 import {useState} from "react";
-import {useAuth} from "../../auth/AuthContext.tsx";
-import {ForgotPasswordRequestToAPI, UpdatedUserToAPI, UserFromAPI} from "../../js/my_types.ts";
-import UsersAPI from "../../js/api/UsersAPI.ts";
+import {AppEvent, AppEventMessageType, AppRoutes, ForgotPasswordRequestToAPI} from "../../js/my_types.ts";
 import UnauthorizedError from "../../js/exceptions/UnauthorizedError.ts";
 import AuthAPI from "../../js/api/AuthAPI.ts";
 import ForbiddenError from "../../js/exceptions/ForbiddenError.ts";
+import AppEventDispatcher from "../../js/AppEventDispatcher.ts";
+import {NavigateFunction, useNavigate} from "react-router-dom";
+
+const appEventDispatcher = AppEventDispatcher.getInstance()
+const authAPI = AuthAPI.getInstance()
 
 const initialEmailData: ForgotPasswordRequestToAPI = {
     email: ""
@@ -13,7 +16,8 @@ const initialEmailData: ForgotPasswordRequestToAPI = {
 
 interface HandleForgotPasswordRequestParams {
     setIsLoading: (x: boolean) => void
-    setIsError: (x: boolean) => void
+    setIsError: (x: boolean) => void,
+    navigate: NavigateFunction
 }
 
 
@@ -22,6 +26,7 @@ const ForgotPasswordProvideEmailPage = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [isError, setIsError] = useState(false)
 
+    const navigate = useNavigate()
 
     return (
         <>
@@ -35,52 +40,45 @@ const ForgotPasswordProvideEmailPage = () => {
                             </Col>
                         </Row>
 
-                        {/* my profile info */}
+                        {/* provide email */}
 
-                        {!isLoading && !isError && (
-                            <>
-                                <Row className="g-3">
-                                    <Col xs={12}>
-                                        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                            <Form.Label>La tua email</Form.Label>
-                                            <Form.Control
-                                                type="email"
-                                                placeholder="nome.cognome@gmail.com"
-                                                value={emailData.email}
-                                                onChange={(event) => {
-                                                    setEmailData({
-                                                        ...emailData,
-                                                        email: event.target.value,
-                                                    })
-                                                }}
-                                            />
-                                        </Form.Group>
-                                    </Col>
-                                </Row>
-                                <Row className="mt-2">
-                                    <Col xs={12} className="text-center">
-                                        <Button
-                                            className="btn btn-primary"
-                                            onClick={() => {
-                                                handleForgotPasswordRequest(emailData)({ setIsLoading, setIsError })
+                        <Form onSubmit={(e) => {
+                            e.preventDefault()
+                            handleForgotPasswordRequest(emailData)({ setIsLoading, setIsError, navigate })
+                        }}>
+                            <Row className="g-3">
+                                <Col xs={12}>
+                                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                                        <Form.Label>La tua email</Form.Label>
+                                        <Form.Control
+                                            type="email"
+                                            disabled={isLoading}
+                                            placeholder="nome.cognome@gmail.com"
+                                            value={emailData.email}
+                                            onChange={(event) => {
+                                                setEmailData({
+                                                    ...emailData,
+                                                    email: event.target.value,
+                                                })
                                             }}
-                                        >
-                                            Invia
-                                        </Button>
-                                    </Col>
-                                </Row>
-                            </>
-                        )}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                            <Row className="mt-2">
+                                <Col xs={12} className="text-center">
+                                    <Button
+                                        type="submit"
+                                        className="btn btn-primary"
+                                        disabled={isLoading}
+                                    >
+                                        Invia
+                                    </Button>
+                                </Col>
+                            </Row>
 
-                        {/* is loading */}
-                        {isLoading && (
-                            <Spinner animation="border" role="status">
-                                <span className="visually-hidden">Loading...</span>
-                            </Spinner>
-                        )}
+                        </Form>
 
-                        {/* is error */}
-                        {isError && <Alert variant="danger">Something went wrong.</Alert>}
                     </Col>
                 </Row>
             </Container>
@@ -91,24 +89,40 @@ const ForgotPasswordProvideEmailPage = () => {
 
 const handleForgotPasswordRequest = (emailData: ForgotPasswordRequestToAPI) => {
     return async (params: HandleForgotPasswordRequestParams) => {
-        console.log(emailData, params)
 
-        const authAPI = new AuthAPI();
+        const {setIsLoading,setIsError, navigate} = params
+
+        setIsLoading(true)
+        setIsError(false)
 
         authAPI
             .sendForgotPasswordRequest(emailData)
             .then((msgFromServer) => {
-                // console.log(userData)
-                alert(msgFromServer.message)
+
+                setIsLoading(false)
+                setIsError(false)
+
+                appEventDispatcher.dispatchStandard(
+                    AppEvent.APP_SUCCESS,
+                    AppEventMessageType.AUTHORIZATION_SET_PASSWORD_SUCCESS
+                )
+
+                navigate(AppRoutes.login)
+
             })
             .catch((err: unknown) => {
+
+                setIsLoading(false)
+                setIsError(true)
+
                 if (err instanceof UnauthorizedError || err instanceof ForbiddenError) {
-                    // logout()
                     console.log(err.message)
-                    alert("You cannot set a new password right now.")
-                } else {
-                    console.info("Error during forgot password request")
-                    console.error(err)
+
+                    appEventDispatcher.dispatchStandard(
+                        AppEvent.APP_ERROR,
+                        AppEventMessageType.CANNOT_SET_PASSWORD_NOW
+                    )
+
                 }
             })
     }

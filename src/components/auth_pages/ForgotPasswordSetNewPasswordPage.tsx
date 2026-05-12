@@ -2,6 +2,7 @@ import {Alert, Button, Col, Container, Form, Image, Row, Spinner} from "react-bo
 import {use, useEffect, useState} from "react";
 import {useAuth} from "../../auth/AuthContext.tsx";
 import {
+    AppEvent, AppEventMessageType,
     AppRoutes,
     ForgotPasswordNewPasswordToAPI,
     ForgotPasswordRequestToAPI, ForgotPasswordVerifyCodeToAPI,
@@ -14,6 +15,10 @@ import AuthAPI from "../../js/api/AuthAPI.ts";
 import ForbiddenError from "../../js/exceptions/ForbiddenError.ts";
 import {NavigateFunction, useNavigate, useParams} from "react-router-dom";
 import NotFoundError from "../../js/exceptions/NotFoundError.ts";
+import AppEventDispatcher from "../../js/AppEventDispatcher.ts";
+
+const appEventDispatcher = AppEventDispatcher.getInstance()
+const authAPI = AuthAPI.getInstance()
 
 type RouteURLParams = {
     code: string
@@ -44,7 +49,7 @@ interface HandleForgotPasswordNewPasswordParams {
 }
 
 
-const ForgotPasswordSetNewPasswordPage = () => {
+export default function ForgotPasswordSetNewPasswordPage ()  {
     const [newPasswordData, setNewPasswordData] = useState(initialNewPasswordData)
     const [isLoading, setIsLoading] = useState(true)
     const [isError, setIsError] = useState(false)
@@ -75,8 +80,6 @@ const ForgotPasswordSetNewPasswordPage = () => {
         // can even access this page or not
         authorizationCode.code = code
 
-        // console.log(code)
-        const authAPI = new AuthAPI();
 
         setIsLoading(true)
         setIsError(false)
@@ -101,7 +104,7 @@ const ForgotPasswordSetNewPasswordPage = () => {
                 if (err instanceof UnauthorizedError || err instanceof ForbiddenError) {
                     setIsLoading(false)
                     setIsError(true)
-                    setErrorMsg("You are not authorized to access this page.")
+                    setErrorMsg("Non sei autorizzato ad accedere a questa pagina.")
                 } else {
                     setIsLoading(false)
                     setIsError(true)
@@ -121,30 +124,35 @@ const ForgotPasswordSetNewPasswordPage = () => {
                         {/* title */}
                         <Row className="mb-3">
                             <Col>
-                                <h1 className="text-center">Set new password</h1>
+                                <h1 className="text-center">Imposta la nuova password</h1>
                             </Col>
                         </Row>
 
-                        {/* my profile info */}
-
+                        {/* form */}
                         {!isLoading && !isError && (
-                            <>
+
+                            <Form onSubmit={(e) => {
+                                e.preventDefault()
+                                handleForgotPasswordNewPassword(newPasswordData)({ setIsLoading, setIsError, navigate })
+                            }}>
+
+
                                 {/* info alert */}
                                 <Row>
                                     <Alert variant={"primary"}>
-                                        <span>🔒 For your safety, this page can only be opened once and will soon expire.
-                                            When you set your new password or close this page, it will also be removed.</span>
+                                        <span>🔒 Per la tua sicurezza, questa pagina può essere aperta una sola volta e scadrà a breve.
+                                            Quando imposti la nuova password o chiudi questa pagina, il link verrà rimosso.</span>
                                     </Alert>
                                 </Row>
 
-                                {/* the form */}
                                 <Row className="g-3">
                                     <Col xs={12}>
                                         <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                                            <Form.Label>Password</Form.Label>
+                                            <Form.Label>Nuova password</Form.Label>
                                             <Form.Control
                                                 type="password"
-                                                placeholder="Type in your new password"
+                                                disabled={isLoading}
+                                                placeholder="Inserisci la tua nuova password"
                                                 value={newPasswordData.newPassword}
                                                 onChange={(event) => {
                                                     setNewPasswordData({
@@ -159,24 +167,19 @@ const ForgotPasswordSetNewPasswordPage = () => {
                                 <Row className="mt-2">
                                     <Col xs={12} className="text-center">
                                         <Button
+                                            type="submit"
                                             className="btn btn-primary"
-                                            onClick={() => {
-                                                handleForgotPasswordNewPassword(newPasswordData)({ setIsLoading, setIsError, navigate })
-                                            }}
+                                            disabled={isLoading}
                                         >
-                                            Set new password
+                                            Imposta nuova password
                                         </Button>
                                     </Col>
                                 </Row>
-                            </>
+
+                            </Form>
+
                         )}
 
-                        {/* is loading */}
-                        {isLoading && (
-                            <Spinner animation="border" role="status">
-                                <span className="visually-hidden">Loading...</span>
-                            </Spinner>
-                        )}
 
                         {/* is error */}
                         {isError && <Alert variant="danger">{errorMsg}</Alert>}
@@ -191,31 +194,41 @@ const ForgotPasswordSetNewPasswordPage = () => {
 const handleForgotPasswordNewPassword = (newPassword: ForgotPasswordNewPasswordToAPI) => {
     return async (params: HandleForgotPasswordNewPasswordParams) => {
 
-        const {navigate} = params
+        const {navigate, setIsLoading, setIsError} = params
 
-        const authAPI = new AuthAPI();
+        setIsLoading(true)
+        setIsError(false)
 
         authAPI
             .setNewPasswordIfAuthorized(newPassword)
             .then((msgFromServer) => {
-                // console.log(userData)
-                alert(msgFromServer.message)
+
+                setIsLoading(false)
+                setIsError(false)
+
+                appEventDispatcher.dispatchStandard(
+                    AppEvent.APP_SUCCESS,
+                    AppEventMessageType.SET_PASSWORD_SUCCESS
+                )
+
                 // user has successfully set a new password,
                 // send them to login page
                 navigate(AppRoutes.login)
             })
             .catch((err: unknown) => {
+
+                setIsLoading(false)
+                setIsError(true)
+
                 if (err instanceof UnauthorizedError || err instanceof ForbiddenError) {
-                    // logout()
-                    console.log(err.message)
-                    alert("You cannot set a new password right now, maybe your authorization has expired.")
-                } else {
-                    console.info("Error during forgot password reset")
-                    console.error(err)
+
+                    appEventDispatcher.dispatchStandard(
+                        AppEvent.APP_ERROR,
+                        AppEventMessageType.CANNOT_SET_PASSWORD_NOW
+                    )
+
                 }
+
             })
     }
 }
-
-
-export default ForgotPasswordSetNewPasswordPage

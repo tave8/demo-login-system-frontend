@@ -90,13 +90,17 @@ export enum AppEventMessageType {
   EXPECTED_JSON_PAYLOAD = "EXPECTED_JSON_PAYLOAD",
   SIGNUP_SUCCESS = "SIGNUP_SUCCESS",
   CANNOT_USE_EMAIL = "CANNOT_USE_EMAIL",
+  CANNOT_SET_PASSWORD_NOW = "CANNOT_SET_PASSWORD_NOW",
   INVALID_FIELDS = "INVALID_FIELDS",
   SAVE_SUCCESS = "SAVE_SUCCESS",
   SAVE_ERROR = "SAVE_ERROR",
   COPIED = "COPIED",
   SERVER_ERROR = "SERVER_ERROR",
   BAD_REQUEST = "BAD_REQUEST",
+  AUTHORIZATION_SET_PASSWORD_SUCCESS = "AUTHORIZATION_SET_PASSWORD_SUCCESS",
+  SET_PASSWORD_SUCCESS = "SET_PASSWORD_SUCCESS"
 }
+
 
 export const AppEventMessage: Record<Language, Record<AppEventMessageType, string>> = {
 
@@ -110,13 +114,18 @@ export const AppEventMessage: Record<Language, Record<AppEventMessageType, strin
     EXPECTED_JSON_PAYLOAD: "Internal error (expected JSON payload)",
     SIGNUP_SUCCESS: "Successful signup. Check your inbox: We've just sent you an email to verify that it's you.",
     CANNOT_USE_EMAIL:  "You cannot use this email.",
+    CANNOT_SET_PASSWORD_NOW: "You cannot set a new password right now.",
     INVALID_FIELDS: "Some fields are invalid. Details: ",
     SAVE_SUCCESS: "Saved.",
     SAVE_ERROR: "There was an error while saving.",
     COPIED: "Copied",
     SERVER_ERROR: "Your request has successfully reached the server, but there was a problem in the server.",
     BAD_REQUEST: "Your request could not be processed because it's malformed "
-                  +"or this specific action cannot be performed."
+                  +"or this specific action cannot be performed.",
+    AUTHORIZATION_SET_PASSWORD_SUCCESS: "We've just sent you an email with a unique authorization link. "
+                                        +"For your security, the link will expire soon and can only be used once.",
+    SET_PASSWORD_SUCCESS: "You've successfully reset your password. "
+                            +"You can now login with this new password."
   },
 
   [Language.IT]: {
@@ -129,13 +138,18 @@ export const AppEventMessage: Record<Language, Record<AppEventMessageType, strin
     EXPECTED_JSON_PAYLOAD: "Errore interno (payload JSON atteso).",
     SIGNUP_SUCCESS: "Registrazione completata. Controlla la tua casella email: ti abbiamo inviato un link per verificare la tua identità.",
     CANNOT_USE_EMAIL: "Non puoi utilizzare questa email.",
+    CANNOT_SET_PASSWORD_NOW: "Non puoi impostare una nuova password adesso.",
     INVALID_FIELDS: "Alcuni campi non sono validi. Dettagli: ",
     SAVE_SUCCESS: "Salvato.",
     SAVE_ERROR: "C'è stato un errore durante il salvataggio.",
     COPIED: "Copiato.",
     SERVER_ERROR: "La richiesta è arrivata al server, ma si è verificato un errore interno.",
     BAD_REQUEST: "La richiesta non può essere elaborata perché è malformata "
-              +"o questa azione non è consentita."
+              +"o questa azione non è consentita.",
+    AUTHORIZATION_SET_PASSWORD_SUCCESS: "Ti abbiamo appena mandato un email con un link unico di autorizzazione. "
+                                        + "Per la tua sicurezza, il link scadrà a breve e può essere usato solo una volta.",
+    SET_PASSWORD_SUCCESS: "Hai reimpostato la tua password con successo. "
+                          + "Ora puoi accedere con la nuova password."
   },
 
 }

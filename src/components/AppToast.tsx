@@ -21,7 +21,7 @@ export default function AppToast() {
     const [eventType, setEventType] = useState<AppEvent|null>(null)
 
     // depending on the event type, we set a different delay for the toast
-    const delay = eventType == AppEvent.INVALID_FIELDS ? 60000 : 10000
+    const delay = eventType == AppEvent.INVALID_FIELDS ? 60000 : 20000
     // console.log(delay, eventType)
 
     useEffect(() => {
