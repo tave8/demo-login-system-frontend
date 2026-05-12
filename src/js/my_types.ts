@@ -475,21 +475,36 @@ export interface EnrichedTasksPageFromAPI extends Pagination<EnrichedTaskFromAPI
 
 // ****************************************
 // CHECKLIST (the things that operators must do)
-// a checklist has many tasks
+// a checklist has many tasks & their positions,
+// which makes them entries
+
+
+export interface ChecklistEntryToAPI {
+  taskId: string
+  position: number
+}
+
+export interface ChecklistEntryFromAPI {
+  taskId: string
+  position: number
+}
+
 
 export interface ChecklistToAPI {
   // the checklist name
   name: string
-  // a list of existing tasks
-  tasks: TaskFromAPI[]
+  // a list of existing tasks + their position,
+  // so this makes them entries
+  entries: ChecklistEntryToAPI[]
 }
 
 
 export interface ChecklistFromAPI {
-  id: string
+  checklistId: string
   name: string
-  tasks: TaskFromAPI[]
+  entries: ChecklistEntryFromAPI[]
 }
+
 
 // *********************************************
 // GEOCODING (address autocomplete)

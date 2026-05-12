@@ -1,9 +1,10 @@
 import {Alert, Button, Col, Container, Form, ListGroup, Row, Spinner, Table} from "react-bootstrap";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import AppEventDispatcher from "../../../js/AppEventDispatcher.ts";
 import GeocodingAPI from "../../../js/api/GeocodingAPI.ts";
 import ClientsAPI from "../../../js/api/ClientsAPI.ts";
 import {
+    AppEvent, AppEventMessageType,
     ChecklistToAPI,
     ClientToAPI,
     EnrichedGeocodingAutocompleteItemFromAPI,
@@ -11,6 +12,7 @@ import {
 } from "../../../js/my_types.ts";
 import TasksAPI from "../../../js/api/TasksAPI.ts";
 import ChecklistsAPI from "../../../js/api/ChecklistsAPI.ts";
+import BadRequestError from "../../../js/exceptions/BadRequestError.ts";
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
 const tasksAPI = TasksAPI.getInstance()
@@ -25,7 +27,7 @@ interface HandleAddChecklistParams {
 
 const initialFormValues: ChecklistToAPI = {
     name: "",
-    tasks: []
+    entries: []
 }
 
 export default function AddChecklistPage() {
@@ -38,6 +40,17 @@ export default function AddChecklistPage() {
 
     // the tasks selected by user, when they click on it
     const [selectedTasks, setSelectedTasks] = useState<TaskFromAPI[]>([])
+
+    // DRAG & DROP
+
+    const dragIndex = useRef<number>(0)
+
+    const onDrop = (index: number) => {
+        const reordered = Array.from(selectedTasks)
+        const [removed] = reordered.splice(dragIndex.current, 1)
+        reordered.splice(index, 0, removed)
+        setSelectedTasks(reordered)
+    }
 
     // get the tasks
     useEffect(() => {
@@ -62,6 +75,30 @@ export default function AddChecklistPage() {
             })
 
     }, [])
+
+
+    // every time selected tasks is updated,
+    // we update the form values
+    useEffect(() => {
+
+        setFormValues({
+            ...formValues,
+            // we map a task to an entry
+            // a task has:
+            // - id
+            // - name
+            // an entry has:
+            // - task id
+            // - position
+            entries: selectedTasks.map((task, idx) => {
+                return {
+                    taskId: task.taskId,
+                    position: idx+1
+                }
+            })
+        })
+
+    }, [selectedTasks]);
 
 
     const addTaskToSelectedTasks = (taskToAdd: TaskFromAPI) =>
@@ -194,26 +231,39 @@ export default function AddChecklistPage() {
                                 {/* selected tasks list */}
                                 <Row>
                                     <Col>
-
-                                        {selectedTasks.map(task => {
-                                            return (
-                                                <div key={task.taskId}>
-                                                    <p>{task.name}</p>
-                                                </div>
-                                            )
-                                        })}
-
+                                        <Table striped bordered hover responsive>
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Attività</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {selectedTasks.map((task, index) => (
+                                                    <tr key={task.taskId}
+                                                        draggable
+                                                        onDragStart={() => dragIndex.current = index}
+                                                        onDragOver={(e) => e.preventDefault()}
+                                                        onDrop={() => onDrop(index)}
+                                                        style={{ cursor: "grab" }}
+                                                    >
+                                                        <td>{index+1}</td>
+                                                        <td>{task.name}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </Table>
                                     </Col>
                                 </Row>
 
+                                {/* submit */}
                                 <Row className={"mt-3"}>
-                                    {/* submit */}
                                     <Col className="text-center">
                                         <Button
                                             disabled={isLoading}
                                             variant="primary"
                                             onClick={() => {
-                                                // handleAddClient(formValues)({ setIsError, setIsLoading, setFormValues });
+                                                handleAddChecklist(formValues)({ setIsError, setIsLoading, setFormValues });
                                             }}
                                         >
                                             Aggiungi scheda
@@ -230,4 +280,65 @@ export default function AddChecklistPage() {
             </Container>
         </>
     )
+}
+
+
+
+
+const handleAddChecklist = (formValues: ChecklistToAPI) =>
+{
+    return async (params: HandleAddChecklistParams) => {
+
+        const { setIsError, setIsLoading, setFormValues } = params
+
+        // before processing
+
+        console.log(formValues)
+
+        // requireValidFields(formValues)
+
+        // setIsLoading(true)
+        // setIsError(false)
+        //
+        // clientsAPI
+        //     .addClient(formValues)
+        //     .then((clientFromAPI) => {
+        //
+        //         setIsLoading(false)
+        //         setIsError(false)
+        //
+        //         // reset form fields
+        //         setFormValues({
+        //             email: "",
+        //             vat: "",
+        //             legalAddressLat: 0,
+        //             legalAddressLon: 0,
+        //             legalName: "",
+        //             legalAddress: "",
+        //             phone: ""
+        //         })
+        //
+        //
+        //         appEventDispatcher.dispatchStandard(
+        //             AppEvent.APP_SUCCESS,
+        //             AppEventMessageType.SAVE_SUCCESS
+        //         )
+        //
+        //     })
+        //     .catch((err) => {
+        //
+        //         setIsLoading(false)
+        //         setIsError(true)
+        //
+        //         if (err instanceof BadRequestError) {
+        //
+        //             appEventDispatcher.dispatchStandard(
+        //                 AppEvent.APP_ERROR,
+        //                 AppEventMessageType.BAD_REQUEST
+        //             )
+        //
+        //         }
+        //     })
+    }
+
 }
