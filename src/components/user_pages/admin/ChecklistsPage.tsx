@@ -1,4 +1,4 @@
-import {Button, Col, Container, Row, Table} from "react-bootstrap";
+import {Alert, Button, Col, Container, Row, Table} from "react-bootstrap";
 import UsersAPI from "../../../js/api/UsersAPI.ts";
 import {useEffect, useState} from "react";
 import ArticlesAPI from "../../../js/api/ArticlesAPI.ts";
@@ -55,7 +55,12 @@ export default function TasksPage() {
                         {/* title */}
                         <Row className={"mb-3"}>
                             <Col>
-                                <h1 className="text-center">Schede attività</h1>
+                                <h1 className="text-center">Schede Attività</h1>
+                                <Alert variant="primary" className="mb-3">
+                                    Una Scheda Attività è semplicemente un insieme di attività da associare a una sede cliente.
+                                    Contiene tutto quello che l'operatore vedrà nel suo turno. Puoi scegliere se creare solo una o più Schede Attività
+                                    per una stessa sede cliente.
+                                </Alert>
                             </Col>
                         </Row>
 

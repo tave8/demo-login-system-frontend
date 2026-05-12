@@ -1,4 +1,4 @@
-import {Button, Col, Container, Row, Table} from "react-bootstrap";
+import {Alert, Button, Col, Container, Row, Table} from "react-bootstrap";
 import UsersAPI from "../../../js/api/UsersAPI.ts";
 import {useEffect, useState} from "react";
 import ArticlesAPI from "../../../js/api/ArticlesAPI.ts";
@@ -55,6 +55,11 @@ export default function TasksPage() {
                         <Row className={"mb-3"}>
                             <Col>
                                 <h1 className="text-center">Attività</h1>
+                                <Alert variant="primary" className="mb-3">
+                                    Le attività sono tutte le azioni, task, compiti di cui vuoi tenere traccia nella tua azienda,
+                                    che i tuoi operatori devono svolgere al meglio, per fornire il miglior risultato al cliente.
+                                    Sono appunto le attività che i tuoi operatori vedranno nel loro turno.
+                                </Alert>
                             </Col>
                         </Row>
 

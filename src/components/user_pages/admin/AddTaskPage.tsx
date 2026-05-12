@@ -54,7 +54,7 @@ export default function AddTaskPage () {
                                 <h1 className="text-center">Aggiungi Attività</h1>
                                 <Alert variant="primary" className={"mt-4"}>
                                     Crea l'attività una sola volta e riutilizzala in qualsiasi Scheda Attività.
-                                    Le attività sono le azioni che gli operatori devono svolgere nel loro turno.
+                                    Le attività sono i singoli compiti che gli operatori devono svolgere nel loro turno.
                                 </Alert>
                             </Col>
                         </Row>

@@ -37,8 +37,10 @@ export const AppRoutes = {
   clients: "/u/clients",
   addClient: "/u/clients/add",
 
-  clientAddresses: "/u/clients/addresses",
-  addClientAddress: "/u/clients/addresses/add",
+  clientAddresses: "/u/client-addresses",
+  addClientAddress: "/u/client-addresses/add",
+
+  addChecklistToClientAddress: "/u/client-addresses/checklists/add",
 
   tasks: "/u/tasks",
   addTask: "/u/tasks/add",

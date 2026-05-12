@@ -121,6 +121,18 @@ export default function NavContentForAdmin({ setNavExpanded }: Props) {
                     <NavDropdown title="Attività" id="basic-nav-dropdown" align="end">
                         <NavDropdown.Item
                             onClick={() => {
+                                navigate(AppRoutes.addChecklistToClientAddress)
+                                closeNav()
+                            }
+                            }>
+                            Aggiungi scheda a sede cliente
+                        </NavDropdown.Item>
+
+                        {/* divider */}
+                        <NavDropdown.Divider />
+
+                        <NavDropdown.Item
+                            onClick={() => {
                                 navigate(AppRoutes.checklists)
                                 closeNav()
                             }
