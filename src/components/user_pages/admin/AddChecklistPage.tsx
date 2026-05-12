@@ -33,8 +33,11 @@ export default function AddChecklistPage() {
     const [isLoading, setIsLoading] = useState(false)
     const [isError, setIsError] = useState(false)
 
-    // the tasks
+    // the existing company's tasks
     const [tasks, setTasks] = useState<TaskFromAPI[]>([])
+
+    // the tasks selected by user, when they click on it
+    const [selectedTasks, setSelectedTasks] = useState<TaskFromAPI[]>([])
 
     // get the tasks
     useEffect(() => {
@@ -59,6 +62,45 @@ export default function AddChecklistPage() {
             })
 
     }, [])
+
+
+    const addTaskToSelectedTasks = (taskToAdd: TaskFromAPI) =>
+    {
+
+        setSelectedTasks([
+            ...selectedTasks,
+            taskToAdd
+        ])
+
+    }
+
+    const removeTaskFromSelectedTasks = (taskToRemove: TaskFromAPI) =>
+    {
+
+        // search this task
+        const tasksWithoutTarget = selectedTasks.filter(task => task.taskId != taskToRemove.taskId)
+
+        // update selected tasks
+        setSelectedTasks(tasksWithoutTarget)
+
+    }
+
+    /**
+     * When the user selects a task.
+     */
+    const onTaskSelected = (task: TaskFromAPI, isSelected: boolean) =>
+    {
+
+        // if the user has selected the UI element,
+        // this task must be added
+        // else this task must be removed
+        if(isSelected) {
+            addTaskToSelectedTasks(task)
+        } else {
+            removeTaskFromSelectedTasks(task)
+        }
+
+    }
 
 
     return (
@@ -129,9 +171,9 @@ export default function AddChecklistPage() {
                                                     <td>
                                                         <Form.Check
                                                             type="checkbox"
-                                                            // style={{ cursor: "pointer" }}
-                                                            onChange={() => {
-                                                                // onTaskSelected(task)
+                                                            onChange={(e) => {
+                                                                const isSelected = e.target.checked
+                                                                onTaskSelected(task, isSelected)
                                                             }}
                                                         />
                                                     </td>
@@ -143,18 +185,42 @@ export default function AddChecklistPage() {
 
                                 </Row>
 
-                                {/* submit */}
-                                <Col className="text-center">
-                                    <Button
-                                        disabled={isLoading}
-                                        variant="primary"
-                                        onClick={() => {
-                                            // handleAddClient(formValues)({ setIsError, setIsLoading, setFormValues });
-                                        }}
-                                    >
-                                        Aggiungi scheda
-                                    </Button>
-                                </Col>
+                                <Row>
+                                    <Col>
+                                        <h4>{formValues.name} ha queste attività:</h4>
+                                    </Col>
+                                </Row>
+
+                                {/* selected tasks list */}
+                                <Row>
+                                    <Col>
+
+                                        {selectedTasks.map(task => {
+                                            return (
+                                                <div key={task.taskId}>
+                                                    <p>{task.name}</p>
+                                                </div>
+                                            )
+                                        })}
+
+                                    </Col>
+                                </Row>
+
+                                <Row className={"mt-3"}>
+                                    {/* submit */}
+                                    <Col className="text-center">
+                                        <Button
+                                            disabled={isLoading}
+                                            variant="primary"
+                                            onClick={() => {
+                                                // handleAddClient(formValues)({ setIsError, setIsLoading, setFormValues });
+                                            }}
+                                        >
+                                            Aggiungi scheda
+                                        </Button>
+                                    </Col>
+                                </Row>
+
                             </Form>
                         </Row>
 
