@@ -36,7 +36,7 @@ const ForgotPasswordProvideEmailPage = () => {
                         {/* title */}
                         <Row className="mb-3">
                             <Col>
-                                <h1 className="text-center">Crea una nuova password</h1>
+                                <h1 className="text-center">Resetta la tua password</h1>
                             </Col>
                         </Row>
 

@@ -66,7 +66,7 @@ export default function TasksPage() {
                                 <Table striped bordered hover responsive>
                                     <thead>
                                     <tr>
-                                        <th>Nome</th>
+                                        <th>Scheda</th>
                                         <th>Azioni</th>
                                     </tr>
                                     </thead>

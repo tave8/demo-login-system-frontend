@@ -61,7 +61,8 @@ export default function ClientAddressesPage() {
                                     <thead>
                                     <tr>
                                         <th>Cliente</th>
-                                        <th>Sede</th>
+                                        <th>Nome sede</th>
+                                        <th>Indirizzo sede</th>
                                         <th>Azioni</th>
                                     </tr>
                                     </thead>
@@ -70,6 +71,7 @@ export default function ClientAddressesPage() {
                                         // make this key unique
                                         <tr key={client.clientId + "" + client.addressId}>
                                             <td>{client.clientName}</td>
+                                            <td>{client.addressName}</td>
                                             <td>{client.addressDisplayName}</td>
                                             <td>
                                                 {/*<Button variant="outline-primary" size="sm">Modifica</Button>*/}
