@@ -18,17 +18,28 @@ const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
 const tasksAPI = TasksAPI.getInstance()
 const checklistsAPI = ChecklistsAPI.getInstance()
 
+// ******************
+// PARAMS OF ADD CHECKLIST HANDLER
+// ******************
+
 interface HandleAddChecklistParams {
     setIsLoading: (x:boolean) => void
     setIsError: (x:boolean) => void
     setFormValues: (checklist: ChecklistToAPI) => void
 }
 
+// ******************
+// INITIAL FORM VALUES
+// ******************
 
 const initialFormValues: ChecklistToAPI = {
     name: "",
     entries: []
 }
+
+// ******************
+// REACT COMPONENT
+// ******************
 
 export default function AddChecklistPage() {
     const [formValues, setFormValues] = useState(initialFormValues)
@@ -41,7 +52,9 @@ export default function AddChecklistPage() {
     // the tasks selected by user, when they click on it
     const [selectedTasks, setSelectedTasks] = useState<TaskFromAPI[]>([])
 
-    // DRAG & DROP
+    // ******************
+    // DRAG & DROP OF SELECTED TASKS
+    // ******************
 
     const dragIndex = useRef<number>(0)
 
@@ -52,7 +65,10 @@ export default function AddChecklistPage() {
         setSelectedTasks(reordered)
     }
 
-    // get the tasks
+    // ******************
+    // GET TASKS ON FIRST LOAD
+    // ******************
+
     useEffect(() => {
 
         setIsLoading(true)
@@ -76,6 +92,10 @@ export default function AddChecklistPage() {
 
     }, [])
 
+
+    // ******************
+    // TRANSFORM TASKS INTO ENTRIES
+    // ******************
 
     // every time selected tasks is updated,
     // we update the form values
@@ -101,6 +121,10 @@ export default function AddChecklistPage() {
     }, [selectedTasks]);
 
 
+    // ******************
+    // WHEN TASK IS SELECTED: ADD IT
+    // ******************
+
     const addTaskToSelectedTasks = (taskToAdd: TaskFromAPI) =>
     {
 
@@ -110,6 +134,10 @@ export default function AddChecklistPage() {
         ])
 
     }
+
+    // ******************
+    // WHEN TASK IS DE-SELECTED: REMOVE IT
+    // ******************
 
     const removeTaskFromSelectedTasks = (taskToRemove: TaskFromAPI) =>
     {
@@ -122,10 +150,16 @@ export default function AddChecklistPage() {
 
     }
 
+    // ******************
+    // WHEN TASK WAS TOGGLED: ADD OR REMOVE?
+    // ******************
+
+
     /**
      * When the user selects a task.
      */
-    const onTaskSelected = (task: TaskFromAPI, isSelected: boolean) =>
+    const onTaskSelected = (task: TaskFromAPI,
+                                                                isSelected: boolean) =>
     {
 
         // if the user has selected the UI element,
@@ -140,11 +174,16 @@ export default function AddChecklistPage() {
     }
 
 
+    // ******************
+    // COMPONENT
+    // ******************
+
+
     return (
         <>
             <Container fluid>
-                <Row className="d-flex justify-content-center">
-                    <Col xs={12} md={6} lg={4}>
+                <Row className="d-flex justify-content-center ">
+                    <Col xs={12} md={9} lg={6}>
 
                         {/* title */}
                         <Row className={"mb-3"}>
@@ -163,7 +202,9 @@ export default function AddChecklistPage() {
                                 }}
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter") {
-                                        // handleAddClient(formValues)({ setIsError, setIsLoading, setFormValues });
+
+                                        handleAddChecklist(formValues)({ setIsError, setIsLoading, setFormValues });
+
                                     }
                                 }}>
 
@@ -192,12 +233,12 @@ export default function AddChecklistPage() {
 
                                 {/* tasks list */}
                                 <Row>
-                                    <Col>
-                                        <Table striped bordered hover responsive>
+                                    <Col  className="d-flex justify-content-center">
+                                        <Table striped bordered hover responsive style={{ tableLayout: "fixed", maxWidth:"500px" }}>
                                             <thead>
                                             <tr>
                                                 <th>Attività</th>
-                                                <th></th>
+                                                <th style={{ width: "90px" }}></th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -205,11 +246,14 @@ export default function AddChecklistPage() {
                                                 // make this key unique
                                                 <tr key={task.taskId}>
                                                     <td>{task.name}</td>
-                                                    <td>
+                                                    <td className={"text-center"}>
                                                         <Form.Check
                                                             type="checkbox"
                                                             onChange={(e) => {
                                                                 const isSelected = e.target.checked
+                                                                // when user clicks on this checkbox,
+                                                                // we fire a custom callback that will
+                                                                // add or remove that task from the selected tasks
                                                                 onTaskSelected(task, isSelected)
                                                             }}
                                                         />
@@ -222,19 +266,19 @@ export default function AddChecklistPage() {
 
                                 </Row>
 
-                                <Row>
+                                <Row className={"my-3"}>
                                     <Col>
-                                        <h4>{formValues.name} ha queste attività:</h4>
+                                        <h5>{formValues.name} ha queste attività:</h5>
                                     </Col>
                                 </Row>
 
                                 {/* selected tasks list */}
                                 <Row>
-                                    <Col>
-                                        <Table striped bordered hover responsive>
+                                    <Col  className="d-flex justify-content-center">
+                                        <Table striped bordered hover responsive style={{ tableLayout: "fixed", maxWidth: "500px" }}>
                                             <thead>
                                                 <tr>
-                                                    <th>#</th>
+                                                    <th style={{ width: "60px" }}>#</th>
                                                     <th>Attività</th>
                                                 </tr>
                                             </thead>
@@ -253,6 +297,13 @@ export default function AddChecklistPage() {
                                                 ))}
                                             </tbody>
                                         </Table>
+                                    </Col>
+                                </Row>
+
+                                <Row>
+                                    <Col>
+                                        <small className="text-muted">💡 Trascina le righe per riordinare
+                                            le attività (disponibile solo da computer)</small>
                                     </Col>
                                 </Row>
 
