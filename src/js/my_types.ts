@@ -472,6 +472,25 @@ export interface TasksPageFromAPI extends Pagination<TaskFromAPI> {}
 export interface EnrichedTasksPageFromAPI extends Pagination<EnrichedTaskFromAPI> {}
 
 
+
+// ****************************************
+// CHECKLIST (the things that operators must do)
+// a checklist has many tasks
+
+export interface ChecklistToAPI {
+  // the checklist name
+  name: string
+  // a list of existing tasks
+  tasks: TaskFromAPI[]
+}
+
+
+export interface ChecklistFromAPI {
+  id: string
+  name: string
+  tasks: TaskFromAPI[]
+}
+
 // *********************************************
 // GEOCODING (address autocomplete)
 
