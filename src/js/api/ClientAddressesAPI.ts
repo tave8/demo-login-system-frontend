@@ -96,40 +96,7 @@ export default class ClientAddressesAPI extends BaseAPI {
 
         return data
     }
-    //
-    // public async getClientsEnriched(): Promise<EnrichedClientsPageFromAPI> {
-    //     const page = await this.getClients()
-    //     return this.enrichPage(page)
-    // }
-    //
-    //
-    // /**
-    //  * Search clients by legal name.
-    //  */
-    // public async searchClients(partialLegalName: string): Promise<ClientsPageFromAPI>
-    // {
-    //
-    //     const params: ClientQueryParamsToAPI = {
-    //         legalName: partialLegalName
-    //     }
-    //
-    //     const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
-    //
-    //     const resp: Response = await this.doFetchAtWithParams(
-    //         "/clients",
-    //         config,
-    //         params as unknown as Record<string, string>
-    //     )
-    //
-    //     const data = await this.parseJSON<ClientsPageFromAPI>(resp)
-    //
-    //     return data
-    // }
-    //
-    // public async searchClientsEnriched(partialLegalName: string): Promise<EnrichedClientsPageFromAPI> {
-    //     const page = await this.searchClients(partialLegalName)
-    //     return this.enrichPage(page)
-    // }
+
 
 
 }

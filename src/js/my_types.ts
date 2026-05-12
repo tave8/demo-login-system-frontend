@@ -443,6 +443,19 @@ export interface ClientAddressesPageFromAPI extends Pagination<ClientAddressFrom
 export interface EnrichedClientAddressesPageFromAPI extends Pagination<EnrichedClientAddressFromAPI> {}
 
 
+// TASK (also known as activity)
+// it's something like: clean this room, do this, do that etc.
+
+export interface TaskToAPI {
+  name: string
+}
+
+
+export interface TaskFromAPI {
+  taskId: string
+  name: string
+}
+
 
 // GEOCODING (address autocomplete)
 
