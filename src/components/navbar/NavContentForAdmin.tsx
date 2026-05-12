@@ -121,6 +121,27 @@ export default function NavContentForAdmin({ setNavExpanded }: Props) {
                     <NavDropdown title="Attività" id="basic-nav-dropdown" align="end">
                         <NavDropdown.Item
                             onClick={() => {
+                                navigate(AppRoutes.checklists)
+                                closeNav()
+                            }
+                            }>
+                            Vedi schede
+                        </NavDropdown.Item>
+
+
+                        <NavDropdown.Item
+                            onClick={() => {
+                                navigate(AppRoutes.addChecklist)
+                                closeNav()
+                            }}>
+                            Aggiungi scheda
+                        </NavDropdown.Item>
+
+                        {/* divider */}
+                        <NavDropdown.Divider />
+
+                        <NavDropdown.Item
+                            onClick={() => {
                                 navigate(AppRoutes.tasks)
                                 closeNav()
                             }
@@ -128,8 +149,6 @@ export default function NavContentForAdmin({ setNavExpanded }: Props) {
                             Vedi attività
                         </NavDropdown.Item>
 
-                        {/* divider */}
-                        <NavDropdown.Divider />
 
                         <NavDropdown.Item
                             onClick={() => {

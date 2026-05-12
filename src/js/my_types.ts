@@ -43,6 +43,9 @@ export const AppRoutes = {
   tasks: "/u/tasks",
   addTask: "/u/tasks/add",
 
+  checklists: "/u/checklists",
+  addChecklist: "/u/checklists/add",
+
   // DASHBOARDS
 
   // redirect a user to their dashboard, based on role

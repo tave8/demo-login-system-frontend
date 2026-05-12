@@ -39,6 +39,8 @@ import ClientAddressesPage from "./components/user_pages/admin/ClientAddressesPa
 import AddClientAddressPage from "./components/user_pages/admin/AddClientAddressPage.tsx";
 import TasksPage from "./components/user_pages/admin/TasksPage.tsx";
 import AddTaskPage from "./components/user_pages/admin/AddTaskPage.tsx";
+import ChecklistsPage from "./components/user_pages/admin/ChecklistsPage.tsx";
+import AddChecklistPage from "./components/user_pages/admin/AddChecklistPage.tsx";
 
 
 function App() {
@@ -186,6 +188,24 @@ function App() {
                                   }
                               />
 
+
+                              <Route
+                                  path={AppRoutes.checklists}
+                                  element={
+                                      <ProtectedRoute allowOnlyRoles={[UserRole.ADMIN]}>
+                                          <ChecklistsPage />
+                                      </ProtectedRoute>
+                                  }
+                              />
+
+                              <Route
+                                  path={AppRoutes.addChecklist}
+                                  element={
+                                      <ProtectedRoute allowOnlyRoles={[UserRole.ADMIN]}>
+                                          <AddChecklistPage />
+                                      </ProtectedRoute>
+                                  }
+                              />
 
 
 
