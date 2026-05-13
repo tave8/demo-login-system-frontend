@@ -74,7 +74,7 @@ export default class ClientAddressChecklistsAPI extends BaseAPI {
     public async addChecklistToClientAddress(checklistId: string,
                                              clientAddressId: string): Promise<ClientAddressChecklistFromAPI>
     {
-        const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.YES)
+        const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.YES, {}, true)
 
         const endpoint = `/client-addresses/${clientAddressId}/checklists/${checklistId}`
 

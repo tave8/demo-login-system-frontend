@@ -1,4 +1,4 @@
-import { isLoggedIn } from "../../auth/isLoggedIn"
+import {isLoggedIn} from "../../auth/isLoggedIn"
 import BadRequestError from "../exceptions/BadRequestError"
 import HttpError from "../exceptions/HttpError"
 import InvalidFileUploadedError from "../exceptions/InvalidFileUploadedError"
@@ -308,9 +308,14 @@ export default class APIHelper {
    */
   public static getFetchConfigFor(method: RequestMethod, requireLogin: boolean): RequestInit
   public static getFetchConfigFor(method: RequestMethod, requireLogin: boolean, body: object): RequestInit
-  public static getFetchConfigFor(method: RequestMethod, requireLogin: boolean = false, body: object | null = null): RequestInit {
+  public static getFetchConfigFor(method: RequestMethod, requireLogin: boolean, body: object, ignoreBody: boolean): RequestInit
+  public static getFetchConfigFor(method: RequestMethod,
+                                  requireLogin: boolean = false,
+                                  body: object | null = null,
+                                  ignoreBody: boolean = false): RequestInit
+  {
     // does this request method require a JSON body?
-    const methodRequiresJSONBody: boolean = APIHelper.requestMethodRequiresJSONBody(method)
+    const methodRequiresJSONBody: boolean = ignoreBody ? false : APIHelper.requestMethodRequiresJSONBody(method)
     // does this request method NOT require a JSON body?
     const methodNotRequiresJSONBody: boolean = APIHelper.requestMethodNotRequiresJSONBody(method)
 
@@ -650,7 +655,7 @@ export default class APIHelper {
     if (method == null || method == undefined) {
       throw new Error(`A fetch method cannot be nully. ` + `Make sure the caller is passing an actual RequestMethod enum type.`)
     }
-    return method == RequestMethod.PUT
+    return method == RequestMethod.PUT || method == RequestMethod.POST
   }
 
   /**
