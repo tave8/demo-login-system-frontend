@@ -99,25 +99,26 @@ export default class ClientAddressesAPI extends BaseAPI {
     }
 
     /**
-     * Search client addresses by their user-defined name.
+     * Search client addresses.
      */
-    // public async searchClientAddresses(partialClientAddressName: string): Promise<ClientAddressesPageFromAPI> {
-    //     const params: ClientAddressQueryParamsToAPI = {
-    //         name: partialClientAddressName
-    //     }
-    //
-    //     const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
-    //
-    //     const resp: Response = await this.doFetchAtWithParams(
-    //         "/clients",
-    //         config,
-    //         params as unknown as Record<string, string>
-    //     )
-    //
-    //     const data = await this.parseJSON<ClientAddressesPageFromAPI>(resp)
-    //
-    //     return data
-    // }
+    public async searchClientAddresses(query: string): Promise<ClientAddressesPageFromAPI> {
+
+        const params: ClientAddressQueryParamsToAPI = {
+            q: query
+        }
+
+        const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
+
+        const resp: Response = await this.doFetchAtWithParams(
+            "/clients/addresses",
+            config,
+            params as unknown as Record<string, string>
+        )
+
+        const data = await this.parseJSON<ClientAddressesPageFromAPI>(resp)
+
+        return data
+    }
 
 
 

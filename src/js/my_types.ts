@@ -552,10 +552,7 @@ export interface ClientAddressChecklistFromAPI {
 
 
 export interface ClientAddressQueryParamsToAPI {
-  // the user-defined name of the client address association
-  // for example, the user has called a client address "Hotel Biutiful: Location 2"
-  // so we are searching this field
-  name: string
+  q: string
 }
 
 // *********************************************

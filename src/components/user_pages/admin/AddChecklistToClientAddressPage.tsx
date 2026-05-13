@@ -114,7 +114,7 @@ export default function AddChecklistToClientAddressPage () {
                                 {/* search client address */}
                                 <Col style={{ position: "relative" }}>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
-                                        <Form.Label>Cliente</Form.Label>
+                                        <Form.Label>Sede cliente</Form.Label>
                                         <Form.Control
                                             disabled={isLoading}
                                             type="text"
@@ -137,15 +137,15 @@ export default function AddChecklistToClientAddressPage () {
                                                     // mechanism for delaying autocomplete on typing
                                                     clearTimeout(LAST_AUTOCOMPLETE_TIMEOUT.clientAddresses)
 
-                                                    // LAST_AUTOCOMPLETE_TIMEOUT.clientAddresses = setTimeout(() => {
-                                                    //
-                                                    //     handleSearchClientAddresses(query)({
-                                                    //         setIsClientAddressesFromAPILoading,
-                                                    //         setIsClientAddressesFromAPIError,
-                                                    //         setClientAddressesFromAPI
-                                                    //     })
-                                                    //
-                                                    // }, 1000)
+                                                    LAST_AUTOCOMPLETE_TIMEOUT.clientAddresses = setTimeout(() => {
+
+                                                        handleSearchClientAddresses(query)({
+                                                            setIsClientAddressesFromAPILoading,
+                                                            setIsClientAddressesFromAPIError,
+                                                            setClientAddressesFromAPI
+                                                        })
+
+                                                    }, 1000)
 
                                                 }
 
@@ -175,7 +175,7 @@ export default function AddChecklistToClientAddressPage () {
                                                         // this is what the user sees in the input,
                                                         // once they click on a client address
                                                         // we show the user more details, but
-                                                        const clientAddressNameFormatted = `${clientAddress.addressName} (${clientAddress.addressDisplayName})`
+                                                        const clientAddressNameFormatted = `${clientAddress.clientName} - ${clientAddress.addressName} - ${clientAddress.addressDisplayName}`
 
                                                         setFormValues({
                                                             ...formValues,
@@ -186,7 +186,11 @@ export default function AddChecklistToClientAddressPage () {
                                                         setClientAddressesFromAPI([])
                                                     }}
                                                 >
-                                                    {clientAddress.addressName} <br/> <small><i>{clientAddress.addressDisplayName}</i></small>
+                                                    {clientAddress.clientName}
+                                                    <br/>
+                                                    <small><i>{clientAddress.addressName}</i></small>
+                                                    <br />
+                                                    <small><i>{clientAddress.addressDisplayName}</i></small>
                                                 </ListGroup.Item>
                                             ))}
                                         </ListGroup>
@@ -292,26 +296,26 @@ const handleSearchClientAddresses = (query: string) =>
 
         const {setClientAddressesFromAPI, setIsClientAddressesFromAPILoading, setIsClientAddressesFromAPIError} = params
 
-        // setIsClientAddressesFromAPILoading(true)
-        // setIsClientAddressesFromAPIError(false)
-        //
-        // clientAddressesAPI
-        //     .searchClients(query)
-        //     .then((result) => {
-        //
-        //         setIsClientAddressesFromAPILoading(false)
-        //         setIsClientAddressesFromAPIError(false)
-        //
-        //         setClientAddressesFromAPI(result.content)
-        //
-        //     })
-        //     .catch(err => {
-        //
-        //         setIsClientAddressesFromAPILoading(false)
-        //         setIsClientAddressesFromAPIError(true)
-        //
-        //
-        //     })
+        setIsClientAddressesFromAPILoading(true)
+        setIsClientAddressesFromAPIError(false)
+
+        clientAddressesAPI
+            .searchClientAddresses(query)
+            .then((result) => {
+
+                setIsClientAddressesFromAPILoading(false)
+                setIsClientAddressesFromAPIError(false)
+
+                setClientAddressesFromAPI(result.content)
+
+            })
+            .catch(err => {
+
+                setIsClientAddressesFromAPILoading(false)
+                setIsClientAddressesFromAPIError(true)
+
+
+            })
 
     }
 
