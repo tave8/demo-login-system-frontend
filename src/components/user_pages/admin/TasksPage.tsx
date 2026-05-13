@@ -56,9 +56,9 @@ export default function TasksPage() {
                             <Col>
                                 <h1 className="text-center">Attività</h1>
                                 <Alert variant="primary" className="mb-3">
-                                    Le attività sono tutte le azioni, task, compiti di cui vuoi tenere traccia nella tua azienda,
-                                    che i tuoi operatori devono svolgere al meglio, per fornire il miglior risultato al cliente.
-                                    Sono appunto le attività che i tuoi operatori vedranno nel loro turno.
+                                    Le Attività sono quello che dimostra risultati ai tuoi clienti.
+                                    Organizza le Attività in Schede Attività, che è quello che gli
+                                    operatori vedranno e faranno nei loro turni.
                                 </Alert>
                             </Col>
                         </Row>
@@ -70,7 +70,7 @@ export default function TasksPage() {
                                 <Table striped bordered hover responsive>
                                     <thead>
                                     <tr>
-                                        <th>Nome</th>
+                                        <th>Attività</th>
                                         <th>Azioni</th>
                                     </tr>
                                     </thead>

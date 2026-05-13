@@ -520,10 +520,19 @@ export interface ChecklistWithSimpleEntriesToAPI {
   entries: ChecklistSimpleEntryToAPI[]
 }
 
+export interface ChecklistEntryFromAPI {
+  id: string
+  taskId: string
+  checklistId: string
+  taskName: string
+  position: string
+}
+
 
 export interface ChecklistFromAPI {
   id: string
   name: string
+  entries: ChecklistEntryFromAPI[]
 }
 
 

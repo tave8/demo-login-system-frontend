@@ -77,13 +77,16 @@ export default function TasksPage() {
                                     </thead>
                                     <tbody>
                                     {checklists.map(checklist => (
-                                        // make this key unique
                                         <tr key={checklist.id}>
-                                            <td>{checklist.name}</td>
                                             <td>
-                                                {/*<Button variant="outline-primary" size="sm">Modifica</Button>*/}
-                                                {/*{' '}*/}
-                                                {/*<Button variant="outline-danger" size="sm">Elimina</Button>*/}
+                                                <strong>{checklist.name}</strong>
+                                                <ul className="mb-0 mt-1">
+                                                    {checklist.entries.map((entry, index) => (
+                                                        <li key={index}><small>{entry.taskName}</small></li>
+                                                    ))}
+                                                </ul>
+                                            </td>
+                                            <td>
                                             </td>
                                         </tr>
                                     ))}
