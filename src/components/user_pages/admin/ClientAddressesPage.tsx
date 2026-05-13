@@ -1,4 +1,4 @@
-import {Button, Col, Container, Row, Table} from "react-bootstrap";
+import {Alert, Button, Col, Container, Row, Table} from "react-bootstrap";
 import UsersAPI from "../../../js/api/UsersAPI.ts";
 import {useEffect, useState} from "react";
 import ArticlesAPI from "../../../js/api/ArticlesAPI.ts";
@@ -50,6 +50,9 @@ export default function ClientAddressesPage() {
                         <Row className={"mb-3"}>
                             <Col>
                                 <h1 className="text-center">Sedi dei Clienti</h1>
+                                <Alert variant={"primary"}>
+                                    Qui trovi le sedi operative / cantieri dei tuoi clienti.
+                                </Alert>
                             </Col>
                         </Row>
 

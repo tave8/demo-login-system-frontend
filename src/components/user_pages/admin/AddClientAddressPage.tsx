@@ -147,7 +147,9 @@ export default function AddClientAddressPage () {
                                                         setClients([])
                                                     }}
                                                 >
-                                                    {client.legalName} <br/> <small><i>{client.legalAddress}</i></small>
+                                                    {client.legalName}
+                                                    <br/>
+                                                    <small>Sede legale: <i>{client.legalAddress}</i></small>
                                                 </ListGroup.Item>
                                             ))}
                                         </ListGroup>

@@ -16,6 +16,7 @@ import StringHelper from "../../../js/helpers/StringHelper.ts";
 import TasksAPI from "../../../js/api/TasksAPI.ts";
 import ClientAddressChecklistsAPI from "../../../js/api/ClientAddressChecklistsAPI.ts";
 import ClientAddressesAPI from "../../../js/api/ClientAddressesAPI.ts";
+import TimeHelper from "../../../js/helpers/TimeHelper.ts";
 
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
@@ -25,8 +26,8 @@ const clientAddressesAPI = ClientAddressesAPI.getInstance()
 
 
 let LAST_AUTOCOMPLETE_TIMEOUT = {
-    clientAddresses: undefined,
-    checklists: undefined
+    clientAddresses: 0,
+    checklists: 0
 }
 
 interface ClientAddressChecklistData {
@@ -115,6 +116,9 @@ export default function AddChecklistToClientAddressPage () {
                                 <Col style={{ position: "relative" }}>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
                                         <Form.Label>Sede cliente</Form.Label>
+                                        <div className="text-muted small mb-2">
+                                            Cerca per cliente o sede
+                                        </div>
                                         <Form.Control
                                             disabled={isLoading}
                                             type="text"
