@@ -294,7 +294,7 @@ export default function AddChecklistToClientAddressPage () {
                                                     checklistName: query
                                                 })
 
-                                                if(query.length >= 1) {
+                                                if(query.length >= 3) {
 
                                                     // mechanism for delaying autocomplete on typing
                                                     clearTimeout(LAST_AUTOCOMPLETE_TIMEOUT.checklists)
@@ -483,26 +483,26 @@ const handleSearchChecklists = (query: string) =>
 
         const {setIsChecklistsFromAPILoading, setIsChecklistsFromAPIError, setChecklistsFromAPI} = params
 
-        // setIsChecklistsFromAPILoading(true)
-        // setIsChecklistsFromAPIError(false)
-        //
-        // checklistsAPI
-        //     .searchClientAddresses(query)
-        //     .then((result) => {
-        //
-        //         setIsChecklistsFromAPILoading(false)
-        //         setIsChecklistsFromAPIError(false)
-        //
-        //         setClientAddressesFromAPI(result.content)
-        //
-        //     })
-        //     .catch(err => {
-        //
-        //         setIsChecklistsFromAPILoading(false)
-        //         setIsChecklistsFromAPIError(true)
-        //
-        //
-        //     })
+        setIsChecklistsFromAPILoading(true)
+        setIsChecklistsFromAPIError(false)
+
+        checklistsAPI
+            .searchChecklists(query)
+            .then((result) => {
+
+                setIsChecklistsFromAPILoading(false)
+                setIsChecklistsFromAPIError(false)
+
+                setChecklistsFromAPI(result.content)
+
+            })
+            .catch(err => {
+
+                setIsChecklistsFromAPILoading(false)
+                setIsChecklistsFromAPIError(true)
+
+
+            })
 
     }
 

@@ -6,7 +6,8 @@ import FileHelper from "../helpers/FileHelper"
 import {
     ArticleFromAPI,
     ArticlesPageFromAPI, ChecklistsPageFromAPI, ChecklistWithSimpleEntriesToAPI, ClientAddressesPageFromAPI,
-    ClientAddressFromAPI, ClientAddressToAPI, ClientFromAPI, ClientQueryParamsToAPI, ClientsPageFromAPI,
+    ClientAddressFromAPI,
+    ClientAddressQueryParamsToAPI, ClientAddressToAPI, ClientFromAPI, ClientQueryParamsToAPI, ClientsPageFromAPI,
     ClientToAPI, EnrichedArticleFromAPI, EnrichedArticlesPageFromAPI, EnrichedClientAddressesPageFromAPI,
     EnrichedClientAddressFromAPI,
     EnrichedClientFromAPI,
@@ -100,6 +101,27 @@ export default class ChecklistsAPI extends BaseAPI {
     }
 
 
+    /**
+     * Search checklists.
+     */
+    public async searchChecklists(query: string): Promise<ChecklistsPageFromAPI> {
+
+        const params = {
+            q: query
+        }
+
+        const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
+
+        const resp: Response = await this.doFetchAtWithParams(
+            "/checklists",
+            config,
+            params as unknown as Record<string, string>
+        )
+
+        const data = await this.parseJSON<ChecklistsPageFromAPI>(resp)
+
+        return data
+    }
 
 
 }
