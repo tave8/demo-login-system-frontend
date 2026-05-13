@@ -35,7 +35,8 @@ const MyNav = () => {
               to={user ? AppRoutes.dashboardOf(user.role) : "#"}
               onClick={closeNav}
               className="nav-item navbar-brand">
-            Operavion CRM {user ? `(${user.role})` : ""}
+            Operavion CRM
+            {/*{user ? `(${user.role})` : ""}*/}
           </Link>
 
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
