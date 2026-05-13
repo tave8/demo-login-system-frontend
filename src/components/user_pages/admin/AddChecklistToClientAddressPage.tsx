@@ -17,28 +17,44 @@ import TasksAPI from "../../../js/api/TasksAPI.ts";
 import ClientAddressChecklistsAPI from "../../../js/api/ClientAddressChecklistsAPI.ts";
 import ClientAddressesAPI from "../../../js/api/ClientAddressesAPI.ts";
 import TimeHelper from "../../../js/helpers/TimeHelper.ts";
+import ChecklistsAPI from "../../../js/api/ChecklistsAPI.ts";
 
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
 const clientAddressChecklistsAPI = ClientAddressChecklistsAPI.getInstance()
 const clientAddressesAPI = ClientAddressesAPI.getInstance()
+const checklistsAPI = ChecklistsAPI.getInstance()
 
-
+// ****************************
+// DELAY SEARCHING
+// ****************************
 
 let LAST_AUTOCOMPLETE_TIMEOUT = {
     clientAddresses: 0,
     checklists: 0
 }
 
-interface ClientAddressChecklistData {
+// ****************************
+// SEND TO SERVER
+// ****************************
+
+interface ClientAddressChecklistDataToAPI {
     clientAddressId: string
     checklistId: string
 }
+
+// ****************************
+// FORM VALUES
+// ****************************
 
 interface FormValues {
     clientAddressName: string
     checklistName: string
 }
+
+// ****************************
+// PARAMS: HANDLE ADD CHECKLIST TO CLIENT ADDRESS
+// ****************************
 
 interface HandleAddChecklistToClientAddressParams {
     setIsLoading: (x:boolean) => void
@@ -46,11 +62,25 @@ interface HandleAddChecklistToClientAddressParams {
     setFormValues: (data: FormValues) => void,
 }
 
+// ****************************
+// PARAMS: SEARCH CLIENT ADDRESSES & CHECKLISTS
+// ****************************
+
 interface HandleSearchClientAddressesParams {
     setClientAddressesFromAPI: (clientAddresses: ClientAddressFromAPI[]) => void
     setIsClientAddressesFromAPILoading: (x:boolean) => void
     setIsClientAddressesFromAPIError: (x:boolean) => void
 }
+
+interface HandleSearchChecklistsParams {
+    setChecklistsFromAPI: (checklists: ChecklistFromAPI[]) => void
+    setIsChecklistsFromAPILoading: (x:boolean) => void
+    setIsChecklistsFromAPIError: (x:boolean) => void
+}
+
+// ****************************
+// INITIAL FORM VALUES
+// ****************************
 
 const initialFormValues: FormValues = {
     clientAddressName: "",
@@ -58,15 +88,38 @@ const initialFormValues: FormValues = {
 }
 
 export default function AddChecklistToClientAddressPage () {
-    // form (what the user types)
+
+    // ****************************
+    // FORM VALUES
+    // ****************************
+
     const [formValues, setFormValues] = useState(initialFormValues)
     const [isLoading, setIsLoading] = useState(false)
     const [isError, setIsError] = useState(false)
+
+    // ****************************
+    // SEND TO SERVER
+    // ****************************
+
+    const [dataToAPI, setDataToAPI] = useState<ClientAddressChecklistDataToAPI>({
+        clientAddressId: "",
+        checklistId: ""
+    })
+    const [isDataToAPILoading, setIsDataToAPILoading] = useState(false)
+    const [isDataToAPIError, setIsDataToAPIError] = useState(false)
+
+    // ****************************
+    // SEARCH CLIENT ADDRESSES
+    // ****************************
 
     // client addresses (the user searches client addresses)
     const [clientAddressesFromAPI, setClientAddressesFromAPI] = useState<ClientAddressFromAPI[]>([])
     const [isClientAddressesFromAPILoading, setIsClientAddressesFromAPILoading] = useState(false)
     const [isClientAddressesFromAPIError, setIsClientAddressesFromAPIError] = useState(false)
+
+    // ****************************
+    // SEARCH CHECKLISTS
+    // ****************************
 
     // checklists (the user searches checklists)
     const [checklistsFromAPI, setChecklistsFromAPI] = useState<ChecklistFromAPI[]>([])
@@ -74,13 +127,6 @@ export default function AddChecklistToClientAddressPage () {
     const [isChecklistsFromAPIError, setIsChecklistsFromAPIError] = useState(false)
 
 
-    // what we need to send to the server
-    const [dataToAPI, setDataToAPI] = useState<ClientAddressChecklistData>({
-        clientAddressId: "",
-        checklistId: ""
-    })
-    const [isDataToAPILoading, setIsDataToAPILoading] = useState(false)
-    const [isDataToAPIError, setIsDataToAPIError] = useState(false)
 
 
     return (
@@ -108,11 +154,19 @@ export default function AddChecklistToClientAddressPage () {
                                 }}
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter") {
-                                        // handleAddTask(formValues)({ setIsError, setIsLoading, setFormValues, setTasksJustAdded, tasksJustAdded })
+
+                                        handleAddChecklistToClientAddress(dataToAPI)({setIsError, setIsLoading, setFormValues})
+
                                     }
                                 }}>
 
-                                {/* search client address */}
+                                {/*
+                                    ****************
+                                     SEARCH CLIENT ADDRESSES
+                                    *****************
+                                */}
+
+
                                 <Col style={{ position: "relative" }}>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
                                         <Form.Label>Sede cliente</Form.Label>
@@ -214,13 +268,106 @@ export default function AddChecklistToClientAddressPage () {
                                 </Col>
 
 
+
+                                {/*
+                                    ****************
+                                     SEARCH CHECKLISTS
+                                    *****************
+                                */}
+
+
+                                <Col style={{ position: "relative" }}>
+                                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
+                                        <Form.Label>Schede attività</Form.Label>
+                                        <Form.Control
+                                            disabled={isLoading}
+                                            type="text"
+                                            autoComplete="off"
+                                            value={formValues.checklistName}
+                                            placeholder="Cerca..."
+                                            onChange={(event) => {
+
+                                                const query = event.target.value
+
+                                                setFormValues({
+                                                    ...formValues,
+                                                    checklistName: query
+                                                })
+
+                                                if(query.length >= 1) {
+
+                                                    // mechanism for delaying autocomplete on typing
+                                                    clearTimeout(LAST_AUTOCOMPLETE_TIMEOUT.checklists)
+
+                                                    LAST_AUTOCOMPLETE_TIMEOUT.checklists = setTimeout(() => {
+
+                                                        handleSearchChecklists(query)({
+                                                            setIsChecklistsFromAPILoading,
+                                                            setIsChecklistsFromAPIError,
+                                                            setChecklistsFromAPI
+                                                        })
+
+                                                    }, 1000)
+
+                                                }
+
+
+                                            }}
+                                        />
+                                    </Form.Group>
+
+                                    {!isChecklistsFromAPILoading && (
+                                        <ListGroup style={{ maxHeight: "250px", overflowY: "auto", position: "absolute", zIndex: "9999" }}>
+                                            {checklistsFromAPI.map((checklist, index) => (
+                                                <ListGroup.Item
+                                                    key={index}
+                                                    action
+                                                    onMouseDown={(e) => {
+                                                        e.preventDefault()
+
+                                                        // the API only wants to know the ID
+                                                        setDataToAPI({
+                                                            ...dataToAPI,
+                                                            checklistId: checklist.id
+                                                        })
+
+                                                        setFormValues({
+                                                            ...formValues,
+                                                            checklistName: checklist.name
+                                                        })
+
+                                                        // empty the list
+                                                        setChecklistsFromAPI([])
+                                                    }}
+                                                >
+                                                    {checklist.name}
+                                                </ListGroup.Item>
+                                            ))}
+                                        </ListGroup>
+                                    )}
+
+                                    {/* is loading */}
+                                    {isChecklistsFromAPILoading && (
+                                        <Spinner animation="border" role="status">
+                                            <span className="visually-hidden">Loading...</span>
+                                        </Spinner>
+                                    )}
+
+                                    {/* is error */}
+                                    {isChecklistsFromAPIError && <Alert variant="danger">Something went wrong.</Alert>}
+
+
+                                </Col>
+
+
+
                                 {/* submit */}
                                 <Col className="text-center">
                                     <Button
                                         disabled={isLoading}
                                         variant="primary"
                                         onClick={() => {
-                                            // handleAddTask(formValues)({ setIsError, setIsLoading, setFormValues, tasksJustAdded, setTasksJustAdded })
+                                            handleAddChecklistToClientAddress(dataToAPI)({setIsError, setIsLoading, setFormValues})
                                         }}
                                     >
                                         Aggiungi
@@ -237,58 +384,60 @@ export default function AddChecklistToClientAddressPage () {
         </>
     )
 }
-//
-// const handleAddTask = (formValues: TaskToAPI) => {
-//     return async (params: HandleAddTaskParams) => {
-//
-//         const { setIsError, setIsLoading, setFormValues, setTasksJustAdded, tasksJustAdded } = params
-//
-//         console.log(formValues)
-//
-//         setIsLoading(true)
-//         setIsError(false)
-//
-//         tasksAPI
-//             .addTask(formValues)
-//             .then((taskFromAPI) => {
-//
-//                 setIsLoading(false)
-//                 setIsError(false)
-//
-//                 appEventDispatcher.dispatchStandard(
-//                     AppEvent.APP_SUCCESS,
-//                     AppEventMessageType.SAVE_SUCCESS
-//                 )
-//
-//                 //  reset form values
-//                 setFormValues({
-//                     name: ""
-//                 })
-//
-//                 // update the tasks just added
-//                 setTasksJustAdded([
-//                     taskFromAPI,
-//                     ...tasksJustAdded
-//                 ])
-//
-//             })
-//             .catch((err) => {
-//
-//                 setIsLoading(false)
-//                 setIsError(true)
-//
-//
-//                 appEventDispatcher.dispatchStandard(
-//                     AppEvent.APP_ERROR,
-//                     AppEventMessageType.SAVE_ERROR
-//                 )
-//
-//
-//             })
-//
-//     }
-//
-// }
+
+
+
+const handleAddChecklistToClientAddress = (dataToAPI: ClientAddressChecklistDataToAPI) => {
+    return async (params: HandleAddChecklistToClientAddressParams) => {
+
+        const { setIsLoading, setFormValues, setIsError } = params
+
+        console.log(dataToAPI)
+        //
+        // setIsLoading(true)
+        // setIsError(false)
+        //
+        // tasksAPI
+        //     .addTask(formValues)
+        //     .then((taskFromAPI) => {
+        //
+        //         setIsLoading(false)
+        //         setIsError(false)
+        //
+        //         appEventDispatcher.dispatchStandard(
+        //             AppEvent.APP_SUCCESS,
+        //             AppEventMessageType.SAVE_SUCCESS
+        //         )
+        //
+        //         //  reset form values
+        //         setFormValues({
+        //             name: ""
+        //         })
+        //
+        //         // update the tasks just added
+        //         setTasksJustAdded([
+        //             taskFromAPI,
+        //             ...tasksJustAdded
+        //         ])
+        //
+        //     })
+        //     .catch((err) => {
+        //
+        //         setIsLoading(false)
+        //         setIsError(true)
+        //
+        //
+        //         appEventDispatcher.dispatchStandard(
+        //             AppEvent.APP_ERROR,
+        //             AppEventMessageType.SAVE_ERROR
+        //         )
+        //
+        //
+        //     })
+
+    }
+
+}
 
 
 
@@ -320,6 +469,40 @@ const handleSearchClientAddresses = (query: string) =>
 
 
             })
+
+    }
+
+}
+
+
+
+
+const handleSearchChecklists = (query: string) =>
+{
+    return async (params: HandleSearchChecklistsParams) => {
+
+        const {setIsChecklistsFromAPILoading, setIsChecklistsFromAPIError, setChecklistsFromAPI} = params
+
+        // setIsChecklistsFromAPILoading(true)
+        // setIsChecklistsFromAPIError(false)
+        //
+        // checklistsAPI
+        //     .searchClientAddresses(query)
+        //     .then((result) => {
+        //
+        //         setIsChecklistsFromAPILoading(false)
+        //         setIsChecklistsFromAPIError(false)
+        //
+        //         setClientAddressesFromAPI(result.content)
+        //
+        //     })
+        //     .catch(err => {
+        //
+        //         setIsChecklistsFromAPILoading(false)
+        //         setIsChecklistsFromAPIError(true)
+        //
+        //
+        //     })
 
     }
 
