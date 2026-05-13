@@ -32,8 +32,15 @@ export default class APIHelper {
    *
    * @returns the URL of the API server
    */
-  static getAPIUrl(): string {
+  public static getAPIUrl(): string {
+
+    if(API_URL == undefined) {
+      throw new Error("Environment variable API_URL "
+          +"(or however it was called internally) missing.")
+    }
+
     return API_URL
+
   }
 
   /**

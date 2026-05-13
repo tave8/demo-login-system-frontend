@@ -6,6 +6,7 @@ import UserRoleHelper from "../../../js/helpers/UserRoleHelper.ts";
 import UsersAPI from "../../../js/api/UsersAPI.ts";
 import UnauthorizedError from "../../../js/exceptions/UnauthorizedError.ts";
 import StringHelper from "../../../js/helpers/StringHelper.ts";
+import AppHelper from "../../../js/helpers/AppHelper.ts";
 
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
@@ -318,6 +319,9 @@ const getCopyPasteMessage = (userFromAPI: NewUserFromAPI|null): string => {
     }
 
     if(userFromAPI.role == UserRole.COORDINATOR) {
+
+        const loginURL = AppHelper.getFrontendUrlAt("/login")
+
         return [
             `Ciao ${userFromAPI.firstname},`,
             `ti ho appena aggiunto al gestionale Operavion.`,
@@ -333,13 +337,15 @@ const getCopyPasteMessage = (userFromAPI: NewUserFromAPI|null): string => {
             `Al tuo primo login, potrai cambiare la tua password.`,
             ``,
             `Fai login qui:`,
-            `https://app.operavion.com/login`,
+            `${loginURL}`,
             ``,
             `Inoltre, il gestionale ti ha appena mandato un link alla tua email ${userFromAPI.email} per verificare che sei tu, semplicemente cliccalo.`,
             ``,
             `Buon proseguimento`,
         ].join("\n")
     }
+
+    const loginURL = AppHelper.getFrontendUrlAt("/login-operator")
 
     // OPERATOR
     return [
@@ -357,7 +363,7 @@ const getCopyPasteMessage = (userFromAPI: NewUserFromAPI|null): string => {
         `Al tuo primo login, potrai cambiare la tua password.`,
         ``,
         `Fai login qui:`,
-        `https://app.operavion.com/login-operator`,
+        `${loginURL}`,
         ``,
         `Buon proseguimento`,
     ].join("\n")
