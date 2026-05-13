@@ -1,23 +1,17 @@
 import AppEventDispatcher from "../../../js/AppEventDispatcher.ts";
 import {useState} from "react";
-import {Alert, Button, Col, Container, Form, ListGroup, Modal, Row, Spinner} from "react-bootstrap";
+import {Alert, Button, Col, Container, Form, ListGroup, Row, Spinner} from "react-bootstrap";
 import {
     AppEvent,
-    AppEventMessageType, ChecklistFromAPI, ClientAddressFromAPI,
-    NewUserFromAPI,
-    NewUserToAPI, TaskFromAPI,
-    TaskToAPI,
-    UserRole
+    AppEventMessageType,
+    AppRoutes,
+    ChecklistFromAPI,
+    ClientAddressFromAPI
 } from "../../../js/my_types.ts";
-import UserRoleHelper from "../../../js/helpers/UserRoleHelper.ts";
-import UsersAPI from "../../../js/api/UsersAPI.ts";
-import UnauthorizedError from "../../../js/exceptions/UnauthorizedError.ts";
-import StringHelper from "../../../js/helpers/StringHelper.ts";
-import TasksAPI from "../../../js/api/TasksAPI.ts";
 import ClientAddressChecklistsAPI from "../../../js/api/ClientAddressChecklistsAPI.ts";
 import ClientAddressesAPI from "../../../js/api/ClientAddressesAPI.ts";
-import TimeHelper from "../../../js/helpers/TimeHelper.ts";
 import ChecklistsAPI from "../../../js/api/ChecklistsAPI.ts";
+import {NavigateFunction, useNavigate} from "react-router-dom";
 
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
@@ -59,7 +53,7 @@ interface FormValues {
 interface HandleAddChecklistToClientAddressParams {
     setIsLoading: (x:boolean) => void
     setIsError: (x:boolean) => void
-    setFormValues: (data: FormValues) => void,
+    navigate: NavigateFunction
 }
 
 // ****************************
@@ -127,6 +121,7 @@ export default function AddChecklistToClientAddressPage () {
     const [isChecklistsFromAPIError, setIsChecklistsFromAPIError] = useState(false)
 
 
+    const navigate = useNavigate()
 
 
     return (
@@ -155,7 +150,7 @@ export default function AddChecklistToClientAddressPage () {
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter") {
 
-                                        handleAddChecklistToClientAddress(dataToAPI)({setIsError, setIsLoading, setFormValues})
+                                        handleAddChecklistToClientAddress(dataToAPI)({setIsError, setIsLoading, navigate})
 
                                     }
                                 }}>
@@ -278,7 +273,7 @@ export default function AddChecklistToClientAddressPage () {
 
                                 <Col style={{ position: "relative" }}>
                                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
-                                        <Form.Label>Schede attività</Form.Label>
+                                        <Form.Label>Scheda attività</Form.Label>
                                         <Form.Control
                                             disabled={isLoading}
                                             type="text"
@@ -367,7 +362,7 @@ export default function AddChecklistToClientAddressPage () {
                                         disabled={isLoading}
                                         variant="primary"
                                         onClick={() => {
-                                            handleAddChecklistToClientAddress(dataToAPI)({setIsError, setIsLoading, setFormValues})
+                                            handleAddChecklistToClientAddress(dataToAPI)({setIsError, setIsLoading, navigate})
                                         }}
                                     >
                                         Aggiungi
@@ -390,50 +385,68 @@ export default function AddChecklistToClientAddressPage () {
 const handleAddChecklistToClientAddress = (dataToAPI: ClientAddressChecklistDataToAPI) => {
     return async (params: HandleAddChecklistToClientAddressParams) => {
 
-        const { setIsLoading, setFormValues, setIsError } = params
+        const { setIsLoading, setIsError, navigate } = params
 
-        console.log(dataToAPI)
-        //
-        // setIsLoading(true)
-        // setIsError(false)
-        //
-        // tasksAPI
-        //     .addTask(formValues)
-        //     .then((taskFromAPI) => {
-        //
-        //         setIsLoading(false)
-        //         setIsError(false)
-        //
-        //         appEventDispatcher.dispatchStandard(
-        //             AppEvent.APP_SUCCESS,
-        //             AppEventMessageType.SAVE_SUCCESS
-        //         )
-        //
-        //         //  reset form values
-        //         setFormValues({
-        //             name: ""
-        //         })
-        //
-        //         // update the tasks just added
-        //         setTasksJustAdded([
-        //             taskFromAPI,
-        //             ...tasksJustAdded
-        //         ])
-        //
-        //     })
-        //     .catch((err) => {
-        //
-        //         setIsLoading(false)
-        //         setIsError(true)
-        //
-        //
-        //         appEventDispatcher.dispatchStandard(
-        //             AppEvent.APP_ERROR,
-        //             AppEventMessageType.SAVE_ERROR
-        //         )
-        //
-        //
-        //     })
+        // *************
+        // CHECKS
+        // *************
+
+        if(dataToAPI.clientAddressId == "") {
+            appEventDispatcher.dispatch(
+                AppEvent.APP_ERROR,
+                "Devi scegliere una sede cliente"
+            )
+            return
+        }
+
+        if(dataToAPI.checklistId == "") {
+            appEventDispatcher.dispatch(
+                AppEvent.APP_ERROR,
+                "Devi scegliere una scheda attività"
+            )
+            return
+        }
+
+
+        // *************
+        // SEND TO SERVER
+        // *************
+
+
+        const {clientAddressId, checklistId} = dataToAPI
+
+        setIsLoading(true)
+        setIsError(false)
+
+        clientAddressChecklistsAPI
+            .addChecklistToClientAddress(checklistId, clientAddressId)
+            .then((clientAddressChecklistFromAPI) => {
+
+                setIsLoading(false)
+                setIsError(false)
+
+                appEventDispatcher.dispatchStandard(
+                    AppEvent.APP_SUCCESS,
+                    AppEventMessageType.SAVE_SUCCESS
+                )
+
+                navigate(AppRoutes.clientAddresses)
+
+            })
+            .catch((err) => {
+
+                setIsLoading(false)
+                setIsError(true)
+
+                // console.log(err)
+
+                appEventDispatcher.dispatchStandard(
+                    AppEvent.APP_ERROR,
+                    AppEventMessageType.SAVE_ERROR
+                )
+
+
+            })
 
     }
 
@@ -507,3 +520,5 @@ const handleSearchChecklists = (query: string) =>
     }
 
 }
+
+
