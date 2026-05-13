@@ -320,7 +320,7 @@ const getCopyPasteMessage = (userFromAPI: NewUserFromAPI|null): string => {
 
     if(userFromAPI.role == UserRole.COORDINATOR) {
 
-        const loginURL = AppHelper.getFrontendUrlAt("/login")
+        const loginURL = AppHelper.getFrontendUrlAt("/auth/login")
 
         return [
             `Ciao ${userFromAPI.firstname},`,
@@ -345,7 +345,7 @@ const getCopyPasteMessage = (userFromAPI: NewUserFromAPI|null): string => {
         ].join("\n")
     }
 
-    const loginURL = AppHelper.getFrontendUrlAt("/login-operator")
+    const loginURL = AppHelper.getFrontendUrlAt("/auth/login-operator")
 
     // OPERATOR
     return [
