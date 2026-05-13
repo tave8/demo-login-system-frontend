@@ -6,7 +6,8 @@ import FileHelper from "../helpers/FileHelper"
 import {
     ArticleFromAPI,
     ArticlesPageFromAPI, ClientAddressesPageFromAPI,
-    ClientAddressFromAPI, ClientAddressToAPI, ClientFromAPI, ClientQueryParamsToAPI, ClientsPageFromAPI,
+    ClientAddressFromAPI,
+    ClientAddressQueryParamsToAPI, ClientAddressToAPI, ClientFromAPI, ClientQueryParamsToAPI, ClientsPageFromAPI,
     ClientToAPI, EnrichedArticleFromAPI, EnrichedArticlesPageFromAPI, EnrichedClientAddressesPageFromAPI,
     EnrichedClientAddressFromAPI,
     EnrichedClientFromAPI,
@@ -96,6 +97,28 @@ export default class ClientAddressesAPI extends BaseAPI {
 
         return data
     }
+
+    /**
+     * Search client addresses by their user-defined name.
+     */
+    // public async searchClientAddresses(partialClientAddressName: string): Promise<ClientAddressesPageFromAPI> {
+    //     const params: ClientAddressQueryParamsToAPI = {
+    //         name: partialClientAddressName
+    //     }
+    //
+    //     const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
+    //
+    //     const resp: Response = await this.doFetchAtWithParams(
+    //         "/clients",
+    //         config,
+    //         params as unknown as Record<string, string>
+    //     )
+    //
+    //     const data = await this.parseJSON<ClientAddressesPageFromAPI>(resp)
+    //
+    //     return data
+    // }
+
 
 
 

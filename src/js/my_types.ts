@@ -443,6 +443,10 @@ export interface ClientAddressToAPI {
 }
 
 export interface ClientAddressFromAPI {
+  // this the actual ID of the association
+  // so if you want to reference to the client address ID
+  // as an association, this is what you need to use
+  id: string
   clientId: string
   addressId: string
   addressName: string
@@ -534,6 +538,25 @@ export interface ChecklistsPageFromAPI extends Pagination<ChecklistFromAPI> {}
 export interface EnrichedChecklistsPageFromAPI extends Pagination<EnrichedChecklistFromAPI> {}
 
 
+
+// ******************************
+// CLIENT ADDRESS CHECKLIST
+// the combination between a checklist and a client address
+
+
+export interface ClientAddressChecklistFromAPI {
+  id: string
+  clientAddressId: string
+  checklistId: string
+}
+
+
+export interface ClientAddressQueryParamsToAPI {
+  // the user-defined name of the client address association
+  // for example, the user has called a client address "Hotel Biutiful: Location 2"
+  // so we are searching this field
+  name: string
+}
 
 // *********************************************
 // GEOCODING (address autocomplete)
