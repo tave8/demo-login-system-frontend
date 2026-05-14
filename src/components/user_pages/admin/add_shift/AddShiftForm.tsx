@@ -1,6 +1,14 @@
 import {Alert, Button, Col, Form, ListGroup, Row, Spinner} from "react-bootstrap";
 import {useEffect, useState} from "react";
-import {ChecklistFromAPI, ClientAddressFromAPI, DAY_LABELS, DayOfWeek, Language, ShiftToAPI} from "../../../../js/my_types.ts";
+import {
+    AppEvent, AppEventMessageType,
+    ChecklistFromAPI,
+    ClientAddressFromAPI,
+    DAY_LABELS,
+    DayOfWeek,
+    Language,
+    ShiftToAPI
+} from "../../../../js/my_types.ts";
 import {useNavigate} from "react-router-dom";
 import AppEventDispatcher from "../../../../js/AppEventDispatcher.ts";
 import ClientAddressChecklistsAPI from "../../../../js/api/ClientAddressChecklistsAPI.ts";
@@ -9,6 +17,7 @@ import ChecklistsAPI from "../../../../js/api/ChecklistsAPI.ts";
 import ShiftsAPI from "../../../../js/api/ShiftsAPI.ts";
 import TimeHelper from "../../../../js/helpers/TimeHelper.ts";
 import LanguageHelper from "../../../../js/helpers/LanguageHelper.ts";
+import BadRequestError from "../../../../js/exceptions/BadRequestError.ts";
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
 const clientAddressChecklistsAPI = ClientAddressChecklistsAPI.getInstance()
@@ -25,14 +34,6 @@ let LAST_AUTOCOMPLETE_TIMEOUT = {
     checklists: 0
 }
 
-// ****************************
-// SEND TO SERVER
-// ****************************
-
-// interface ShiftData {
-//     clientAddressId: string
-//     checklistId: string
-// }
 
 // ****************************
 // FORM VALUES
@@ -59,11 +60,6 @@ interface HandleSearchClientAddressesParams {
     setIsClientAddressesFromAPIError: (x:boolean) => void
 }
 
-// interface HandleSearchChecklistsParams {
-//     setChecklistsFromAPI: (checklists: ChecklistFromAPI[]) => void
-//     setIsChecklistsFromAPILoading: (x:boolean) => void
-//     setIsChecklistsFromAPIError: (x:boolean) => void
-// }
 
 // ****************************
 // INITIAL FORM VALUES
@@ -87,6 +83,7 @@ interface HandleAddShiftParams {
     setIsLoading: (x:boolean) => void
     setIsError: (x:boolean) => void
     setFormValues: (values: FormValues) => void
+    setShiftToAPI: (shift: ShiftToAPI) => void
 }
 
 
@@ -133,8 +130,6 @@ export default function AddShiftForm() {
     // const [isChecklistsFromAPILoading, setIsChecklistsFromAPILoading] = useState(false)
     // const [isChecklistsFromAPIError, setIsChecklistsFromAPIError] = useState(false)
 
-
-    const navigate = useNavigate()
 
     // ****************************
     // LOAD CHECKLISTS ON CLIENT ADDRESS CHANGE
@@ -200,6 +195,7 @@ export default function AddShiftForm() {
     }, [formValues]);
 
 
+
     return (
         <Form
             onSubmit={(e) => {
@@ -207,7 +203,7 @@ export default function AddShiftForm() {
             }}
             onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                    handleAddShift(shiftToAPI)({ setIsError, setIsLoading, setFormValues });
+                    handleAddShift(shiftToAPI)({ setIsError, setIsLoading, setFormValues, setShiftToAPI });
                 }
             }}>
 
@@ -480,11 +476,6 @@ export default function AddShiftForm() {
                 </Col>
             </Row>
 
-            <Row>
-                <Col>
-                    Ricapitolando: Stai crendo un turno a ... con attività... da ora..
-                </Col>
-            </Row>
 
             {/* submit */}
             <Row>
@@ -493,7 +484,7 @@ export default function AddShiftForm() {
                         disabled={isLoading}
                         variant="primary"
                         onClick={() => {
-                            handleAddShift(shiftToAPI)({ setIsError, setIsLoading, setFormValues });
+                            handleAddShift(shiftToAPI)({ setIsError, setIsLoading, setFormValues, setShiftToAPI });
                         }}
                     >
                         Aggiungi turno
@@ -510,54 +501,57 @@ export default function AddShiftForm() {
 const handleAddShift = (shiftToAPI: ShiftToAPI) => {
     return async (params: HandleAddShiftParams) => {
 
-        const { setIsError, setIsLoading, setFormValues } = params
+        const { setIsError, setIsLoading, setFormValues, setShiftToAPI } = params
 
-        console.log(shiftToAPI)
+        // console.log(shiftToAPI)
 
-        // requireValidFields(formValues)
-        //
-        // setIsLoading(true)
-        // setIsError(false)
-        //
-        // clientsAPI
-        //     .addClient(formValues)
-        //     .then((clientFromAPI) => {
-        //
-        //         setIsLoading(false)
-        //         setIsError(false)
-        //
-        //         // reset form fields
-        //         setFormValues({
-        //             email: "",
-        //             vat: "",
-        //             legalAddressLat: 0,
-        //             legalAddressLon: 0,
-        //             legalName: "",
-        //             legalAddress: "",
-        //             phone: ""
-        //         })
-        //
-        //
-        //         appEventDispatcher.dispatchStandard(
-        //             AppEvent.APP_SUCCESS,
-        //             AppEventMessageType.SAVE_SUCCESS
-        //         )
-        //
-        //     })
-        //     .catch((err) => {
-        //
-        //         setIsLoading(false)
-        //         setIsError(true)
-        //
-        //         if (err instanceof BadRequestError) {
-        //
-        //             appEventDispatcher.dispatchStandard(
-        //                 AppEvent.APP_ERROR,
-        //                 AppEventMessageType.BAD_REQUEST
-        //             )
-        //
-        //         }
-        //     })
+        requireValidFields(shiftToAPI)
+
+        setIsLoading(true)
+        setIsError(false)
+
+        shiftsAPI
+            .addShift(shiftToAPI)
+            .then((shiftFromAPI) => {
+
+                setIsLoading(false)
+                setIsError(false)
+
+                // setShiftToAPI({
+                //     ...shiftToAPI,
+                //     // only reset the ID's, the rest will be
+                //     // reset by the form, which in turn will have
+                //     // changes synced with shiftToAPI
+                //     clientAddressId: "",
+                //     checklistId: ""
+                // })
+                //
+                // // reset form fields
+                // setFormValues(initialFormValues)
+
+
+                appEventDispatcher.dispatchStandard(
+                    AppEvent.APP_SUCCESS,
+                    AppEventMessageType.SAVE_SUCCESS
+                )
+
+                location.reload()
+
+            })
+            .catch((err) => {
+
+                setIsLoading(false)
+                setIsError(true)
+
+                if (err instanceof BadRequestError) {
+
+                    appEventDispatcher.dispatchStandard(
+                        AppEvent.APP_ERROR,
+                        AppEventMessageType.BAD_REQUEST
+                    )
+
+                }
+            })
     }
 
 }
@@ -598,83 +592,50 @@ const handleSearchClientAddresses = (query: string) =>
 
 
 
-//
-// const handleAutocompleteAddress = (query: string) =>
-// {
-//     return async (params: HandleAutocompleteAddress) => {
-//
-//         const {setIsAutocompleteLoading, setIsAutocompleteError, setAutocompleteAddressess} = params
-//
-//         setIsAutocompleteLoading(true)
-//         setIsAutocompleteError(false)
-//
-//         geocodingAPI
-//             .autocompleteInLocalLanguageEnriched(query)
-//             .then((result) => {
-//
-//                 setIsAutocompleteLoading(false)
-//                 setIsAutocompleteError(false)
-//
-//                 setAutocompleteAddressess(result.results)
-//
-//             })
-//             .catch(err => {
-//
-//                 setIsAutocompleteLoading(false)
-//                 setIsAutocompleteError(true)
-//
-//
-//             })
-//
-//     }
-//
-// }
-//
-// /**
-//  * Require that all fields are valid.
-//  * If not, an error is thrown and a toast message
-//  * for to the user is shown.
-//  */
-// const requireValidFields = (formValues: ClientToAPI) => {
-//
-//     const isValidEmail = StringHelper.isValidEmail(formValues.email)
-//     const isNonEmptyLegalAddress = formValues.legalAddress.trim() != ""
-//     const isNonEmptyVat = formValues.vat.trim() != ""
-//     const isNonEmptyLegalName = formValues.legalName.trim() != ""
-//     const isNonEmptyPhone = formValues.phone.trim() != ""
-//
-//     const errors: string[] = []
-//
-//     if (!isValidEmail) {
-//         errors.push("L'email deve essere valida")
-//     }
-//     if (!isNonEmptyLegalAddress) {
-//         errors.push("L'indirizzo sede legale non può essere vuoto")
-//     }
-//     if (!isNonEmptyVat) {
-//         errors.push("La partita IVA non può essere vuota")
-//     }
-//     if (!isNonEmptyLegalName) {
-//         errors.push("La ragione sociale non può essere vuota")
-//     }
-//     if (!isNonEmptyPhone) {
-//         errors.push("Il telefono non può essere vuoto")
-//     }
-//
-//     // if there are errors
-//     if(errors.length > 0) {
-//
-//         appEventDispatcher.dispatchStandard(
-//             AppEvent.INVALID_FIELDS,
-//             AppEventMessageType.INVALID_FIELDS,
-//             errors.join(", ")
-//         )
-//
-//         throw new Error("At least one field is invalid")
-//     }
-//
-//
-// }
+/**
+ * Require that all fields are valid.
+ * If not, an error is thrown and a toast message
+ * for to the user is shown.
+ */
+const requireValidFields = (shiftToAPI: ShiftToAPI) => {
+
+    const isNonEmptyClientAddress = shiftToAPI.clientAddressId.trim() !== ""
+    const isNonEmptyChecklist = shiftToAPI.checklistId.trim() !== ""
+    const isNonEmptyStartDate = shiftToAPI.startDate.trim() !== ""
+    const isNonEmptyStartTime = shiftToAPI.startTime.trim() !== ""
+    const isNonEmptyEndTime = shiftToAPI.endTime.trim() !== ""
+    const hasAtLeastOneDay = shiftToAPI.days.length > 0
+
+    const errors: string[] = []
+
+    if (!isNonEmptyClientAddress) {
+        errors.push("La sede del cliente non può essere vuota")
+    }
+    if (!isNonEmptyChecklist) {
+        errors.push("La scheda attività non può essere vuota")
+    }
+    if (!isNonEmptyStartDate) {
+        errors.push("La data di inizio non può essere vuota")
+    }
+    if (!isNonEmptyStartTime) {
+        errors.push("L'ora di inizio non può essere vuota")
+    }
+    if (!isNonEmptyEndTime) {
+        errors.push("L'ora di fine non può essere vuota")
+    }
+    if (!hasAtLeastOneDay) {
+        errors.push("Seleziona almeno un giorno della settimana")
+    }
+
+    if (errors.length > 0) {
+        appEventDispatcher.dispatchStandard(
+            AppEvent.INVALID_FIELDS,
+            AppEventMessageType.INVALID_FIELDS,
+            errors.join(", ")
+        )
+        throw new Error("At least one field is invalid")
+    }
+}
 
 
 const generateTimeOptions = (minTime?: string, maxTime?: string) => {
