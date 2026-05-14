@@ -41,7 +41,7 @@ interface FormValues {
     checklistName: string
     days: DayOfWeek[]
     startDate: string
-    endDate: string|null
+    endDate: string
     startTime: string
     endTime: string
 }
@@ -271,11 +271,67 @@ export default function AddShiftForm() {
                     </Form.Group>
                 </Col>
 
-            </Row>
+                {/*
+                    ****************
+                     END DATE
+                    *****************
+                */}
 
-            <Row>
+                <Col>
+                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                        <Form.Label>Giorno fine</Form.Label>
+                        <Form.Control
+                            disabled={isLoading}
+                            type="date"
+                            placeholder=""
+                            value={formValues.endDate}
+                            onChange={(event) => {
+                                setFormValues({
+                                    ...formValues,
+                                    endDate: event.target.value,
+                                })
+                            }}
+                        />
+                    </Form.Group>
+                </Col>
+
                 <Col>
                     ...
+                </Col>
+
+            </Row>
+
+            <Row className={"row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4"}>
+                <Col>
+                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                        <Form.Label>Ora inizio</Form.Label>
+                        <Form.Select
+                            style={{ height: "200px" }}
+                            htmlSize={8}
+                            value={formValues.startTime}
+                            onChange={(e) => setFormValues({ ...formValues, startTime: e.target.value })}
+                        >
+                            {generateTimeOptions("06:00", "22:00").map(time => (
+                                <option key={time} value={time}>{time}</option>
+                            ))}
+                        </Form.Select>
+                    </Form.Group>
+                </Col>
+
+                <Col>
+                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                        <Form.Label>Ora fine</Form.Label>
+                        <Form.Select
+                            style={{ height: "200px" }}
+                            htmlSize={8}
+                            value={formValues.endTime}
+                            onChange={(e) => setFormValues({ ...formValues, endTime: e.target.value })}
+                        >
+                            {generateTimeOptions(formValues.startTime, "22:00").map(time => (
+                                <option key={time} value={time}>{time}</option>
+                            ))}
+                        </Form.Select>
+                    </Form.Group>
                 </Col>
             </Row>
 
@@ -467,3 +523,16 @@ const handleSearchClientAddresses = (query: string) =>
 //
 //
 // }
+
+
+const generateTimeOptions = (minTime?: string, maxTime?: string) => {
+    return Array.from({ length: 48 }, (_, i) => {
+        const hours = Math.floor(i / 2).toString().padStart(2, "0")
+        const minutes = i % 2 === 0 ? "00" : "30"
+        return `${hours}:${minutes}`
+    }).filter(time => {
+        if (minTime && time < minTime) return false
+        if (maxTime && time > maxTime) return false
+        return true
+    })
+}
