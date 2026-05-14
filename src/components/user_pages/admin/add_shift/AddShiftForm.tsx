@@ -1,5 +1,5 @@
 import {Alert, Button, Col, Form, ListGroup, Row, Spinner} from "react-bootstrap";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {ChecklistFromAPI, ClientAddressFromAPI, DAY_LABELS, DayOfWeek, Language, ShiftToAPI} from "../../../../js/my_types.ts";
 import {useNavigate} from "react-router-dom";
 import AppEventDispatcher from "../../../../js/AppEventDispatcher.ts";
@@ -125,16 +125,80 @@ export default function AddShiftForm() {
     const [isClientAddressesFromAPIError, setIsClientAddressesFromAPIError] = useState(false)
 
     // ****************************
-    // SEARCH CHECKLISTS
+    // CHECKLISTS BY CHOSEN CLIENT ADDRESS
     // ****************************
 
     // checklists (the user searches checklists)
-    // const [checklistsFromAPI, setChecklistsFromAPI] = useState<ChecklistFromAPI[]>([])
+    const [checklistsFromAPI, setChecklistsFromAPI] = useState<ChecklistFromAPI[]>([])
     // const [isChecklistsFromAPILoading, setIsChecklistsFromAPILoading] = useState(false)
     // const [isChecklistsFromAPIError, setIsChecklistsFromAPIError] = useState(false)
 
 
     const navigate = useNavigate()
+
+    // ****************************
+    // LOAD CHECKLISTS ON CLIENT ADDRESS CHANGE
+    // ****************************
+
+    // when the client address is changed, load the
+    // checklists associated to that client address
+    useEffect(() => {
+
+        // at first render, do not load
+        if(shiftToAPI.clientAddressId != "")
+        {
+            checklistsAPI
+                .findChecklistsByClientAddress(shiftToAPI.clientAddressId)
+                .then(checklistsFromAPI => {
+
+                    setChecklistsFromAPI(checklistsFromAPI)
+
+                    // select the first checklist, if it exists
+                    if(checklistsFromAPI.length > 0) {
+                        setShiftToAPI({
+                            ...shiftToAPI,
+                            checklistId: checklistsFromAPI[0].id
+                        })
+                    }
+                    // if no checklist exists, reset
+                    else {
+                        setShiftToAPI({
+                            ...shiftToAPI,
+                            checklistId: ""
+                        })
+                    }
+                })
+                .catch(err => {
+
+                })   
+        }
+
+    }, [shiftToAPI.clientAddressId]);
+
+    // ****************************
+    // SYNC FORM VALUES WITH DATA FOR SERVER
+    // ****************************
+
+    // when something in the form values changes
+    // update ONLY the relevant fields that you're going to send
+    // to server
+    useEffect(() => {
+
+        setShiftToAPI({
+            ...shiftToAPI,
+            // these 5 values come from the form,
+            // and we need to sync them with the object
+            // that we're actually going to send to the server,
+            // which is shiftToAPI
+            days: formValues.days,
+            startTime: formValues.startTime,
+            endTime: formValues.endTime,
+            startDate: formValues.startDate,
+            endDate: formValues.endDate
+        })
+
+    }, [formValues]);
+
 
     return (
         <Form
@@ -143,7 +207,7 @@ export default function AddShiftForm() {
             }}
             onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                    handleAddShift(formValues)({ setIsError, setIsLoading, setFormValues });
+                    handleAddShift(shiftToAPI)({ setIsError, setIsLoading, setFormValues });
                 }
             }}>
 
@@ -207,6 +271,7 @@ export default function AddShiftForm() {
                                     onMouseDown={(e) => {
                                         e.preventDefault()
 
+                                        // update what you send to server
                                         setShiftToAPI({
                                             ...shiftToAPI,
                                             clientAddressId: clientAddress.id
@@ -217,6 +282,7 @@ export default function AddShiftForm() {
                                         // we show the user more details, but
                                         const clientAddressNameFormatted = `${clientAddress.clientName} - ${clientAddress.addressName} - ${clientAddress.addressDisplayName}`
 
+                                        // update UI
                                         setFormValues({
                                             ...formValues,
                                             clientAddressName: clientAddressNameFormatted
@@ -248,6 +314,55 @@ export default function AddShiftForm() {
 
 
                 </Col>
+
+                {/*
+                    ****************
+                     SEARCH CHECKLISTS
+                    *****************
+                */}
+
+
+                <Col>
+                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                        <Form.Label>Scheda Attività della Sede</Form.Label>
+                        <Form.Select
+                            value={shiftToAPI.checklistId}
+                            onChange={(e) => {
+
+                                const checklistIdSelected = e.target.value
+
+                                // update the value to send to server
+                                setShiftToAPI({
+                                    ...shiftToAPI,
+                                    checklistId: checklistIdSelected
+                                })
+
+                            }}
+                        >
+                            {/* if there are checklists for the selected client address */}
+                            {checklistsFromAPI.length > 0 && checklistsFromAPI.map(checklistFromAPI => (
+                                <option
+                                    key={checklistFromAPI.id}
+                                    value={checklistFromAPI.id}>
+                                    {checklistFromAPI.name}
+                                </option>
+                            ))}
+
+                            {/* if client address is not selected yet
+                                or it has no checklists */}
+                            {checklistsFromAPI.length == 0 && (
+                                <option
+                                    key={""}
+                                    value={""}
+                                    disabled>
+                                    (Nessuna Scheda Attività disponibile)
+                                </option>
+                            )}
+
+                        </Form.Select>
+                    </Form.Group>
+                </Col>
+
 
                 {/*
                     ****************
@@ -287,6 +402,63 @@ export default function AddShiftForm() {
                     </Form.Group>
                 </Col>
 
+
+            </Row>
+
+                {/*
+                    ****************
+                     START TIME
+                    *****************
+                */}
+
+
+            <Row className={"row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4"}>
+                <Col>
+                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                        <Form.Label>Ora inizio</Form.Label>
+                        <Form.Select
+                            style={{ height: "200px" }}
+                            htmlSize={8}
+                            value={formValues.startTime}
+                            onChange={(e) => setFormValues({ ...formValues, startTime: e.target.value })}
+                        >
+                            {generateTimeOptions("06:00", "22:00").map(time => (
+                                <option key={time} value={time}>{time}</option>
+                            ))}
+                        </Form.Select>
+                    </Form.Group>
+                </Col>
+
+
+                {/*
+                    ****************
+                     END TIME
+                    *****************
+                */}
+
+
+                <Col>
+                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                        <Form.Label>Ora fine</Form.Label>
+                        <Form.Select
+                            style={{ height: "200px" }}
+                            htmlSize={8}
+                            value={formValues.endTime}
+                            onChange={(e) => setFormValues({ ...formValues, endTime: e.target.value })}
+                        >
+                            {generateTimeOptions(formValues.startTime || "06:00", "22:00").map(time => (
+                                <option key={time} value={time}>{time}</option>
+                            ))}
+                        </Form.Select>
+                    </Form.Group>
+                </Col>
+
+                {/*
+                    ****************
+                     DAYS
+                    *****************
+                */}
+
                 <Col>
                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                         <Form.Label>Giorni</Form.Label>
@@ -306,41 +478,6 @@ export default function AddShiftForm() {
                         ))}
                     </Form.Group>
                 </Col>
-
-            </Row>
-
-            <Row className={"row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4"}>
-                <Col>
-                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                        <Form.Label>Ora inizio</Form.Label>
-                        <Form.Select
-                            style={{ height: "200px" }}
-                            htmlSize={8}
-                            value={formValues.startTime}
-                            onChange={(e) => setFormValues({ ...formValues, startTime: e.target.value })}
-                        >
-                            {generateTimeOptions("06:00", "22:00").map(time => (
-                                <option key={time} value={time}>{time}</option>
-                            ))}
-                        </Form.Select>
-                    </Form.Group>
-                </Col>
-
-                <Col>
-                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                        <Form.Label>Ora fine</Form.Label>
-                        <Form.Select
-                            style={{ height: "200px" }}
-                            htmlSize={8}
-                            value={formValues.endTime}
-                            onChange={(e) => setFormValues({ ...formValues, endTime: e.target.value })}
-                        >
-                            {generateTimeOptions(formValues.startTime || "06:00", "22:00").map(time => (
-                                <option key={time} value={time}>{time}</option>
-                            ))}
-                        </Form.Select>
-                    </Form.Group>
-                </Col>
             </Row>
 
             <Row>
@@ -356,7 +493,7 @@ export default function AddShiftForm() {
                         disabled={isLoading}
                         variant="primary"
                         onClick={() => {
-                            handleAddShift(formValues)({ setIsError, setIsLoading, setFormValues });
+                            handleAddShift(shiftToAPI)({ setIsError, setIsLoading, setFormValues });
                         }}
                     >
                         Aggiungi turno
@@ -370,12 +507,12 @@ export default function AddShiftForm() {
 
 
 
-const handleAddShift = (formValues: FormValues) => {
+const handleAddShift = (shiftToAPI: ShiftToAPI) => {
     return async (params: HandleAddShiftParams) => {
 
         const { setIsError, setIsLoading, setFormValues } = params
 
-        console.log(formValues)
+        console.log(shiftToAPI)
 
         // requireValidFields(formValues)
         //
