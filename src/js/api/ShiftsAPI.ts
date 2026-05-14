@@ -5,10 +5,8 @@ import BaseAPI from "./BaseAPI"
 import FileHelper from "../helpers/FileHelper"
 import {
     ArticleFromAPI,
-    ArticlesPageFromAPI,
-    ChecklistFromAPI, ChecklistsPageFromAPI, ChecklistWithSimpleEntriesToAPI, ClientAddressesPageFromAPI,
-    ClientAddressFromAPI,
-    ClientAddressQueryParamsToAPI, ClientAddressToAPI, ClientFromAPI, ClientQueryParamsToAPI, ClientsPageFromAPI,
+    ArticlesPageFromAPI, ChecklistsPageFromAPI, ClientAddressesPageFromAPI,
+    ClientAddressFromAPI, ClientAddressToAPI, ClientFromAPI, ClientQueryParamsToAPI, ClientsPageFromAPI,
     ClientToAPI, EnrichedArticleFromAPI, EnrichedArticlesPageFromAPI, EnrichedClientAddressesPageFromAPI,
     EnrichedClientAddressFromAPI,
     EnrichedClientFromAPI,
@@ -17,16 +15,16 @@ import {
     NewUserFromAPI,
     NewUserToAPI,
     RequestMethod,
-    RequireLogin, TaskFromAPI, TasksPageFromAPI, TaskToAPI,
+    RequireLogin, ShiftFromAPI, ShiftQueryParamsToAPI, ShiftToAPI, TaskFromAPI, TasksPageFromAPI, TaskToAPI,
     UpdatedUserToAPI,
     UserFromAPI, UsersPageFromAPI
 } from "../my_types"
 import TimeHelper from "../helpers/TimeHelper.ts";
 import UserRoleHelper from "../helpers/UserRoleHelper.ts";
 
-export default class ChecklistsAPI extends BaseAPI {
+export default class ShiftsAPI extends BaseAPI {
 
-    private static instance: ChecklistsAPI
+    private static instance: ShiftsAPI
 
     constructor() {
         // call new BaseAPI()
@@ -36,9 +34,9 @@ export default class ChecklistsAPI extends BaseAPI {
     /**
      * (Uses singleton design pattern)
      */
-    public static getInstance(): ChecklistsAPI {
+    public static getInstance(): ShiftsAPI {
         if(this.instance == null) {
-            this.instance = new ChecklistsAPI()
+            this.instance = new ShiftsAPI()
         }
         return this.instance
     }
@@ -71,73 +69,74 @@ export default class ChecklistsAPI extends BaseAPI {
 
 
     /**
-     * Add a checklist.
+     * Add a shift.
      */
-    public async addChecklist(checklistData: ChecklistWithSimpleEntriesToAPI): Promise<void>
+    public async addShift(shiftData: ShiftToAPI): Promise<ShiftFromAPI>
     {
-        const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.YES, checklistData)
+        const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.YES, shiftData)
 
-        const endpoint = `/checklists`
+        const endpoint = `/shifts`
 
         const resp: Response = await this.doFetchAt(endpoint, config)
 
-        const data = await this.parseJSON<void>(resp)
+        const data = await this.parseJSON<ShiftFromAPI>(resp)
 
         return data
     }
 
     /**
-     * Get checklists.
+     * Find shifts.
      */
-    public async getChecklists(): Promise<ChecklistsPageFromAPI> {
-        const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
-
-        const endpoint = `/checklists`
-
-        const resp: Response = await this.doFetchAt(endpoint, config)
-
-        const data = await this.parseJSON<ChecklistsPageFromAPI>(resp)
-
-        return data
-    }
-
-    /**
-     * Find checklists by client address.
-     */
-    public async findChecklistsByClientAddress(clientAddressId: string): Promise<ChecklistFromAPI[]> {
-        const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
-
-        const endpoint = `/client-addresses/${clientAddressId}/checklists`
-
-        const resp: Response = await this.doFetchAt(endpoint, config)
-
-        const data = await this.parseJSON<ChecklistFromAPI[]>(resp)
-
-        return data
-    }
+    // public async searchShifts(): Promise<ShiftFromAPI[]> {
+    //     const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
+    //
+    //
+    //
+    //     const endpoint = `/shifts`
+    //
+    //     const resp: Response = await this.doFetchAt(endpoint, config)
+    //
+    //     const data = await this.parseJSON<ShiftFromAPI[]>(resp)
+    //
+    //     return data
+    // }
 
 
-    /**
-     * Search checklists.
-     */
-    public async searchChecklists(query: string): Promise<ChecklistsPageFromAPI> {
+    public async findShiftsBetween(startDate: string|null=null,
+                                   endDate: string|null = null): Promise<ShiftFromAPI[]>
+    {
 
-        const params = {
-            q: query
+        const params: ShiftQueryParamsToAPI = {}
+
+        if(startDate) {
+            params.from = startDate
+        }
+
+        if(endDate) {
+            params.from = endDate
         }
 
         const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
 
         const resp: Response = await this.doFetchAtWithParams(
-            "/checklists",
+            "/shifts",
             config,
             params as unknown as Record<string, string>
         )
 
-        const data = await this.parseJSON<ChecklistsPageFromAPI>(resp)
+        const data = await this.parseJSON<ShiftFromAPI[]>(resp)
 
         return data
+
     }
+
+    // findShiftsByOperator(operator): list of shifts
+    //
+    // findShiftsByOperatorBetween(operator, stard date, end date): list of shifts
+    //
+    // findOperatorsBetween(start date, end date): list of operators
+    //
+    // findOperatorsWithoutShiftsBetween(start date, end date): list of operators
 
 
 }

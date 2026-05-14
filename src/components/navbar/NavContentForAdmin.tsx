@@ -171,6 +171,28 @@ export default function NavContentForAdmin({ setNavExpanded }: Props) {
                         </NavDropdown.Item>
                     </NavDropdown>
 
+                    {/* SHIFTS */}
+                    <NavDropdown title="Turni" id="basic-nav-dropdown" align="end">
+                        <NavDropdown.Item
+                            onClick={() => {
+                                navigate(AppRoutes.addShift)
+                                closeNav()
+                            }
+                            }>
+                            Aggiungi turno
+                        </NavDropdown.Item>
+
+                        <NavDropdown.Item
+                            onClick={() => {
+                                navigate(AppRoutes.shifts)
+                                closeNav()
+                            }
+                            }>
+                            Vedi turni
+                        </NavDropdown.Item>
+
+                    </NavDropdown>
+
                         {/*<Link*/}
                         {/*    to={AppRoutes.uploadCV}*/}
                         {/*    onClick={closeNav}*/}

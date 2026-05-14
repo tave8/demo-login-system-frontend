@@ -4,6 +4,16 @@ export enum Language {
   IT = "it"
 }
 
+export enum DayOfWeek {
+  MONDAY = "MONDAY",
+  TUESDAY = "TUESDAY",
+  WEDNESDAY = "WEDNESDAY",
+  THURSDAY = "THURSDAY",
+  FRIDAY = "FRIDAY",
+  SATURDAY = "SATURDAY",
+  SUNDAY = "SUNDAY"
+}
+
 
 // ROUTES
 
@@ -47,6 +57,9 @@ export const AppRoutes = {
 
   checklists: "/u/checklists",
   addChecklist: "/u/checklists/add",
+
+  shifts: "/u/shifts",
+  addShift: "/u/shifts/add",
 
   // DASHBOARDS
 
@@ -563,6 +576,63 @@ export interface ClientAddressChecklistFromAPI {
 export interface ClientAddressQueryParamsToAPI {
   q: string
 }
+
+
+
+// *********************************************
+// SHIFTS
+
+export interface ShiftQueryParamsToAPI {
+  // valid ISO 8601 date (year-month-day)
+  from?: string
+  // valid ISO 8601 date (year-month-day)
+  to?: string
+  // only use when you're getting back operators, not shifts
+  // it means "filter in if the operator has shifts"
+  // or "filter in if the operator has no shifts"
+  hasShifts?: boolean
+}
+
+export interface ShiftToAPI {
+  clientAddressId: string
+  checklistId: string
+  startDate: string
+  endDate: string|null
+  startTime: string
+  endTime: string
+  days: DayOfWeek[]
+}
+
+export interface ShiftDayFromAPI {
+  id: string
+  shiftId: string
+  day: DayOfWeek
+}
+
+
+export interface ShiftFromAPI {
+  id: string
+  clientAddress: ClientAddressFromAPI
+  checklist: ChecklistFromAPI
+  days: ShiftDayFromAPI[]
+  startDate: string
+  endDate: string|null
+  startTime: string
+  endTime: string
+}
+
+// enriched item extends item
+// export interface EnrichedChecklistFromAPI extends ChecklistFromAPI {
+// }
+
+// item's page extends page
+// export interface ShiftsPageFromAPI extends Pagination<ChecklistFromAPI> {}
+
+// enriched item's page extends enriched page
+// export interface EnrichedChecklistsPageFromAPI extends Pagination<EnrichedChecklistFromAPI> {}
+
+
+
 
 // *********************************************
 // GEOCODING (address autocomplete)
