@@ -1,12 +1,14 @@
 import {Alert, Button, Col, Form, ListGroup, Row, Spinner} from "react-bootstrap";
 import {useState} from "react";
-import {ChecklistFromAPI, ClientAddressFromAPI, DayOfWeek, ShiftToAPI} from "../../../../js/my_types.ts";
+import {ChecklistFromAPI, ClientAddressFromAPI, DAY_LABELS, DayOfWeek, Language, ShiftToAPI} from "../../../../js/my_types.ts";
 import {useNavigate} from "react-router-dom";
 import AppEventDispatcher from "../../../../js/AppEventDispatcher.ts";
 import ClientAddressChecklistsAPI from "../../../../js/api/ClientAddressChecklistsAPI.ts";
 import ClientAddressesAPI from "../../../../js/api/ClientAddressesAPI.ts";
 import ChecklistsAPI from "../../../../js/api/ChecklistsAPI.ts";
 import ShiftsAPI from "../../../../js/api/ShiftsAPI.ts";
+import TimeHelper from "../../../../js/helpers/TimeHelper.ts";
+import LanguageHelper from "../../../../js/helpers/LanguageHelper.ts";
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
 const clientAddressChecklistsAPI = ClientAddressChecklistsAPI.getInstance()
@@ -46,15 +48,6 @@ interface FormValues {
     endTime: string
 }
 
-// ****************************
-// PARAMS: HANDLE ADD CHECKLIST TO CLIENT ADDRESS
-// ****************************
-
-// interface HandleAddChecklistToClientAddressParams {
-//     setIsLoading: (x:boolean) => void
-//     setIsError: (x:boolean) => void
-//     navigate: NavigateFunction
-// }
 
 // ****************************
 // PARAMS: SEARCH CLIENT ADDRESSES & CHECKLISTS
@@ -80,10 +73,20 @@ const initialFormValues: FormValues = {
     clientAddressName: "",
     checklistName: "",
     days: [],
-    startDate: "",
+    startDate: TimeHelper.today(),
     endDate: "",
-    startTime: "",
-    endTime: ""
+    startTime: "06:00",
+    endTime: "06:00"
+}
+
+// ****************************
+// PARAMS: HANDLE ADD SHIFT
+// ****************************
+
+interface HandleAddShiftParams {
+    setIsLoading: (x:boolean) => void
+    setIsError: (x:boolean) => void
+    setFormValues: (values: FormValues) => void
 }
 
 
@@ -140,7 +143,7 @@ export default function AddShiftForm() {
             }}
             onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                    // handleAddClient(formValues)({ setIsError, setIsLoading, setFormValues });
+                    handleAddShift(formValues)({ setIsError, setIsLoading, setFormValues });
                 }
             }}>
 
@@ -257,16 +260,10 @@ export default function AddShiftForm() {
                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                         <Form.Label>Giorno inizio</Form.Label>
                         <Form.Control
-                            disabled={isLoading}
                             type="date"
-                            placeholder=""
                             value={formValues.startDate}
-                            onChange={(event) => {
-                                setFormValues({
-                                    ...formValues,
-                                    startDate: event.target.value,
-                                })
-                            }}
+                            max={formValues.endDate || undefined}
+                            onChange={(e) => setFormValues({ ...formValues, startDate: e.target.value })}
                         />
                     </Form.Group>
                 </Col>
@@ -280,23 +277,34 @@ export default function AddShiftForm() {
                 <Col>
                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                         <Form.Label>Giorno fine</Form.Label>
+                        {/* end date — start date is the lower bound */}
                         <Form.Control
-                            disabled={isLoading}
                             type="date"
-                            placeholder=""
                             value={formValues.endDate}
-                            onChange={(event) => {
-                                setFormValues({
-                                    ...formValues,
-                                    endDate: event.target.value,
-                                })
-                            }}
+                            min={formValues.startDate || undefined}
+                            onChange={(e) => setFormValues({ ...formValues, endDate: e.target.value })}
                         />
                     </Form.Group>
                 </Col>
 
                 <Col>
-                    ...
+                    <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                        <Form.Label>Giorni</Form.Label>
+                        {Object.values(DayOfWeek).map(day => (
+                            <Form.Check
+                                key={day}
+                                type="checkbox"
+                                label={DAY_LABELS[LanguageHelper.getLanguage()][day]}
+                                checked={formValues.days.includes(day)}
+                                onChange={(e) => {
+                                    const updated = e.target.checked
+                                        ? [...formValues.days, day]
+                                        : formValues.days.filter(d => d !== day)
+                                    setFormValues({ ...formValues, days: updated })
+                                }}
+                            />
+                        ))}
+                    </Form.Group>
                 </Col>
 
             </Row>
@@ -327,7 +335,7 @@ export default function AddShiftForm() {
                             value={formValues.endTime}
                             onChange={(e) => setFormValues({ ...formValues, endTime: e.target.value })}
                         >
-                            {generateTimeOptions(formValues.startTime, "22:00").map(time => (
+                            {generateTimeOptions(formValues.startTime || "06:00", "22:00").map(time => (
                                 <option key={time} value={time}>{time}</option>
                             ))}
                         </Form.Select>
@@ -335,6 +343,11 @@ export default function AddShiftForm() {
                 </Col>
             </Row>
 
+            <Row>
+                <Col>
+                    Ricapitolando: Stai crendo un turno a ... con attività... da ora..
+                </Col>
+            </Row>
 
             {/* submit */}
             <Row>
@@ -343,7 +356,7 @@ export default function AddShiftForm() {
                         disabled={isLoading}
                         variant="primary"
                         onClick={() => {
-                            // handleAddClient(formValues)({ setIsError, setIsLoading, setFormValues });
+                            handleAddShift(formValues)({ setIsError, setIsLoading, setFormValues });
                         }}
                     >
                         Aggiungi turno
@@ -356,60 +369,62 @@ export default function AddShiftForm() {
 
 
 
-//
-// const handleAddClient = (formValues: ClientToAPI) => {
-//     return async (params: HandleAddClientParams) => {
-//
-//         const { setIsError, setIsLoading, setFormValues } = params
-//
-//         requireValidFields(formValues)
-//
-//         setIsLoading(true)
-//         setIsError(false)
-//
-//         clientsAPI
-//             .addClient(formValues)
-//             .then((clientFromAPI) => {
-//
-//                 setIsLoading(false)
-//                 setIsError(false)
-//
-//                 // reset form fields
-//                 setFormValues({
-//                     email: "",
-//                     vat: "",
-//                     legalAddressLat: 0,
-//                     legalAddressLon: 0,
-//                     legalName: "",
-//                     legalAddress: "",
-//                     phone: ""
-//                 })
-//
-//
-//                 appEventDispatcher.dispatchStandard(
-//                     AppEvent.APP_SUCCESS,
-//                     AppEventMessageType.SAVE_SUCCESS
-//                 )
-//
-//             })
-//             .catch((err) => {
-//
-//                 setIsLoading(false)
-//                 setIsError(true)
-//
-//                 if (err instanceof BadRequestError) {
-//
-//                     appEventDispatcher.dispatchStandard(
-//                         AppEvent.APP_ERROR,
-//                         AppEventMessageType.BAD_REQUEST
-//                     )
-//
-//                 }
-//             })
-//     }
-//
-// }
-//
+
+const handleAddShift = (formValues: FormValues) => {
+    return async (params: HandleAddShiftParams) => {
+
+        const { setIsError, setIsLoading, setFormValues } = params
+
+        console.log(formValues)
+
+        // requireValidFields(formValues)
+        //
+        // setIsLoading(true)
+        // setIsError(false)
+        //
+        // clientsAPI
+        //     .addClient(formValues)
+        //     .then((clientFromAPI) => {
+        //
+        //         setIsLoading(false)
+        //         setIsError(false)
+        //
+        //         // reset form fields
+        //         setFormValues({
+        //             email: "",
+        //             vat: "",
+        //             legalAddressLat: 0,
+        //             legalAddressLon: 0,
+        //             legalName: "",
+        //             legalAddress: "",
+        //             phone: ""
+        //         })
+        //
+        //
+        //         appEventDispatcher.dispatchStandard(
+        //             AppEvent.APP_SUCCESS,
+        //             AppEventMessageType.SAVE_SUCCESS
+        //         )
+        //
+        //     })
+        //     .catch((err) => {
+        //
+        //         setIsLoading(false)
+        //         setIsError(true)
+        //
+        //         if (err instanceof BadRequestError) {
+        //
+        //             appEventDispatcher.dispatchStandard(
+        //                 AppEvent.APP_ERROR,
+        //                 AppEventMessageType.BAD_REQUEST
+        //             )
+        //
+        //         }
+        //     })
+    }
+
+}
+
 
 
 

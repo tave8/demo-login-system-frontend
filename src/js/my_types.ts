@@ -14,6 +14,26 @@ export enum DayOfWeek {
   SUNDAY = "SUNDAY"
 }
 
+export const DAY_LABELS: Record<Language, Record<DayOfWeek, string>> = {
+  [Language.IT]: {
+    [DayOfWeek.MONDAY]: "Lunedì",
+    [DayOfWeek.TUESDAY]: "Martedì",
+    [DayOfWeek.WEDNESDAY]: "Mercoledì",
+    [DayOfWeek.THURSDAY]: "Giovedì",
+    [DayOfWeek.FRIDAY]: "Venerdì",
+    [DayOfWeek.SATURDAY]: "Sabato",
+    [DayOfWeek.SUNDAY]: "Domenica",
+  },
+  [Language.EN]: {
+    [DayOfWeek.MONDAY]: "Monday",
+    [DayOfWeek.TUESDAY]: "Tuesday",
+    [DayOfWeek.WEDNESDAY]: "Wednesday",
+    [DayOfWeek.THURSDAY]: "Thursday",
+    [DayOfWeek.FRIDAY]: "Friday",
+    [DayOfWeek.SATURDAY]: "Saturday",
+    [DayOfWeek.SUNDAY]: "Sunday",
+  }
+}
 
 // ROUTES
 
