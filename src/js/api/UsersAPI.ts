@@ -111,7 +111,6 @@ export default class UsersAPI extends BaseAPI {
 
   /**
    * Get my users (aka my team).
-   * TODO: replace unknown with actual types (you might need to create the pagination etc.)
    */
   public async getMyUsers(): Promise<UsersPageFromAPI> {
     const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
@@ -148,4 +147,20 @@ export default class UsersAPI extends BaseAPI {
 
     return data
   }
+
+
+  /**
+   * Find operators of this company.
+   */
+  public async findOperators(): Promise<UserFromAPI[]> {
+    const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
+
+    const resp: Response = await this.doFetchAt("/operators", config)
+
+    const data = await this.parseJSON<UserFromAPI[]>(resp)
+
+    return data
+  }
+
+
 }

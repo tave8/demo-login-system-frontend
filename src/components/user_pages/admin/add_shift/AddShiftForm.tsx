@@ -7,7 +7,7 @@ import {
     DAY_LABELS,
     DayOfWeek,
     Language,
-    ShiftToAPI
+    ShiftToAPI, UserFromAPI
 } from "../../../../js/my_types.ts";
 import {useNavigate} from "react-router-dom";
 import AppEventDispatcher from "../../../../js/AppEventDispatcher.ts";
@@ -18,12 +18,14 @@ import ShiftsAPI from "../../../../js/api/ShiftsAPI.ts";
 import TimeHelper from "../../../../js/helpers/TimeHelper.ts";
 import LanguageHelper from "../../../../js/helpers/LanguageHelper.ts";
 import BadRequestError from "../../../../js/exceptions/BadRequestError.ts";
+import UsersAPI from "../../../../js/api/UsersAPI.ts";
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
 const clientAddressChecklistsAPI = ClientAddressChecklistsAPI.getInstance()
 const clientAddressesAPI = ClientAddressesAPI.getInstance()
 const checklistsAPI = ChecklistsAPI.getInstance()
 const shiftsAPI = ShiftsAPI.getInstance()
+const usersAPI = UsersAPI.getInstance()
 
 // ****************************
 // DELAY SEARCHING
@@ -43,7 +45,7 @@ interface FormValues {
     clientAddressName: string
     checklistName: string
     days: DayOfWeek[],
-    operatorIds: [],
+    operatorIds: string[],
     startDate: string
     endDate: string
     startTime: string
@@ -134,13 +136,41 @@ export default function AddShiftForm() {
     const [isClientAddressesFromAPIError, setIsClientAddressesFromAPIError] = useState(false)
 
     // ****************************
-    // CHECKLISTS BY CHOSEN CLIENT ADDRESS
+    // CHECKLISTS (OF THE SELECTED CLIENT ADDRESS)
     // ****************************
 
     // checklists (the user searches checklists)
     const [checklistsFromAPI, setChecklistsFromAPI] = useState<ChecklistFromAPI[]>([])
     // const [isChecklistsFromAPILoading, setIsChecklistsFromAPILoading] = useState(false)
     // const [isChecklistsFromAPIError, setIsChecklistsFromAPIError] = useState(false)
+
+    // ****************************
+    // OPERATORS
+    // ****************************
+
+    // the company's operators, so that the user can
+    // assign the shift to the selected operators
+    const [operatorsFromAPI, setOperatorsFromAPI] = useState<UserFromAPI[]>([])
+    // const [isChecklistsFromAPILoading, setIsChecklistsFromAPILoading] = useState(false)
+    // const [isChecklistsFromAPIError, setIsChecklistsFromAPIError] = useState(false)
+
+
+    // ****************************
+    // LOAD OPERATORS WHEN THIS ROUTE IS TRIGGERED
+    // ****************************
+
+    useEffect(() => {
+
+        usersAPI
+            .findOperators()
+            .then(_operatorsFromAPI => {
+                setOperatorsFromAPI(_operatorsFromAPI)
+            })
+            .catch(err => {
+
+            })
+
+    }, []);
 
 
     // ****************************
@@ -414,14 +444,16 @@ export default function AddShiftForm() {
 
             </Row>
 
+
+
+            <Row className={"row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4"}>
+
                 {/*
                     ****************
                      START TIME
                     *****************
                 */}
 
-
-            <Row className={"row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4"}>
                 <Col>
                     <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                         <Form.Label>Ora inizio</Form.Label>
@@ -487,6 +519,33 @@ export default function AddShiftForm() {
                         ))}
                     </Form.Group>
                 </Col>
+
+
+                {/*
+                    ****************
+                     OPERATORS
+                    *****************
+                */}
+
+
+                <Col>
+                    <Form.Label>Operatori</Form.Label>
+                    {operatorsFromAPI.map(operator => (
+                        <Form.Check
+                            key={operator.userId}
+                            type="checkbox"
+                            label={`${operator.firstname} ${operator.lastname}`}
+                            checked={formValues.operatorIds.includes(operator.userId)}
+                            onChange={(e) => {
+                                const updated = e.target.checked
+                                    ? [...formValues.operatorIds, operator.userId]
+                                    : formValues.operatorIds.filter(id => id !== operator.userId)
+                                setFormValues({ ...formValues, operatorIds: updated })
+                            }}
+                        />
+                    ))}
+                </Col>
+
             </Row>
 
 
