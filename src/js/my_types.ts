@@ -616,6 +616,9 @@ export interface ShiftQueryParamsToAPI {
 export interface ShiftToAPI {
   clientAddressId: string
   checklistId: string
+  // list of operator id's to assign to this shift
+  // can be empty, but must be there
+  operatorIds: string[]
   startDate: string
   endDate: string|null
   startTime: string
@@ -635,6 +638,7 @@ export interface ShiftFromAPI {
   clientAddress: ClientAddressFromAPI
   checklist: ChecklistFromAPI
   days: ShiftDayFromAPI[]
+  operators: UserFromAPI[]
   startDate: string
   endDate: string|null
   startTime: string
