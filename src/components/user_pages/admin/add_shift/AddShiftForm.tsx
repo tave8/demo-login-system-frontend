@@ -42,7 +42,8 @@ let LAST_AUTOCOMPLETE_TIMEOUT = {
 interface FormValues {
     clientAddressName: string
     checklistName: string
-    days: DayOfWeek[]
+    days: DayOfWeek[],
+    operatorIds: [],
     startDate: string
     endDate: string
     startTime: string
@@ -62,6 +63,21 @@ interface HandleSearchClientAddressesParams {
 
 
 // ****************************
+// INITIAL DATA TO SEND TO SERVER
+// ****************************
+
+const initialShiftToAPI: ShiftToAPI = {
+    clientAddressId: "",
+    checklistId: "",
+    operatorIds: [],
+    startDate: "",
+    endDate: "",
+    startTime: "",
+    endTime: "",
+    days: []
+}
+
+// ****************************
 // INITIAL FORM VALUES
 // ****************************
 
@@ -69,6 +85,7 @@ const initialFormValues: FormValues = {
     clientAddressName: "",
     checklistName: "",
     days: [],
+    operatorIds: [],
     startDate: TimeHelper.today(),
     endDate: "",
     startTime: "06:00",
@@ -84,6 +101,9 @@ interface HandleAddShiftParams {
     setIsError: (x:boolean) => void
     setFormValues: (values: FormValues) => void
     setShiftToAPI: (shift: ShiftToAPI) => void
+    // after adding a shift, you must reset
+    // the checklists that were loaded
+    setChecklistsFromAPI: (checklists: ChecklistFromAPI[]) => void
 }
 
 
@@ -100,15 +120,7 @@ export default function AddShiftForm() {
     // SEND TO SERVER
     // ****************************
 
-    const [shiftToAPI, setShiftToAPI] = useState<ShiftToAPI>({
-        clientAddressId: "",
-        checklistId: "",
-        startDate: "",
-        endDate: "",
-        startTime: "",
-        endTime: "",
-        days: []
-    })
+    const [shiftToAPI, setShiftToAPI] = useState<ShiftToAPI>(initialShiftToAPI)
     const [isDataToAPILoading, setIsDataToAPILoading] = useState(false)
     const [isDataToAPIError, setIsDataToAPIError] = useState(false)
 
@@ -186,6 +198,7 @@ export default function AddShiftForm() {
             // that we're actually going to send to the server,
             // which is shiftToAPI
             days: formValues.days,
+            operatorIds: formValues.operatorIds,
             startTime: formValues.startTime,
             endTime: formValues.endTime,
             startDate: formValues.startDate,
@@ -203,7 +216,7 @@ export default function AddShiftForm() {
             }}
             onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                    handleAddShift(shiftToAPI)({ setIsError, setIsLoading, setFormValues, setShiftToAPI });
+                    handleAddShift(shiftToAPI)({ setIsError, setIsLoading, setFormValues, setShiftToAPI, setChecklistsFromAPI });
                 }
             }}>
 
@@ -484,7 +497,7 @@ export default function AddShiftForm() {
                         disabled={isLoading}
                         variant="primary"
                         onClick={() => {
-                            handleAddShift(shiftToAPI)({ setIsError, setIsLoading, setFormValues, setShiftToAPI });
+                            handleAddShift(shiftToAPI)({ setIsError, setIsLoading, setFormValues, setShiftToAPI, setChecklistsFromAPI });
                         }}
                     >
                         Aggiungi turno
@@ -501,7 +514,7 @@ export default function AddShiftForm() {
 const handleAddShift = (shiftToAPI: ShiftToAPI) => {
     return async (params: HandleAddShiftParams) => {
 
-        const { setIsError, setIsLoading, setFormValues, setShiftToAPI } = params
+        const { setIsError, setIsLoading, setFormValues, setShiftToAPI, setChecklistsFromAPI } = params
 
         // console.log(shiftToAPI)
 
@@ -517,25 +530,21 @@ const handleAddShift = (shiftToAPI: ShiftToAPI) => {
                 setIsLoading(false)
                 setIsError(false)
 
-                // setShiftToAPI({
-                //     ...shiftToAPI,
-                //     // only reset the ID's, the rest will be
-                //     // reset by the form, which in turn will have
-                //     // changes synced with shiftToAPI
-                //     clientAddressId: "",
-                //     checklistId: ""
-                // })
-                //
-                // // reset form fields
-                // setFormValues(initialFormValues)
+                // reset data to send to server
+                setShiftToAPI(initialShiftToAPI)
+
+                // reset form fields
+                setFormValues(initialFormValues)
+
+                // reset the checklists that were loaded
+                // for the selected client address
+                setChecklistsFromAPI([])
 
 
                 appEventDispatcher.dispatchStandard(
                     AppEvent.APP_SUCCESS,
                     AppEventMessageType.SAVE_SUCCESS
                 )
-
-                location.reload()
 
             })
             .catch((err) => {
