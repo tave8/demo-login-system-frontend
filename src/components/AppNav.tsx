@@ -35,8 +35,12 @@ const MyNav = () => {
               to={user ? AppRoutes.dashboardOf(user.role) : "#"}
               onClick={closeNav}
               className="nav-item navbar-brand">
-            Operavion CRM
-            {/*{user ? `(${user.role})` : ""}*/}
+            <img
+                src="/public/logo-horizontal.png"
+                alt="ZeroChiamate"
+                height={22}
+                style={{ marginRight: "8px" }}
+            />
           </Link>
 
           <Navbar.Toggle aria-controls="basic-navbar-nav" />

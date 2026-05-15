@@ -54,7 +54,7 @@ function App() {
   return (
       <>
           <Helmet>
-              <title>Operavion CRM</title>
+              <title>ZeroChiamate | Gestionale</title>
           </Helmet>
 
           <AppToast />
