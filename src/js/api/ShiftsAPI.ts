@@ -102,8 +102,8 @@ export default class ShiftsAPI extends BaseAPI {
     // }
 
 
-    public async findShiftsBetween(startDate: string|null=null,
-                                   endDate: string|null = null): Promise<ShiftFromAPI[]>
+    public async findShiftsBetweenDates(startDate: string|null=null,
+                                        endDate: string|null = null): Promise<ShiftFromAPI[]>
     {
 
         const params: ShiftQueryParamsToAPI = {}
@@ -113,7 +113,7 @@ export default class ShiftsAPI extends BaseAPI {
         }
 
         if(endDate) {
-            params.from = endDate
+            params.to = endDate
         }
 
         const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
@@ -127,6 +127,31 @@ export default class ShiftsAPI extends BaseAPI {
         const data = await this.parseJSON<ShiftFromAPI[]>(resp)
 
         return data
+
+    }
+
+    /**
+     *
+     */
+    public async findShiftsToday(): Promise<ShiftFromAPI[]>
+    {
+
+        const today = TimeHelper.today();
+
+        return this.findShiftsBetweenDates(today, today);
+
+    }
+
+    /**
+     *
+     */
+    public async findShiftsThisWeek(): Promise<ShiftFromAPI[]>
+    {
+
+        const monday = TimeHelper.startOfWeek();
+        const sunday = TimeHelper.endOfWeek()
+
+        return this.findShiftsBetweenDates(monday, sunday);
 
     }
 
