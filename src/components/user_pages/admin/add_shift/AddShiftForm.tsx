@@ -530,27 +530,39 @@ export default function AddShiftForm() {
 
                 <Col>
                     <Form.Label>Operatori</Form.Label>
-                    {operatorsFromAPI.map(operator => (
-                        <Form.Check
-                            key={operator.userId}
-                            type="checkbox"
-                            label={`${operator.firstname} ${operator.lastname}`}
-                            checked={formValues.operatorIds.includes(operator.userId)}
-                            onChange={(e) => {
-                                const updated = e.target.checked
-                                    ? [...formValues.operatorIds, operator.userId]
-                                    : formValues.operatorIds.filter(id => id !== operator.userId)
-                                setFormValues({ ...formValues, operatorIds: updated })
-                            }}
-                        />
-                    ))}
+                    <div style={{ maxHeight: "200px",
+                                  overflowY: "auto",
+                                  border: "1px solid var(--bs-border-color)",
+                                  borderRadius: "4px",
+                                  padding: "8px" }}>
+                        {operatorsFromAPI.map(operator => (
+                            <Form.Check
+                                key={operator.userId}
+                                type="checkbox"
+                                label={`${operator.firstname} ${operator.lastname}`}
+
+                                // checkbox is checked if this operator's ID is already in the selected list
+                                checked={formValues.operatorIds.includes(operator.userId)}
+
+                                onChange={(e) => {
+                                    const updatedList = e.target.checked
+                                        // if checked → add this operator's ID to the list
+                                        ? [...formValues.operatorIds, operator.userId]
+                                        // if unchecked → remove this operator's ID from the list
+                                        : formValues.operatorIds.filter(id => id !== operator.userId)
+
+                                    setFormValues({ ...formValues, operatorIds: updatedList })
+                                }}
+                            />
+                        ))}
+                    </div>
                 </Col>
 
             </Row>
 
 
             {/* submit */}
-            <Row>
+            <Row className={"mt-5"}>
                 <Col className="text-center">
                     <Button
                         disabled={isLoading}
