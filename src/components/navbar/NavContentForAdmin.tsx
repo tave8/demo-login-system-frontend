@@ -24,12 +24,12 @@ export default function NavContentForAdmin({ setNavExpanded }: Props) {
 
                 <Nav className="me-auto">
 
-                        {/*<Link*/}
-                        {/*    to={AppRoutes.dashboard}*/}
-                        {/*    onClick={closeNav}*/}
-                        {/*    className="nav-item nav-link">*/}
-                        {/*    Oggi*/}
-                        {/*</Link>*/}
+                        <Link
+                            to={AppRoutes.dashboardOf(user.role)}
+                            onClick={closeNav}
+                            className="nav-item nav-link">
+                            Panoramica
+                        </Link>
 
                         {/*<Link*/}
                         {/*    to={AppRoutes.myArticles}*/}
@@ -182,14 +182,14 @@ export default function NavContentForAdmin({ setNavExpanded }: Props) {
                             Aggiungi turno
                         </NavDropdown.Item>
 
-                        <NavDropdown.Item
-                            onClick={() => {
-                                navigate(AppRoutes.shifts)
-                                closeNav()
-                            }
-                            }>
-                            Vedi turni
-                        </NavDropdown.Item>
+                        {/*<NavDropdown.Item*/}
+                        {/*    onClick={() => {*/}
+                        {/*        navigate(AppRoutes.shifts)*/}
+                        {/*        closeNav()*/}
+                        {/*    }*/}
+                        {/*    }>*/}
+                        {/*    Vedi turni*/}
+                        {/*</NavDropdown.Item>*/}
 
                     </NavDropdown>
 
