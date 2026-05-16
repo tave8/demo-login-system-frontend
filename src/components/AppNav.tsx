@@ -6,11 +6,11 @@ import { useAuth } from "../auth/AuthContext"
 import {AppEvent, AppEventMessage, AppEventMessageType, AppRoutes} from "../js/my_types"
 import AppEventDispatcher from "../js/AppEventDispatcher.ts";
 import AppNotificationBell from "./AppNotificationBell.tsx";
-import NavContentAuth from "./navbar/NavContentAuth.tsx";
-import NavContentSettings from "./navbar/NavContentSettings.tsx";
-import NavContentForAdmin from "./navbar/NavContentForAdmin.tsx";
-import NavContentForOperator from "./navbar/NavContentForOperator.tsx";
-import NavContentForCoordinator from "./navbar/NavContentForCoordinator.tsx";
+import PublicNav from "./navbar/PublicNav.tsx";
+import NavSettings from "./navbar/NavSettings.tsx";
+import AdminNav from "./navbar/AdminNav.tsx";
+import OperatorNav from "./navbar/OperatorNav.tsx";
+import CoordinatorNav from "./navbar/CoordinatorNav.tsx";
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
 
@@ -47,21 +47,21 @@ const MyNav = () => {
           <Navbar.Collapse id="basic-navbar-nav">
 
             {/* for admin */}
-            <NavContentForAdmin setNavExpanded={setNavExpanded} />
+            <AdminNav setNavExpanded={setNavExpanded} />
 
             {/* for coordinator */}
-            <NavContentForCoordinator setNavExpanded={setNavExpanded} />
+            <CoordinatorNav setNavExpanded={setNavExpanded} />
 
             {/* for operator */}
-            <NavContentForOperator setNavExpanded={setNavExpanded} />
+            <OperatorNav setNavExpanded={setNavExpanded} />
 
 
 
             {/* user settings */}
-            <NavContentSettings setNavExpanded={setNavExpanded} />
+            <NavSettings setNavExpanded={setNavExpanded} />
 
             {/* login & signup */}
-            <NavContentAuth setNavExpanded={setNavExpanded} />
+            <PublicNav setNavExpanded={setNavExpanded} />
 
           </Navbar.Collapse>
         </Container>

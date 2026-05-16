@@ -9,7 +9,7 @@ interface Props {
     setNavExpanded: (x: boolean) => void
 }
 
-export default function NavContentAuth({ setNavExpanded }: Props) {
+export default function PublicNav({ setNavExpanded }: Props) {
 
     const navigate = useNavigate()
 

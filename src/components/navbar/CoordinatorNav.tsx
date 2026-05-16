@@ -8,7 +8,7 @@ interface Props {
     setNavExpanded: (x: boolean) => void
 }
 
-export default function NavContentForCoordinator({ setNavExpanded }: Props) {
+export default function CoordinatorNav({ setNavExpanded }: Props) {
     const navigate = useNavigate()
 
     const { login, logout, authenticated, user } = useAuth()

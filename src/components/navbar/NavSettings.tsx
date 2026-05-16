@@ -18,7 +18,7 @@ interface handleLogoutParams {
 }
 
 
-export default function NavContentSettings({ setNavExpanded }: Props) {
+export default function NavSettings({ setNavExpanded }: Props) {
 
     const navigate = useNavigate()
 

@@ -8,7 +8,7 @@ interface Props {
     setNavExpanded: (x: boolean) => void
 }
 
-export default function NavContentForAdmin({ setNavExpanded }: Props) {
+export default function AdminNav({ setNavExpanded }: Props) {
     const navigate = useNavigate()
 
     const { login, logout, authenticated, user } = useAuth()
