@@ -57,7 +57,7 @@ export default function AdminDashboardPage() {
                 setOperators(operatorsFromAPI)
             })
             .catch(err => {
-
+                console.error(err)
             })
 
     }, []);
@@ -65,13 +65,9 @@ export default function AdminDashboardPage() {
 
     useEffect(() => {
 
-        // empty operator stats, before loading it again
         setOperatorStats([])
 
-        operators.forEach(operator => {
-
-
-
+        const promises = operators.map(operator =>
             shiftsAPI
                 .findConflictsByOperatorBetweenDates(
                     operator.userId,
@@ -79,37 +75,22 @@ export default function AdminDashboardPage() {
                     endOfWeek,
                     daysOfWeek
                 )
-                .then(conflictsInfo => {
-                    // setOperators(operatorsFromAPI)
+                .then(conflictsInfo => ({ operator, conflictsInfo }))
+        )
 
-                    // console.log(conflictsInfo)
+        Promise
+            .all(promises)
+            .then((results) => {
+                const stats = results.map(({ operator, conflictsInfo }) =>
+                    getOperatorStat(operator, conflictsInfo)
+                )
+                setOperatorStats(stats)
+            })
+            .catch(err => {
+                console.error(err)
+            })
 
-                    const operatorStat = getOperatorStat(operator, conflictsInfo)
-
-                    // bug fix: this wasn't working because operatorStats was
-                    // the value captured at the useEffect hook start, and was not updated
-                    // at each loop's iteration. solution: use functional style/callback
-                    // that always captures the latest state
-                    // setOperatorStats([
-                    //     ...operatorStats,
-                    //     operatorStat
-                    // ])
-
-                    setOperatorStats(prev => [...prev, operatorStat])
-
-                    // console.log(operatorStats)
-
-                    // console.log(conflictsInfo)
-                })
-                .catch(err => {
-
-                })
-
-        })
-
-
-    }, [operators]);
-
+    }, [operators])
 
     /**
      * Turn conflicts info into an operator stat by weekday.
