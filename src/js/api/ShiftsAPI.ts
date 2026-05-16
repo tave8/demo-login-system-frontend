@@ -135,6 +135,8 @@ export default class ShiftsAPI extends BaseAPI {
     }
 
 
+
+
     public async findShiftsBetweenDates(startDate: string|null=null,
                                         endDate: string|null = null): Promise<ShiftFromAPI[]>
     {
@@ -196,5 +198,40 @@ export default class ShiftsAPI extends BaseAPI {
     //
     // findOperatorsWithoutShiftsBetween(start date, end date): list of operators
 
+
+    public async findMyShiftsBetweenDates(startDate: string|null=null,
+                                         endDate: string|null = null): Promise<ShiftFromAPI[]>
+    {
+
+        const params: ShiftQueryParamsToAPI = {}
+
+        if(startDate) {
+            params.from = startDate
+        }
+
+        if(endDate) {
+            params.to = endDate
+        }
+
+        const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
+
+        const resp: Response = await this.doFetchAtWithParams(
+            "/operators/me/shifts",
+            config,
+            params as unknown as Record<string, string>
+        )
+
+        const data = await this.parseJSON<ShiftFromAPI[]>(resp)
+
+        return data
+
+    }
+
+    public async findMyShiftsToday(): Promise<ShiftFromAPI[]>
+    {
+        const today = TimeHelper.today()
+
+        return this.findMyShiftsBetweenDates(today, today);
+    }
 
 }
