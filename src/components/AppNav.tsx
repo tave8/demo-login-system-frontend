@@ -36,7 +36,7 @@ const MyNav = () => {
               onClick={closeNav}
               className="nav-item navbar-brand">
             <img
-                src="/public/logo-horizontal.png"
+                src="/logo-horizontal.png"
                 alt="ZeroChiamate"
                 height={22}
                 style={{ marginRight: "8px" }}
