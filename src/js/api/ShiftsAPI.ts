@@ -7,13 +7,13 @@ import {
     ArticleFromAPI,
     ArticlesPageFromAPI, ChecklistsPageFromAPI, ClientAddressesPageFromAPI,
     ClientAddressFromAPI, ClientAddressToAPI, ClientFromAPI, ClientQueryParamsToAPI, ClientsPageFromAPI,
-    ClientToAPI, EnrichedArticleFromAPI, EnrichedArticlesPageFromAPI, EnrichedClientAddressesPageFromAPI,
+    ClientToAPI, DayOfWeek, EnrichedArticleFromAPI, EnrichedArticlesPageFromAPI, EnrichedClientAddressesPageFromAPI,
     EnrichedClientAddressFromAPI,
     EnrichedClientFromAPI,
     EnrichedClientsPageFromAPI, EnrichedTaskFromAPI, EnrichedTasksPageFromAPI,
     EnrichedUserFromAPI, EnrichedUsersPageFromAPI,
     NewUserFromAPI,
-    NewUserToAPI,
+    NewUserToAPI, OperatorShiftConflictsFromAPI,
     RequestMethod,
     RequireLogin, ShiftFromAPI, ShiftQueryParamsToAPI, ShiftToAPI, TaskFromAPI, TasksPageFromAPI, TaskToAPI,
     UpdatedUserToAPI,
@@ -100,6 +100,39 @@ export default class ShiftsAPI extends BaseAPI {
     //
     //     return data
     // }
+
+    public async findConflictsByOperatorBetweenDates(operatorId: string,
+                                                     startDate: string,
+                                                     endDate: string,
+                                                     days: DayOfWeek[]): Promise<OperatorShiftConflictsFromAPI>
+    {
+
+        const params: {
+            from: string
+            to: string
+            days: DayOfWeek[]
+        } = {
+            from: startDate,
+            to: endDate,
+            days
+        }
+
+
+        const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
+
+        const endpoint = `/operators/${operatorId}/shifts/conflicts`
+
+        const resp: Response = await this.doFetchAtWithParams(
+            endpoint,
+            config,
+            params as unknown as Record<string, string>
+        )
+
+        const data = await this.parseJSON<OperatorShiftConflictsFromAPI>(resp)
+
+        return data
+
+    }
 
 
     public async findShiftsBetweenDates(startDate: string|null=null,

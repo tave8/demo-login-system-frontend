@@ -645,6 +645,16 @@ export interface ShiftFromAPI {
   endTime: string
 }
 
+
+export interface OperatorShiftConflictsFromAPI {
+    hasConflicts: boolean
+    startDate: string
+    endDate: string
+    startTime: string
+    endTime: string
+    shifts: ShiftFromAPI[]
+}
+
 // enriched item extends item
 // export interface EnrichedChecklistFromAPI extends ChecklistFromAPI {
 // }

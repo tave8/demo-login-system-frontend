@@ -3,19 +3,45 @@ import UsersAPI from "../../../js/api/UsersAPI.ts";
 import {useEffect, useState} from "react";
 import ClientsAPI from "../../../js/api/ClientsAPI.ts";
 import ClientAddressesAPI from "../../../js/api/ClientAddressesAPI.ts";
-import {UserFromAPI} from "../../../js/my_types.ts";
+import {DayOfWeek, OperatorShiftConflictsFromAPI, UserFromAPI} from "../../../js/my_types.ts";
+import ShiftsAPI from "../../../js/api/ShiftsAPI.ts";
+import TimeHelper from "../../../js/helpers/TimeHelper.ts";
 
 const clientsAPI = ClientsAPI.getInstance()
 const clientAddressesAPI = ClientAddressesAPI.getInstance()
 const usersAPI = UsersAPI.getInstance()
+const shiftsAPI = ShiftsAPI.getInstance()
 
 
+
+interface OperatorStat {
+    operator: UserFromAPI
+    stat: Record<DayOfWeek, boolean>
+}
+
+
+const startOfWeek = TimeHelper.startOfWeek()
+const endOfWeek = TimeHelper.endOfWeek()
+const daysOfWeek = [
+    DayOfWeek.MONDAY,
+    DayOfWeek.TUESDAY,
+    DayOfWeek.WEDNESDAY,
+    DayOfWeek.THURSDAY,
+    DayOfWeek.FRIDAY,
+    DayOfWeek.SATURDAY,
+    DayOfWeek.SUNDAY,
+]
 
 export default function AdminDashboardPage() {
+    // ****************************
+    // OPERATORS
+    // ****************************
+
     const [operators, setOperators] = useState<UserFromAPI[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [isError, setIsError] = useState(false)
 
+    const [operatorStats, setOperatorStats] = useState<OperatorStat[]>([])
 
     // ****************************
     // LOAD OPERATORS WHEN THIS ROUTE IS TRIGGERED
@@ -23,16 +49,99 @@ export default function AdminDashboardPage() {
 
     useEffect(() => {
 
+        setOperators([])
+
         usersAPI
             .findOperators()
-            .then(_operatorsFromAPI => {
-                setOperators(_operatorsFromAPI)
+            .then(operatorsFromAPI => {
+                setOperators(operatorsFromAPI)
             })
             .catch(err => {
 
             })
 
     }, []);
+
+
+    useEffect(() => {
+
+        // empty operator stats, before loading it again
+        setOperatorStats([])
+
+        operators.forEach(operator => {
+
+
+
+            shiftsAPI
+                .findConflictsByOperatorBetweenDates(
+                    operator.userId,
+                    startOfWeek,
+                    endOfWeek,
+                    daysOfWeek
+                )
+                .then(conflictsInfo => {
+                    // setOperators(operatorsFromAPI)
+
+                    // console.log(conflictsInfo)
+
+                    const operatorStat = getOperatorStat(operator, conflictsInfo)
+
+                    // bug fix: this wasn't working because operatorStats was
+                    // the value captured at the useEffect hook start, and was not updated
+                    // at each loop's iteration. solution: use functional style/callback
+                    // that always captures the latest state
+                    // setOperatorStats([
+                    //     ...operatorStats,
+                    //     operatorStat
+                    // ])
+
+                    setOperatorStats(prev => [...prev, operatorStat])
+
+                    // console.log(operatorStats)
+
+                    // console.log(conflictsInfo)
+                })
+                .catch(err => {
+
+                })
+
+        })
+
+
+    }, [operators]);
+
+
+    /**
+     * Turn conflicts info into an operator stat by weekday.
+     */
+    const getOperatorStat = (operator: UserFromAPI,
+                                                                conflictsInfo: OperatorShiftConflictsFromAPI): OperatorStat =>
+    {
+
+        const stat = {
+            MONDAY: false,
+            TUESDAY: false,
+            WEDNESDAY: false,
+            THURSDAY: false,
+            FRIDAY: false,
+            SATURDAY: false,
+            SUNDAY: false
+        }
+
+        conflictsInfo.shifts.forEach(conflictingShift => {
+            // the days of the conflicting shifts are marked as conflicting
+            conflictingShift.days.forEach(conflictingDay => {
+                // the conflicting day is marked as conflicting
+                stat[conflictingDay.day] = true
+            })
+        })
+
+        return {
+            operator,
+            stat
+        }
+
+    }
 
 
     return (
@@ -66,17 +175,17 @@ export default function AdminDashboardPage() {
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {operators.map(operator => (
+                                    {operatorStats.map(operatorStat => (
                                         // make this key unique
-                                        <tr key={operator.userId}>
-                                            <td>{operator.firstname} {operator.lastname}</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                        <tr key={operatorStat.operator.userId}>
+                                            <td>{operatorStat.operator.firstname} {operatorStat.operator.lastname}</td>
+                                            <td>{operatorStat.stat.MONDAY ? "✅" : "❌"}</td>
+                                            <td>{operatorStat.stat.TUESDAY ? "✅" : "❌"}</td>
+                                            <td>{operatorStat.stat.WEDNESDAY ? "✅" : "❌"}</td>
+                                            <td>{operatorStat.stat.THURSDAY ? "✅" : "❌"}</td>
+                                            <td>{operatorStat.stat.FRIDAY ? "✅" : "❌"}</td>
+                                            <td>{operatorStat.stat.SATURDAY ? "✅" : "❌"}</td>
+                                            <td>{operatorStat.stat.SUNDAY ? "✅" : "❌"}</td>
                                         </tr>
                                     ))}
                                     </tbody>
