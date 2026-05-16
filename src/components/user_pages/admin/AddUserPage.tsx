@@ -324,7 +324,9 @@ const getCopyPasteMessage = (userFromAPI: NewUserFromAPI|null): string => {
 
         return [
             `Ciao ${userFromAPI.firstname},`,
-            `ti ho appena aggiunto al gestionale Operavion.`,
+            `ti ho appena aggiunto come coordinatore al gestionale ZeroChiamate.`,
+            ``,
+            `ZeroChiamate ti permette di gestire turni, operatori e cantieri dei clienti — tutto in un unico posto, da qualsiasi dispositivo.`,
             ``,
             `Ecco le tue credenziali:`,
             ``,
@@ -350,7 +352,9 @@ const getCopyPasteMessage = (userFromAPI: NewUserFromAPI|null): string => {
     // OPERATOR
     return [
         `Ciao ${userFromAPI.firstname},`,
-        `ti ho appena aggiunto al gestionale Operavion.`,
+        `ti ho appena aggiunto al gestionale ZeroChiamate.`,
+        ``,
+        `ZeroChiamate ti permette di vedere i tuoi turni, le sedi dove devi andare e le attività da svolgere — tutto in un unico posto, dal tuo telefono.`,
         ``,
         `Ecco le tue credenziali:`,
         ``,
