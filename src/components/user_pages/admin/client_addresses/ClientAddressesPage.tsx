@@ -1,4 +1,4 @@
-import {Alert, Button, Col, Container, Row, Table} from "react-bootstrap";
+import {Alert, Button, Col, Container, Modal, Row, Table} from "react-bootstrap";
 import UsersAPI from "../../../../js/api/UsersAPI.ts";
 import {useEffect, useRef, useState} from "react";
 import ArticlesAPI from "../../../../js/api/ArticlesAPI.ts";
@@ -11,6 +11,7 @@ import L from 'leaflet'
 // @ts-ignore
 import 'leaflet/dist/leaflet.css'
 import ClientAddressRow from "./ClientAddressRow.tsx";
+import {InfoCircleFill, QuestionCircle, XLg} from "react-bootstrap-icons";
 
 
 const clientsAPI = ClientsAPI.getInstance()
@@ -89,6 +90,16 @@ export default function ClientAddressesPage() {
     }, [clientAddresses])
 
 
+    // ***********************
+    // MODAL THAT EXPLAINS "CONTRACT EXPECTATIONS"
+    // **********************
+
+    // 1. Define the visibility state (starts as closed/false)
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+    // 2. Helper functions to mutate the state
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
 
 
     return (
@@ -100,9 +111,9 @@ export default function ClientAddressesPage() {
                         {/* title */}
                         <Row className={"mb-3"}>
                             <Col>
-                                <h1 className="text-center">Sedi dei Clienti</h1>
+                                <h1 className="text-center">Cantieri</h1>
                                 <Alert variant={"primary"}>
-                                    Qui trovi le sedi operative / cantieri dei tuoi clienti.
+                                    Qui trovi i cantieri dei tuoi clienti.
                                 </Alert>
                             </Col>
                         </Row>
@@ -117,7 +128,15 @@ export default function ClientAddressesPage() {
                                         <th>Cliente</th>
                                         <th>Nome sede</th>
                                         <th>Indirizzo sede</th>
-                                        <th>Aspettative di Contratto</th>
+                                        <th
+                                            onClick={openModal}
+                                            style={{ cursor: 'pointer', userSelect: 'none' }}
+                                        >
+                                            <div className="d-flex align-items-center gap-1">
+                                                <span>Aspettative <br/> di Contratto</span>
+                                                <QuestionCircle size={14} className="text-muted" />
+                                            </div>
+                                        </th>
                                         <th>Azioni</th>
                                     </tr>
                                     </thead>
@@ -143,6 +162,39 @@ export default function ClientAddressesPage() {
 
                     </Col>
                 </Row>
+
+
+                <Modal show={isModalOpen} onHide={closeModal} centered>
+                    <Modal.Header className="align-items-center justify-content-between">
+                        <Modal.Title className="d-flex align-items-center gap-2" style={{ fontSize: '1.15rem' }}>
+                            <InfoCircleFill className="text-primary" size={20} />
+                            <span className="fw-bold">Cosa sono le Aspettative?</span>
+                        </Modal.Title>
+                        <Button variant="link" className="text-dark p-0" onClick={closeModal}>
+                            <XLg size={16} />
+                        </Button>
+                    </Modal.Header>
+
+                    <Modal.Body style={{ fontSize: '0.95rem', lineHeight: '1.6' }}>
+                        <p>
+                            Le <strong>Aspettative di Contratto</strong> rappresentano gli obblighi
+                            contrattuali che riguardano i turni, orari e preferenze del cliente in un dato cantiere.
+                            Per notificarti di cosa manca nel tuo account aziendale di ZeroChiamate che invece è scritto nel contratto,
+                            l'Intelligenza Artificiale calcola la differenza
+                            tra "quello è scritto contrattualmente" e "quello che hai effettivamente inserito in ZeroChiamate".
+                            Avere un sistema automatizzato che rileva queste discrepanze
+                            riduce i clienti insoddisfatti e migliora l'operatività giornaliera, permettendoti di concencentrarti
+                            più sulla crescita.
+                        </p>
+                    </Modal.Body>
+
+                    <Modal.Footer>
+                        <Button variant="primary" size="sm" onClick={closeModal}>
+                            Ho capito
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
             </Container>
         </>
     )

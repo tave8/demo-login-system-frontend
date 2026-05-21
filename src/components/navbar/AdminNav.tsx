@@ -94,14 +94,14 @@ export default function AdminNav({ setNavExpanded }: Props) {
                     </NavDropdown>
 
                     {/* CLIENTS ADDRESSES */}
-                    <NavDropdown title="Sedi clienti" id="basic-nav-dropdown" align="end">
+                    <NavDropdown title="Cantieri" id="basic-nav-dropdown" align="end">
                         <NavDropdown.Item
                             onClick={() => {
                                 navigate(AppRoutes.clientAddresses)
                                 closeNav()
                             }
                             }>
-                            Vedi sedi
+                            Vedi cantieri
                         </NavDropdown.Item>
 
                         {/* divider */}
@@ -112,7 +112,7 @@ export default function AdminNav({ setNavExpanded }: Props) {
                                 navigate(AppRoutes.addClientAddress)
                                 closeNav()
                             }}>
-                            Aggiungi sede
+                            Aggiungi cantiere
                         </NavDropdown.Item>
                     </NavDropdown>
 
