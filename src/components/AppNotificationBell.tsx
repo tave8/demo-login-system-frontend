@@ -97,12 +97,12 @@ export default function AppNotificationBell() {
             {open && (
                 <div className="dropdown-menu show shadow" style={{ width: 320, right: 0, left: "auto" }}>
                     <div className="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
-                        <strong>Notifications</strong>
+                        <strong>Notifiche</strong>
 
                         {/* last update */}
                         {lastFetchedAt && (
                             <small className="text-muted">
-                                Last updated: {lastFetchedAt ? TimeHelper.toRelativeTime(lastFetchedAt.toString()) : "never"}
+                                Aggiornato: {lastFetchedAt ? TimeHelper.toRelativeTime(lastFetchedAt.toString()) : "never"}
                             </small>
                         )}
 
@@ -121,9 +121,10 @@ export default function AppNotificationBell() {
                                 className={`px-3 py-2 border-bottom d-flex justify-content-between align-items-start ${n.readAt === null ? "bg-primary bg-opacity-10" : ""}`}
                             >
                                 <div>
-                                    <small className="text-muted text-uppercase">{n.type}</small>
+                                    {/*<small className="text-muted text-uppercase">{n.type}</small>*/}
                                     <p className="mb-1 fw-semibold">{n.title}</p>
                                     <p className="mb-0 text-muted small">{n.body}</p>
+                                    <p className="mb-0 text-muted small fst-italic">{n.createdAtAgo}</p>
                                 </div>
 
                                 {n.readAt === null && (
@@ -131,7 +132,7 @@ export default function AppNotificationBell() {
                                         className="btn btn-link btn-sm p-0 ms-2 text-nowrap"
                                         onClick={() => markAsRead(n.notificationId)}
                                     >
-                                        Mark read
+                                        Letto
                                     </button>
                                 )}
                             </div>
@@ -153,7 +154,7 @@ export default function AppNotificationBell() {
 
                         {/* no notifications */}
                         {!isNotificationListLoading && !isNotificationListError && notifications.length === 0 && (
-                            <p className="text-center text-muted py-4 mb-0">No notifications</p>
+                            <p className="text-center text-muted py-4 mb-0">Tutto ok</p>
                         )}
 
 
