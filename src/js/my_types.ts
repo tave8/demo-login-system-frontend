@@ -462,6 +462,48 @@ export interface ClientQueryParamsToAPI {
 }
 
 
+
+// *********************************
+// CONTRACT EXPECTATION
+// a contract expectation is associated to a client address
+
+
+/**
+ * Instead of using this interface, use ContractExpectationFromAPI interface,
+ * because it also contains useful state-related information such as
+ * exists, pending etc.
+ */
+export interface ContractExpectationDetailFromAPI {
+  id: string
+  clientAddressId: string
+  state: string
+  // the text extracted from AI, that represents
+  // the expectations in the contract with the client address
+  expectations: string
+  processedAt: string
+}
+
+/**
+ * Use this when retrieving the contract expectation from API.
+ */
+export interface ContractExpectationFromAPI {
+  exists: boolean
+  pending: boolean
+  failed: boolean
+  success: boolean
+  detail: ContractExpectationDetailFromAPI
+}
+
+/**
+ * This is what we send to the API when the user
+ * updates the contract expectation.
+ */
+export interface UpdatedContractExpectationToAPI {
+  // the updated expectations to send
+  updatedExpectations: string
+}
+
+
 // *********************************************
 // CLIENT ADDRESS (associating multiple  addresses to a client)
 
@@ -486,7 +528,8 @@ export interface ClientAddressFromAPI {
   clientName: string
   addressDisplayName: string
   addressLat: number
-  addressLon: number
+  addressLon: number,
+  contractExpectation: ContractExpectationFromAPI
 }
 
 // enriched item extends item
@@ -498,6 +541,9 @@ export interface ClientAddressesPageFromAPI extends Pagination<ClientAddressFrom
 
 // enriched item's page extends enriched page
 export interface EnrichedClientAddressesPageFromAPI extends Pagination<EnrichedClientAddressFromAPI> {}
+
+
+
 
 
 // ****************************************

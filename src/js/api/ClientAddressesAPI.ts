@@ -8,7 +8,8 @@ import {
     ArticlesPageFromAPI, ClientAddressesPageFromAPI,
     ClientAddressFromAPI,
     ClientAddressQueryParamsToAPI, ClientAddressToAPI, ClientFromAPI, ClientQueryParamsToAPI, ClientsPageFromAPI,
-    ClientToAPI, EnrichedArticleFromAPI, EnrichedArticlesPageFromAPI, EnrichedClientAddressesPageFromAPI,
+    ClientToAPI,
+    ContractExpectationFromAPI, EnrichedArticleFromAPI, EnrichedArticlesPageFromAPI, EnrichedClientAddressesPageFromAPI,
     EnrichedClientAddressFromAPI,
     EnrichedClientFromAPI,
     EnrichedClientsPageFromAPI,
@@ -121,6 +122,24 @@ export default class ClientAddressesAPI extends BaseAPI {
     }
 
 
+    /**
+     * Find contract expectation of client address.
+     */
+    public async findContractExpectation(clientAddressId: string): Promise<ContractExpectationFromAPI>
+    {
 
+        const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
+
+        const endpoint = `/client-addresses/${clientAddressId}/contract-expectations`
+
+        const resp: Response = await this.doFetchAt(endpoint, config)
+
+        const data = await this.parseJSON<ContractExpectationFromAPI>(resp)
+
+        return data
+
+    }
+
+    // public async updateContractExpectations
 
 }
