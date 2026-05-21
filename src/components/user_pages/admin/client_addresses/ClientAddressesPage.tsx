@@ -1,24 +1,16 @@
 import {Alert, Button, Col, Container, Row, Table} from "react-bootstrap";
-import UsersAPI from "../../../js/api/UsersAPI.ts";
+import UsersAPI from "../../../../js/api/UsersAPI.ts";
 import {useEffect, useRef, useState} from "react";
-import ArticlesAPI from "../../../js/api/ArticlesAPI.ts";
-import UnauthorizedError from "../../../js/exceptions/UnauthorizedError.ts";
-import {EnrichedClientAddressFromAPI, EnrichedClientFromAPI, EnrichedUserFromAPI} from "../../../js/my_types.ts";
-import ClientsAPI from "../../../js/api/ClientsAPI.ts";
-import ClientAddressesAPI from "../../../js/api/ClientAddressesAPI.ts";
+import ArticlesAPI from "../../../../js/api/ArticlesAPI.ts";
+import UnauthorizedError from "../../../../js/exceptions/UnauthorizedError.ts";
+import {EnrichedClientAddressFromAPI, EnrichedClientFromAPI, EnrichedUserFromAPI} from "../../../../js/my_types.ts";
+import ClientsAPI from "../../../../js/api/ClientsAPI.ts";
+import ClientAddressesAPI from "../../../../js/api/ClientAddressesAPI.ts";
 import { MapContainer, TileLayer, Marker, Tooltip } from 'react-leaflet'
 import L from 'leaflet'
 // @ts-ignore
 import 'leaflet/dist/leaflet.css'
-
-
-// fix default marker icon (known leaflet + webpack issue)
-// @ts-ignore
-// import markerIcon from 'leaflet/dist/images/marker-icon.png'
-// // @ts-ignore
-// import markerShadow from 'leaflet/dist/images/marker-shadow.png'
-// L.Icon.Default.mergeOptions({ iconUrl: markerIcon, shadowUrl: markerShadow })
-
+import ClientAddressRow from "./ClientAddressRow.tsx";
 
 
 const clientsAPI = ClientsAPI.getInstance()
@@ -29,11 +21,6 @@ export default function ClientAddressesPage() {
     const [isLoading, setIsLoading] = useState(true)
     const [isError, setIsError] = useState(false)
 
-
-    // center on first address, or default to Italy
-    // const center = clientAddresses.length > 0
-    //     ? [clientAddresses[0].addressLat, clientAddresses[0].addressLon]
-    //     : [41.9028, 12.4964]  // Rome, Italy
 
     const center = [41.9028, 12.4964]  // Rom
 
@@ -130,22 +117,18 @@ export default function ClientAddressesPage() {
                                         <th>Cliente</th>
                                         <th>Nome sede</th>
                                         <th>Indirizzo sede</th>
+                                        <th>Aspettative di Contratto</th>
                                         <th>Azioni</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {clientAddresses.map(client => (
-                                        // make this key unique
-                                        <tr key={client.clientId + "" + client.addressId}>
-                                            <td>{client.clientName}</td>
-                                            <td>{client.addressName}</td>
-                                            <td>{client.addressDisplayName}</td>
-                                            <td>
-                                                {/*<Button variant="outline-primary" size="sm">Modifica</Button>*/}
-                                                {/*{' '}*/}
-                                                {/*<Button variant="outline-danger" size="sm">Elimina</Button>*/}
-                                            </td>
-                                        </tr>
+                                    {clientAddresses.map(clientAddress => (
+
+                                        <ClientAddressRow
+                                            key={clientAddress.clientId + "" + clientAddress.addressId}
+                                            clientAddress={clientAddress}
+                                        />
+
                                     ))}
                                     </tbody>
                                 </Table>

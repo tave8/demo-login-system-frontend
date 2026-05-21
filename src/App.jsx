@@ -35,7 +35,7 @@ import CoordinatorDashboardPage from "./components/user_pages/coordinator/Coordi
 import OperatorDashboardPage from "./components/user_pages/operator/OperatorDashboardPage.tsx";
 import ClientsPage from "./components/user_pages/admin/ClientsPage.tsx";
 import AddClientPage from "./components/user_pages/admin/AddClientPage.tsx";
-import ClientAddressesPage from "./components/user_pages/admin/ClientAddressesPage.tsx";
+import ClientAddressesPage from "./components/user_pages/admin/client_addresses/ClientAddressesPage.tsx";
 import AddClientAddressPage from "./components/user_pages/admin/AddClientAddressPage.tsx";
 import TasksPage from "./components/user_pages/admin/TasksPage.tsx";
 import AddTaskPage from "./components/user_pages/admin/AddTaskPage.tsx";
