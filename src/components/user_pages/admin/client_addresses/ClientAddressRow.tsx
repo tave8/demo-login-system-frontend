@@ -86,7 +86,7 @@ export default function ClientAddressRow({ clientAddress }: ComponentProps) {
     {
 
         navigate(
-            AppRoutes.contractExpectationsWith(clientAddress.id)
+            AppRoutes.contractExpectationWith(clientAddress.id)
         )
 
     }

@@ -44,6 +44,7 @@ import AddChecklistPage from "./components/user_pages/admin/AddChecklistPage.tsx
 import AddChecklistToClientAddressPage from "./components/user_pages/admin/AddChecklistToClientAddressPage.tsx";
 import ShiftsPage from "./components/user_pages/admin/ShiftsPage.tsx";
 import AddShiftPage from "./components/user_pages/admin/add_shift/AddShiftPage.tsx";
+import ContractExpectationPage from "./components/user_pages/admin/client_addresses/ContractExpectationPage.tsx";
 
 
 function App() {
@@ -167,6 +168,17 @@ function App() {
                                   element={
                                       <ProtectedRoute allowOnlyRoles={[UserRole.ADMIN]}>
                                           <AddClientAddressPage />
+                                      </ProtectedRoute>
+                                  }
+                              />
+
+
+
+                              <Route
+                                  path={AppRoutes.contractExpectation}
+                                  element={
+                                      <ProtectedRoute allowOnlyRoles={[UserRole.ADMIN]}>
+                                          <ContractExpectationPage />
                                       </ProtectedRoute>
                                   }
                               />

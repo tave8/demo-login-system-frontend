@@ -70,8 +70,11 @@ export const AppRoutes = {
   clientAddresses: "/u/client-addresses",
   addClientAddress: "/u/client-addresses/add",
 
+  // url pattern
+  contractExpectation: `/client-addresses/:clientAddressId/contract-expectations`,
+
   // see the contract expectations of this client address
-  contractExpectationsWith: (clientAddressId: string) => `/client-addresses/${clientAddressId}/contract-expectations`,
+  contractExpectationWith: (clientAddressId: string) => `/client-addresses/${clientAddressId}/contract-expectations`,
 
   addChecklistToClientAddress: "/u/client-addresses/checklists/add",
 
