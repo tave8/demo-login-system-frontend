@@ -505,7 +505,9 @@ export interface ContractExpectationFromAPI {
   pending: boolean
   failed: boolean
   success: boolean
-  detail: ContractExpectationDetailFromAPI
+  // if the contract expectation does not exist,
+  // value is null
+  detail: ContractExpectationDetailFromAPI | null
 }
 
 /**
@@ -514,7 +516,7 @@ export interface ContractExpectationFromAPI {
  */
 export interface UpdatedContractExpectationToAPI {
   // the updated expectations to send
-  updatedExpectations: string
+  expectations: string
 }
 
 
