@@ -70,6 +70,9 @@ export const AppRoutes = {
   clientAddresses: "/u/client-addresses",
   addClientAddress: "/u/client-addresses/add",
 
+  // see the contract expectations of this client address
+  contractExpectationsWith: (clientAddressId: string) => `/client-addresses/${clientAddressId}/contract-expectations`,
+
   addChecklistToClientAddress: "/u/client-addresses/checklists/add",
 
   tasks: "/u/tasks",
@@ -189,6 +192,14 @@ export const AppEventMessage: Record<Language, Record<AppEventMessageType, strin
 
 }
 
+
+/**
+ * When a background job is accepted from API.
+ */
+export interface BackgroundJobAcceptedFromAPI {
+  message: string
+  timestamp: string
+}
 
 
 // PAGINATION
@@ -504,6 +515,7 @@ export interface UpdatedContractExpectationToAPI {
 }
 
 
+
 // *********************************************
 // CLIENT ADDRESS (associating multiple  addresses to a client)
 
@@ -531,6 +543,8 @@ export interface ClientAddressFromAPI {
   addressLon: number,
   contractExpectation: ContractExpectationFromAPI
 }
+
+
 
 // enriched item extends item
 export interface EnrichedClientAddressFromAPI extends ClientAddressFromAPI {

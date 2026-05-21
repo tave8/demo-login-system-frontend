@@ -137,7 +137,7 @@ export default function ClientAddressesPage() {
                         </Row>
 
                         {/* map of client addresses    */}
-                        <Row>
+                        <Row className={"mt-5"}>
                             <div id="map" style={{ height: "400px", width: "100%" }} />
                         </Row>
 
