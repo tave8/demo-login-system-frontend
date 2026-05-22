@@ -119,7 +119,7 @@ export default class NotificationsAPI extends BaseAPI {
      * Mark notification as read.
      */
     public async markNotificationAsRead(notificationId: string): Promise<NotificationFromAPI> {
-        const config = APIHelper.getFetchConfigFor(RequestMethod.PATCH, RequireLogin.YES)
+        const config = APIHelper.getFetchConfigFor(RequestMethod.PATCH, RequireLogin.YES, {}, true)
 
         const resp: Response = await this.doFetchAt(`/notifications/${notificationId}/read`, config)
 
