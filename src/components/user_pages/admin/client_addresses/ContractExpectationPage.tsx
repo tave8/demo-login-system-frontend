@@ -2,7 +2,7 @@ import {useState} from "react";
 import {
     AppEvent,
     AppEventMessageType,
-    AppRoutes,
+    AppRoutes, ClientAddressFromAPI,
     ContractExpectationFromAPI,
     UpdatedContractExpectationToAPI
 } from "../../../../js/my_types.ts";
@@ -10,6 +10,8 @@ import {useNavigate, useParams} from "react-router-dom";
 import ClientAddressesAPI from "../../../../js/api/ClientAddressesAPI.ts";
 import BadRequestError from "../../../../js/exceptions/BadRequestError.ts";
 import AppEventDispatcher from "../../../../js/AppEventDispatcher.ts";
+import {Col, Container, Row} from "react-bootstrap";
+import AddShiftForm from "../add_shift/AddShiftForm.tsx";
 
 const appEventDispatcher = AppEventDispatcher.getInstance()
 
@@ -22,32 +24,42 @@ type RouteURLParams = {
 /**
  * What we get from the API.
  */
-const initialContractExpectation: ContractExpectationFromAPI = {
-    exists: false,
-    pending: false,
-    success: false,
-    failed: false,
-    detail: {
-        id: "",
-        clientAddressId: "",
-        state: "",
-        expectations: "",
-        processedAt: ""
+const initialClientAddress: ClientAddressFromAPI = {
+    id: "",
+    clientId: "",
+    addressId: "",
+    clientName: "",
+    addressDisplayName: "",
+    addressName:  "",
+    addressLat: 0,
+    addressLon: 0,
+    contractExpectation: {
+        exists: false,
+        pending: false,
+        success: false,
+        failed: false,
+        detail: {
+            id: "",
+            clientAddressId: "",
+            state: "",
+            expectations: "",
+            processedAt: ""
+        }
     }
 }
 
 /**
  * What we send to the API.
  */
-const initialUpdatedContractExpectation: UpdatedContractExpectationToAPI = {
+const initialContractExpectation: UpdatedContractExpectationToAPI = {
     expectations: ""
 }
 
 
 export default function ContractExpectationPage() {
 
-    const [contractExpectation, setContractExpectation] = useState(initialContractExpectation)
-    const [updatedContractExpectation, setUpdatedContractExpectation] = useState(initialUpdatedContractExpectation)
+    const [clientAddress, setClientAddress] = useState(initialClientAddress)
+    const [updatedContractExpectation, setUpdatedContractExpectation] = useState(initialContractExpectation)
     const [isLoading, setIsLoading] = useState(true)
     const [isError, setIsError] = useState(false)
 
@@ -72,22 +84,22 @@ export default function ContractExpectationPage() {
 
 
         clientAddressesAPI
-            .findContractExpectation(clientAddressId)
-            .then((contractExpectationFromAPI) => {
+            .getClientAddress(clientAddressId)
+            .then((clientAddressFromAPI) => {
 
                 // what we get from API
-                setContractExpectation(contractExpectationFromAPI)
+                setClientAddress(clientAddressFromAPI)
 
                 // contract expectation exists? in the sense,
                 // is the detail not null?
-                if(contractExpectationFromAPI.detail) {
+                if(clientAddressFromAPI.contractExpectation.detail) {
 
                     // what we're going to send to API
                     setUpdatedContractExpectation({
                         ...updatedContractExpectation,
                         // we initialize the expectations to be updated,
                         // as the expectations that we got from API
-                        expectations: contractExpectationFromAPI.detail.expectations
+                        expectations: clientAddressFromAPI.contractExpectation.detail.expectations
                     })
 
                 } else {
@@ -116,8 +128,27 @@ export default function ContractExpectationPage() {
     }, [])
 
     return (
-        <>
-            <p>aspettative contratto</p>
-        </>
+        <Container fluid>
+            <Row className="d-flex justify-content-center">
+                <Col>
+
+                    {/* page title */}
+                    <Row className={"mb-3"}>
+                        <Col>
+                            <h1 className="text-center">Aspettative di Contratto</h1>
+                            <h3 className={"text-center"}>Cliente: {clientAddress.clientName}, Cantiere: {clientAddress.addressName}</h3>
+                        </Col>
+                    </Row>
+
+                    {/* fields */}
+                    <Row>
+                        <Col>
+
+                        </Col>
+                    </Row>
+
+                </Col>
+            </Row>
+        </Container>
     )
 }

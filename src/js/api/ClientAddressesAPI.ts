@@ -99,6 +99,22 @@ export default class ClientAddressesAPI extends BaseAPI {
         return data
     }
 
+
+    /**
+     * Get client address by ID.
+     */
+    public async getClientAddress(clientAddressId: string): Promise<ClientAddressFromAPI> {
+        const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
+
+        const endpoint = `/client-addresses/${clientAddressId}`
+
+        const resp: Response = await this.doFetchAt(endpoint, config)
+
+        const data = await this.parseJSON<ClientAddressFromAPI>(resp)
+
+        return data
+    }
+
     /**
      * Search client addresses.
      */
