@@ -662,7 +662,7 @@ export default class APIHelper {
     if (method == null || method == undefined) {
       throw new Error(`A fetch method cannot be nully. ` + `Make sure the caller is passing an actual RequestMethod enum type.`)
     }
-    return method == RequestMethod.PUT || method == RequestMethod.POST
+    return method == RequestMethod.PUT || method == RequestMethod.POST || method == RequestMethod.PATCH
   }
 
   /**

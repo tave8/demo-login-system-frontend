@@ -17,7 +17,7 @@ import {
     NewUserFromAPI,
     NewUserToAPI,
     RequestMethod,
-    RequireLogin,
+    RequireLogin, UpdatedContractExpectationToAPI,
     UpdatedUserToAPI,
     UserFromAPI, UsersPageFromAPI
 } from "../my_types"
@@ -155,6 +155,27 @@ export default class ClientAddressesAPI extends BaseAPI {
         return data
 
     }
+
+
+    /**
+     * Update contract expectation of client address.
+     */
+    public async updateContractExpectation(clientAddressId: string,
+                                           updatedContractExpectation: UpdatedContractExpectationToAPI): Promise<ContractExpectationFromAPI>
+    {
+
+        const config = APIHelper.getFetchConfigFor(RequestMethod.PATCH, RequireLogin.YES, updatedContractExpectation)
+
+        const endpoint = `/client-addresses/${clientAddressId}/contract-expectations`
+
+        const resp: Response = await this.doFetchAt(endpoint, config)
+
+        const data = await this.parseJSON<ContractExpectationFromAPI>(resp)
+
+        return data
+
+    }
+
 
     /**
      * Upload contract to be processed, to extract expectations.

@@ -3,7 +3,7 @@ import {
     AppEvent,
     AppEventMessageType,
     AppRoutes, ClientAddressFromAPI,
-    ContractExpectationFromAPI, DAY_LABELS, DayOfWeek,
+    ContractExpectationFromAPI, DAY_LABELS, DayOfWeek, ShiftToAPI,
     UpdatedContractExpectationToAPI
 } from "../../../../js/my_types.ts";
 import {useNavigate, useParams} from "react-router-dom";
@@ -18,9 +18,15 @@ const appEventDispatcher = AppEventDispatcher.getInstance()
 
 const clientAddressesAPI = ClientAddressesAPI.getInstance()
 
+
 type RouteURLParams = {
     clientAddressId: string
 }
+
+interface HandleUpdateContractExpectationParams {
+
+}
+
 
 /**
  * What we get from the API.
@@ -110,6 +116,8 @@ export default function ContractExpectationPage() {
                     })
                 }
 
+                // initialize the
+
 
             })
             .catch((err: Error) => {
@@ -151,7 +159,9 @@ export default function ContractExpectationPage() {
                                 }}
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter") {
-                                        // handleAddShift(shiftToAPI)({ setIsError, setIsLoading, setFormValues, setShiftToAPI, setChecklistsFromAPI });
+
+                                        handleUpdateContractExpectation(clientAddress.id, updatedContractExpectation)()
+
                                     }
                                 }}>
 
@@ -168,7 +178,15 @@ export default function ContractExpectationPage() {
                                                     id="comments"
                                                     rows={15}
                                                     placeholder="Inserisci i tuoi comandi per l'AI"
-                                                    value={clientAddress.contractExpectation.detail?.expectations}
+                                                    value={updatedContractExpectation.expectations}
+                                                    onChange={(e) => {
+
+                                                        setUpdatedContractExpectation({
+                                                            ...updatedContractExpectation,
+                                                            expectations: e.target.value
+                                                        })
+
+                                                    }}
                                                 />
                                             </div>
                                         </Col>
@@ -190,7 +208,7 @@ export default function ContractExpectationPage() {
                                             // disabled={isLoading}
                                             variant="primary"
                                             onClick={() => {
-                                                // handleAddShift(shiftToAPI)({ setIsError, setIsLoading, setFormValues, setShiftToAPI, setChecklistsFromAPI });
+                                                handleUpdateContractExpectation(clientAddress.id, updatedContractExpectation)()
                                             }}
                                         >
                                             Modifica
@@ -206,4 +224,41 @@ export default function ContractExpectationPage() {
             </Row>
         </Container>
     )
+}
+
+
+
+
+
+const handleUpdateContractExpectation = (clientAddressId: string,
+                                                                            updatedContractExpectation: UpdatedContractExpectationToAPI) =>
+{
+    return async () => {
+
+
+        clientAddressesAPI
+            .updateContractExpectation(clientAddressId, updatedContractExpectation)
+            .then((contractExpectationFromAPI) => {
+
+
+                appEventDispatcher.dispatchStandard(
+                    AppEvent.APP_SUCCESS,
+                    AppEventMessageType.SAVE_SUCCESS
+                )
+
+            })
+            .catch((err: Error) => {
+
+                if (err instanceof BadRequestError) {
+
+                    appEventDispatcher.dispatchStandard(
+                        AppEvent.APP_ERROR,
+                        AppEventMessageType.BAD_REQUEST
+                    )
+
+                }
+
+            })
+    }
+
 }
