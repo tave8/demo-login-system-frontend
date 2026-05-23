@@ -13,6 +13,19 @@ import 'leaflet/dist/leaflet.css'
 import ClientAddressRow from "./ClientAddressRow.tsx";
 import {InfoCircleFill, QuestionCircle, XLg} from "react-bootstrap-icons";
 
+// fix: leaflet prefixes the markers/icons with local path,
+// but once deployed remote, it breaks. solution:
+// we must create our own custom icon, pointing to a CDN
+export const safeLeafletIcon = new L.Icon({
+    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+    iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+    iconSize: [25, 41],         // Standard Leaflet icon dimensions
+    iconAnchor: [12, 41],       // Point of the icon which will correspond to marker's location
+    popupAnchor: [1, -34],      // Point from which the popup should open relative to the iconAnchor
+    shadowSize: [41, 41]        // Standard shadow dimensions
+});
+
 
 const clientsAPI = ClientsAPI.getInstance()
 const clientAddressesAPI = ClientAddressesAPI.getInstance()
@@ -72,7 +85,7 @@ export default function ClientAddressesPage() {
 
         // for each client address, add marker and bind tooltip to it
         clientAddresses.forEach(address => {
-            L.marker([address.addressLat, address.addressLon])
+            L.marker([address.addressLat, address.addressLon], { icon: safeLeafletIcon })
                 .addTo(map)
                 .bindTooltip(`${address.clientName} - ${address.addressDisplayName}`)
         })
