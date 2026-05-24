@@ -88,6 +88,9 @@ export const AppRoutes = {
   addShift: "/u/shifts/add",
 
   // DASHBOARDS
+  // use this when you don't know the user role
+  // (for example backend should use it)
+  dashboard: "/u/dashboard",
 
   // redirect a user to their dashboard, based on role
   dashboardOf: (role: UserRole): string => {

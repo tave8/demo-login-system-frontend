@@ -160,6 +160,7 @@ const SignupPage = () => {
                 <Row>
                   <Col className="text-center">
                     <Button
+                        disabled={isLoading}
                       variant="primary"
                       onClick={() => {
                         handleSignup(formValues)({ navigate, setIsError, setIsLoading })

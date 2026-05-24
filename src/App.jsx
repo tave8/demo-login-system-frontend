@@ -45,6 +45,7 @@ import AddChecklistToClientAddressPage from "./components/user_pages/admin/AddCh
 import ShiftsPage from "./components/user_pages/admin/ShiftsPage.tsx";
 import AddShiftPage from "./components/user_pages/admin/add_shift/AddShiftPage.tsx";
 import ContractExpectationPage from "./components/user_pages/admin/client_addresses/ContractExpectationPage.tsx";
+import DashboardPage from "./components/DashboardPage.tsx";
 
 
 function App() {
@@ -81,6 +82,16 @@ function App() {
                               <Route path="/" element={<Navigate to={AppRoutes.login} replace />} />
 
                               {/* ************ START DASHBOARDS */}
+
+                              {/* admin dashboard */}
+                              <Route
+                                  path={AppRoutes.dashboard}
+                                  element={
+                                      <ProtectedRoute allowAllRoles={true}>
+                                          <DashboardPage />
+                                      </ProtectedRoute>
+                                  }
+                              />
 
                               {/* admin dashboard */}
                               <Route

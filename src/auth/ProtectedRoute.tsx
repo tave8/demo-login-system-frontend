@@ -22,7 +22,7 @@ export function ProtectedRoute({ children,
                                  allowOnlyRoles=[],
                                  excludeOnlyRoles=[],
                                  allowAllRolesExcept=[],
-                                 allowAllRoles=false}: Params)
+                                 allowAllRoles =false}: Params)
 {
 
   const { authenticated, getUserFromLocalStorage } = useAuth()
