@@ -46,6 +46,8 @@ import ShiftsPage from "./components/user_pages/admin/ShiftsPage.tsx";
 import AddShiftPage from "./components/user_pages/admin/add_shift/AddShiftPage.tsx";
 import ContractExpectationPage from "./components/user_pages/admin/client_addresses/ContractExpectationPage.tsx";
 import DashboardPage from "./components/DashboardPage.tsx";
+import InvalidEmailVerificationPage from "./components/auth_pages/InvalidEmailVerificationPage.tsx";
+import RootPage from "./components/RootPage.tsx";
 
 
 function App() {
@@ -79,7 +81,14 @@ function App() {
                           <Routes>
 
                               {/* redirect / -> dashboard */}
-                              <Route path="/" element={<Navigate to={AppRoutes.login} replace />} />
+                              {/*<Route path="/" element={<Navigate to={AppRoutes.login} replace />} />*/}
+
+                              <Route
+                                  path={AppRoutes.root}
+                                  element={
+                                          <RootPage />
+                                  }
+                              />
 
                               {/* ************ START DASHBOARDS */}
 
@@ -379,7 +388,15 @@ function App() {
                                   }
                               />
 
-                                {/* unauthorized */}
+                              <Route
+                                  path={AppRoutes.invalidEmailVerification}
+                                  element={
+                                      <InvalidEmailVerificationPage />
+                                  }
+                              />
+
+
+                              {/* unauthorized */}
                                 <Route path={AppRoutes.unauthorized} element={<UnauthorizedPage />} />
 
                                 {/* not found */}

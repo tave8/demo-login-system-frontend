@@ -38,6 +38,9 @@ export const DAY_LABELS: Record<Language, Record<DayOfWeek, string>> = {
 // ROUTES
 
 export const AppRoutes = {
+
+  root: "/",
+
   // *****************
   // AUTHENTICATION
   // *****************
@@ -53,6 +56,8 @@ export const AppRoutes = {
   forgotPasswordSetNewPasswordWith: (code: string) => `/auth/forgot-password/verify/${code}`,
 
   resetPasswordFirstLogin: "/u/auth/reset-password-first-login",
+
+  invalidEmailVerification: "/u/auth/invalid-email-verification",
 
   unauthorized: "/auth/unauthorized",
 
@@ -129,6 +134,7 @@ export enum AppEventMessageType {
   LOGOUT_SUCCESS = "LOGOUT_SUCCESS",
   WRONG_CREDENTIALS = "WRONG_CREDENTIALS",
   MUST_VERIFY_EMAIL = "MUST_VERIFY_EMAIL",
+  EMAIL_VERIFICATION_SUCCESS = "EMAIL_VERIFICATION_SUCCESS",
   MUST_CHANGE_PASSWORD = "MUST_CHANGE_PASSWORD",
   NETWORK_ERROR = "NETWORK_ERROR",
   EXPECTED_JSON_PAYLOAD = "EXPECTED_JSON_PAYLOAD",
@@ -153,6 +159,7 @@ export const AppEventMessage: Record<Language, Record<AppEventMessageType, strin
     LOGOUT_SUCCESS: "You've been logged out.",
     WRONG_CREDENTIALS: "Wrong credentials.",
     MUST_VERIFY_EMAIL: "You need to verify your email first. We've just sent you a unique verification link in your inbox.",
+    EMAIL_VERIFICATION_SUCCESS: "Your email was verified. You can login.",
     MUST_CHANGE_PASSWORD: "You must change your password before accessing your area.",
     NETWORK_ERROR: "There was a network error. Either you are offline, or the server is offline.",
     EXPECTED_JSON_PAYLOAD: "Internal error (expected JSON payload)",
@@ -177,6 +184,7 @@ export const AppEventMessage: Record<Language, Record<AppEventMessageType, strin
     LOGOUT_SUCCESS: "Hai effettuato il logout.",
     WRONG_CREDENTIALS: "Credenziali errate.",
     MUST_VERIFY_EMAIL: "Devi verificare la tua email prima di continuare. Ti abbiamo appena inviato un link di verifica.",
+    EMAIL_VERIFICATION_SUCCESS: "La tua email è stata verificata. Puoi fare login.",
     MUST_CHANGE_PASSWORD: "Devi cambiare la tua passwod prima di accedere alla tua area.",
     NETWORK_ERROR: "Errore di rete. Sei offline o il server non è raggiungibile.",
     EXPECTED_JSON_PAYLOAD: "Errore interno (payload JSON atteso).",
