@@ -783,6 +783,22 @@ export interface EnrichedGeocodingAutocompleteFromAPI {
 }
 
 
+// **************************
+// BILLING
+
+/**
+ *
+ */
+export interface BillingPortalFromAPI {
+  // the URL to redirect the user to
+  // this URL is a Stripe-hosted page where the user
+  // manages their subscription.
+  // note: subscription must exist already
+  // and Stripe customer must also exist
+  portalUrl: string
+}
+
+
 //
 // export interface GeocodingAutocompletePageFromAPI extends Pagination<GeocodingAutocompleteItemFromAPI> {}
 //

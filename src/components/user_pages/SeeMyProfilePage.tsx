@@ -1,11 +1,17 @@
-import { useState } from "react"
-import { Container, Row, Col, Nav, Navbar, NavDropdown, Image, Dropdown, Form, InputGroup, Button, Spinner, Alert } from "react-bootstrap"
-import { Search, BellFill } from "react-bootstrap-icons"
-import { Link } from "react-router-dom"
-import { AppRoutes, type UserFromAPI } from "../../js/my_types"
+import {useState} from "react"
+import {Alert, Button, Col, Container, Image, Row, Spinner} from "react-bootstrap"
+import {Link} from "react-router-dom"
+import {AppEvent, AppEventMessageType, AppRoutes, type UserFromAPI} from "../../js/my_types"
 import UsersAPI from "../../js/api/UsersAPI"
-import { useAuth } from "../../auth/AuthContext"
+import {useAuth} from "../../auth/AuthContext"
 import UnauthorizedError from "../../js/exceptions/UnauthorizedError"
+import BillingAPI from "../../js/api/BillingAPI.ts";
+import AppEventDispatcher from "../../js/AppEventDispatcher.ts";
+
+
+const billingAPI = BillingAPI.getInstance()
+const appEventDispatcher = AppEventDispatcher.getInstance()
+
 
 const initialUserData: UserFromAPI = {
   firstname: "",
@@ -45,6 +51,37 @@ const SeeMyProfilePage = () => {
       })
   }, [])
 
+
+  /**
+   * When user clicks to go to their Billing Portal.
+   *
+   * @param e
+   */
+  const handleBillingPortal = async (e: React.MouseEvent<HTMLButtonElement>) =>
+  {
+
+    billingAPI
+        .getBillingPortal()
+        .then((billingPortalFromAPI) => {
+
+            const portalUrl = billingPortalFromAPI.portalUrl
+
+            // redirect user to portal
+            window.location.href = portalUrl;
+
+        })
+        .catch((err: Error) => {
+
+            appEventDispatcher.dispatchStandard(
+                AppEvent.APP_ERROR,
+                AppEventMessageType.BAD_REQUEST
+            )
+
+        })
+
+
+  }
+
   return (
     <>
       <Container fluid>
@@ -53,7 +90,7 @@ const SeeMyProfilePage = () => {
             {/* title */}
             <Row className="mb-3">
               <Col>
-                <h1 className="text-center">My profile</h1>
+                <h1 className="text-center">Il mio profilo</h1>
               </Col>
             </Row>
 
@@ -62,23 +99,35 @@ const SeeMyProfilePage = () => {
             {!isLoading && !isError && (
               <>
                 <Row className="g-3 align-items-center">
+
                   <Col xs={12} md={3} className="text-center">
                     <Image src={userData.avatarUrl} roundedCircle style={{ width: "120px", height: "120px", objectFit: "cover" }} />
                   </Col>
+
                   <Col md={9}>
                     <p className="fs-4 mb-1">
                       {userData.firstname} {userData.lastname}
                     </p>
                     <p className="text-muted mb-0">{userData.email}</p>
                   </Col>
+
+                  <Col xs={12}>
+                    <p><Button onClick={(e) => {
+                      handleBillingPortal(e)
+                    }}>Gestisci iscrizione</Button></p>
+                  </Col>
+
                 </Row>
+
+                {/* submit  */}
                 <Row className="mt-3">
                   <Col xs={12} className="text-center">
-                    <Link to={AppRoutes.editMyProfile} className="btn btn-primary">
-                      Edit my profile
+                    <Link to={AppRoutes.editMyProfile} className="btn primary">
+                      Modifica profilo
                     </Link>
                   </Col>
                 </Row>
+
               </>
             )}
 
