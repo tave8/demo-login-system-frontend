@@ -81,7 +81,7 @@ function App() {
                           <Routes>
 
                               {/* redirect / -> dashboard */}
-                              {/*<Route path="/" element={<Navigate to={AppRoutes.login} replace />} />*/}
+                              <Route path="/" element={<Navigate to={AppRoutes.login} replace />} />
 
                               <Route
                                   path={AppRoutes.shortcut}

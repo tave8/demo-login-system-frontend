@@ -1,7 +1,14 @@
 import {useState} from "react"
 import {Alert, Button, Col, Container, Image, Row, Spinner} from "react-bootstrap"
 import {Link} from "react-router-dom"
-import {AppEvent, AppEventMessageType, AppRoutes, type UserFromAPI} from "../../js/my_types"
+import {
+    AppEvent,
+    AppEventMessageType,
+    AppRoutes,
+    StripeAPISubscriptionStatus,
+    type UserFromAPI,
+    UserRole
+} from "../../js/my_types"
 import UsersAPI from "../../js/api/UsersAPI"
 import {useAuth} from "../../auth/AuthContext"
 import UnauthorizedError from "../../js/exceptions/UnauthorizedError"
@@ -18,6 +25,7 @@ const initialUserData: UserFromAPI = {
   lastname: "",
   email: "",
   avatarUrl: "",
+//  TODO: add the other fields
 }
 
 const SeeMyProfilePage = () => {
@@ -142,19 +150,51 @@ const SeeMyProfilePage = () => {
                     <p className="text-muted mb-0">{userData.email}</p>
                   </Col>
 
-                  {/*  handle existing billing subscription */}
-                  <Col xs={12}>
-                    <p><Button onClick={(e) => {
-                      handleBillingPortal(e)
-                    }}>Gestisci iscrizione</Button></p>
-                  </Col>
+                  {/* ***************************
+                      START BILLING SECTION
+                      
+                      create/manage subscription
+                      ******************************** */}
 
-                {/*  create new billing subscription */}
-                <Col xs={12}>
-                    <p><Button onClick={(e) => {
-                        handleBillingCheckout(e)
-                    }}>Pagamento iscrizione</Button></p>
-                </Col>
+                  {/* only show billing to admin  */}
+                    {userData.role == UserRole.ADMIN && (
+                        <>
+                          {/*  handle existing billing subscription */}
+
+                            {/* if company has never created a subscription,
+                                they only see the "create new subscription" */}
+                            {userData.company.stripeSubscriptionStatus == StripeAPISubscriptionStatus.INCOMPLETE && (
+                                <>
+                                    {/*  create new billing subscription */}
+                                    <Col xs={12}>
+                                        <p><Button onClick={(e) => {
+                                            handleBillingCheckout(e)
+                                        }}>Pagamento iscrizione</Button></p>
+                                    </Col>
+                                </>
+                            )}
+
+                            {/* if company has a subscription status that is not incomplete,
+                                then it must mean that there's a subscription,
+                                so show the "manage subscription" */}
+                            {!(userData.company.stripeSubscriptionStatus == StripeAPISubscriptionStatus.INCOMPLETE) && (
+                                <>
+                                    {/* manage subscription   */}
+                                    <Col xs={12}>
+                                        <p><Button onClick={(e) => {
+                                            handleBillingPortal(e)
+                                        }}>Gestisci iscrizione</Button></p>
+                                    </Col>
+                                </>
+                            )}
+
+                        </>
+
+                    )}
+
+                {/* ***************************
+                  END BILLING SECTION
+                  ******************************** */}
 
                 </Row>
 

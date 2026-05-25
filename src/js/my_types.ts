@@ -211,6 +211,18 @@ export const AppEventMessage: Record<Language, Record<AppEventMessageType, strin
 }
 
 
+export enum StripeAPISubscriptionStatus {
+  INCOMPLETE = "INCOMPLETE",
+  TRIALING = "TRIALING",
+  ACTIVE = "ACTIVE",
+  PAST_DUE = "PAST_DUE",
+  CANCELED = "CANCELED"
+}
+
+// ******************************
+// BACKGROUND JOB
+
+
 /**
  * When a background job is accepted from API.
  */
@@ -272,6 +284,23 @@ export interface NotificationsPageFromAPI extends Pagination<NotificationFromAPI
 export interface EnrichedNotificationsPageFromAPI extends Pagination<EnrichedNotificationFromAPI> {}
 
 
+// *****************************
+// COMPANY
+
+export interface CompanyFromAPI {
+  id: string
+  legalName: string
+  email: string
+  stripeCustomerId: string
+  stripeSubscriptionStatus: StripeAPISubscriptionStatus
+  createdAt: string
+}
+
+
+// *****************************
+// USER
+
+
 export enum UserRole {
   ADMIN = "ADMIN",
   COORDINATOR = "COORDINATOR",
@@ -327,6 +356,8 @@ export interface UserFromAPI {
   avatarUrl: string
   role: UserRole
   mustChangePasswordNow: boolean
+  // the company that the user is associated to
+  company: CompanyFromAPI
 }
 
 export interface EnrichedUserFromAPI extends UserFromAPI {
