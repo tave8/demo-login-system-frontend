@@ -3,9 +3,11 @@ import UsersAPI from "../../../js/api/UsersAPI.ts";
 import {useEffect, useState} from "react";
 import ClientsAPI from "../../../js/api/ClientsAPI.ts";
 import ClientAddressesAPI from "../../../js/api/ClientAddressesAPI.ts";
-import {DayOfWeek, OperatorShiftConflictsFromAPI, UserFromAPI} from "../../../js/my_types.ts";
+import {AppRoutes, DayOfWeek, OperatorShiftConflictsFromAPI, UserFromAPI} from "../../../js/my_types.ts";
 import ShiftsAPI from "../../../js/api/ShiftsAPI.ts";
 import TimeHelper from "../../../js/helpers/TimeHelper.ts";
+import {Link} from "react-router-dom";
+import AddClientPage from "./AddClientPage.tsx";
 
 const clientsAPI = ClientsAPI.getInstance()
 const clientAddressesAPI = ClientAddressesAPI.getInstance()
@@ -139,41 +141,55 @@ export default function AdminDashboardPage() {
                         </Row>
 
                         {/* table    */}
-                        <Row>
-                            <Col>
 
-                                <Table striped bordered hover responsive>
-                                    <thead>
-                                    <tr>
-                                        <th>Operatore</th>
-                                        <th>LUN</th>
-                                        <th>MAR</th>
-                                        <th>MER</th>
-                                        <th>GIO</th>
-                                        <th>VEN</th>
-                                        <th>SAB</th>
-                                        <th>DOM</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {operatorStats.map(operatorStat => (
-                                        // make this key unique
-                                        <tr key={operatorStat.operator.userId}>
-                                            <td>{operatorStat.operator.firstname} {operatorStat.operator.lastname}</td>
-                                            <td>{operatorStat.stat.MONDAY ? "✅" : "❌"}</td>
-                                            <td>{operatorStat.stat.TUESDAY ? "✅" : "❌"}</td>
-                                            <td>{operatorStat.stat.WEDNESDAY ? "✅" : "❌"}</td>
-                                            <td>{operatorStat.stat.THURSDAY ? "✅" : "❌"}</td>
-                                            <td>{operatorStat.stat.FRIDAY ? "✅" : "❌"}</td>
-                                            <td>{operatorStat.stat.SATURDAY ? "✅" : "❌"}</td>
-                                            <td>{operatorStat.stat.SUNDAY ? "✅" : "❌"}</td>
+                        {operatorStats.length > 0 && (
+                            <Row>
+                                <Col>
+
+                                    <Table striped bordered hover responsive>
+                                        <thead>
+                                        <tr>
+                                            <th>Operatore</th>
+                                            <th>LUN</th>
+                                            <th>MAR</th>
+                                            <th>MER</th>
+                                            <th>GIO</th>
+                                            <th>VEN</th>
+                                            <th>SAB</th>
+                                            <th>DOM</th>
                                         </tr>
-                                    ))}
-                                    </tbody>
-                                </Table>
-                            </Col>
+                                        </thead>
+                                        <tbody>
+                                        {operatorStats.map(operatorStat => (
+                                            // make this key unique
+                                            <tr key={operatorStat.operator.userId}>
+                                                <td>{operatorStat.operator.firstname} {operatorStat.operator.lastname}</td>
+                                                <td>{operatorStat.stat.MONDAY ? "✅" : "❌"}</td>
+                                                <td>{operatorStat.stat.TUESDAY ? "✅" : "❌"}</td>
+                                                <td>{operatorStat.stat.WEDNESDAY ? "✅" : "❌"}</td>
+                                                <td>{operatorStat.stat.THURSDAY ? "✅" : "❌"}</td>
+                                                <td>{operatorStat.stat.FRIDAY ? "✅" : "❌"}</td>
+                                                <td>{operatorStat.stat.SATURDAY ? "✅" : "❌"}</td>
+                                                <td>{operatorStat.stat.SUNDAY ? "✅" : "❌"}</td>
+                                            </tr>
+                                        ))}
+                                        </tbody>
+                                    </Table>
+                                </Col>
 
-                        </Row>
+                            </Row>
+                        )}
+
+                        {operatorStats.length == 0 && (
+                            <Row>
+                                <Col className={"text-center"}>
+                                    <p>Nessun turno</p>
+                                    <p><Link to={AppRoutes.addClient}>Aggiungi cliente</Link></p>
+                                    <p><Link to={AppRoutes.addClientAddress}>Aggiungi cantiere</Link></p>
+                                    <p><Link to={AppRoutes.addShift}>Aggiungi turno</Link></p>
+                                </Col>
+                            </Row>
+                        )}
 
                     </Col>
                 </Row>
