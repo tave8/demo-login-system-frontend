@@ -52,16 +52,47 @@ const SeeMyProfilePage = () => {
   }, [])
 
 
+    /**
+     * When user clicks to create a new billing subscription.
+     *
+     * @param e
+     */
+    const handleBillingCheckout = (e: React.MouseEvent<HTMLButtonElement>) =>
+    {
+
+        billingAPI
+            .createCheckout()
+            .then((checkoutFromAPI) => {
+
+                const checkoutUrl = checkoutFromAPI.checkoutUrl
+
+                // redirect user to checkout
+                window.location.href = checkoutUrl;
+
+            })
+            .catch((err: Error) => {
+
+                appEventDispatcher.dispatchStandard(
+                    AppEvent.APP_ERROR,
+                    AppEventMessageType.BAD_REQUEST
+                )
+
+            })
+
+
+    }
+
+
   /**
    * When user clicks to go to their Billing Portal.
    *
    * @param e
    */
-  const handleBillingPortal = async (e: React.MouseEvent<HTMLButtonElement>) =>
+  const handleBillingPortal = (e: React.MouseEvent<HTMLButtonElement>) =>
   {
 
     billingAPI
-        .getBillingPortal()
+        .createBillingPortal()
         .then((billingPortalFromAPI) => {
 
             const portalUrl = billingPortalFromAPI.portalUrl
@@ -111,18 +142,26 @@ const SeeMyProfilePage = () => {
                     <p className="text-muted mb-0">{userData.email}</p>
                   </Col>
 
+                  {/*  handle existing billing subscription */}
                   <Col xs={12}>
                     <p><Button onClick={(e) => {
                       handleBillingPortal(e)
                     }}>Gestisci iscrizione</Button></p>
                   </Col>
 
+                {/*  create new billing subscription */}
+                <Col xs={12}>
+                    <p><Button onClick={(e) => {
+                        handleBillingCheckout(e)
+                    }}>Pagamento iscrizione</Button></p>
+                </Col>
+
                 </Row>
 
                 {/* submit  */}
                 <Row className="mt-3">
                   <Col xs={12} className="text-center">
-                    <Link to={AppRoutes.editMyProfile} className="btn primary">
+                    <Link to={AppRoutes.editMyProfile} className="btn btn-primary">
                       Modifica profilo
                     </Link>
                   </Col>

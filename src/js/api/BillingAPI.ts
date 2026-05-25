@@ -10,7 +10,7 @@ import {
   LoginFromAPI,
   ForgotPasswordRequestToAPI, ForgotPasswordRequestFromAPI, ForgotPasswordNewPasswordToAPI,
   ForgotPasswordNewPasswordFromAPI, ForgotPasswordVerifyCodeToAPI, ForgotPasswordVerifyCodeFromAPI, OperatorLoginToAPI,
-  ResetPasswordToAPI, UserFromAPI, TasksPageFromAPI, BillingPortalFromAPI
+  ResetPasswordToAPI, UserFromAPI, TasksPageFromAPI, BillingPortalFromAPI, BillingCheckoutFromAPI
 } from "../my_types"
 
 export default class BillingAPI extends BaseAPI {
@@ -31,10 +31,31 @@ export default class BillingAPI extends BaseAPI {
 
 
   /**
-   * Get Customer Billing Portal.
+   * Create Checkout session.
    */
-  public async getBillingPortal(): Promise<BillingPortalFromAPI> {
-    const config = APIHelper.getFetchConfigFor(RequestMethod.GET, RequireLogin.YES)
+  public async createCheckout(): Promise<BillingCheckoutFromAPI> {
+
+    // empty payload
+    const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.YES, {})
+
+    const endpoint = `/billing/checkout`
+
+    const resp: Response = await this.doFetchAt(endpoint, config)
+
+    const data = await this.parseJSON<BillingCheckoutFromAPI>(resp)
+
+    return data
+  }
+
+
+
+  /**
+   * Create Customer Billing Portal.
+   */
+  public async createBillingPortal(): Promise<BillingPortalFromAPI> {
+
+    // empty payload
+    const config = APIHelper.getFetchConfigFor(RequestMethod.POST, RequireLogin.YES, {})
 
     const endpoint = `/billing/portal`
 

@@ -787,7 +787,16 @@ export interface EnrichedGeocodingAutocompleteFromAPI {
 // BILLING
 
 /**
- *
+ * When admin wants to create a new subscription (for their company).
+ */
+export interface BillingCheckoutFromAPI {
+  // the URL that we redirect the user to,
+  // where they create a new subscription
+  checkoutUrl: string
+}
+
+/**
+ * When admin wants to manage their company's existing subscription.
  */
 export interface BillingPortalFromAPI {
   // the URL to redirect the user to
