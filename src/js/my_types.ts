@@ -39,7 +39,8 @@ export const DAY_LABELS: Record<Language, Record<DayOfWeek, string>> = {
 
 export const AppRoutes = {
 
-  root: "/",
+  // shortcut for backend
+  shortcut: "/shortcut",
 
   // *****************
   // AUTHENTICATION
@@ -135,6 +136,7 @@ export enum AppEventMessageType {
   WRONG_CREDENTIALS = "WRONG_CREDENTIALS",
   MUST_VERIFY_EMAIL = "MUST_VERIFY_EMAIL",
   EMAIL_VERIFICATION_SUCCESS = "EMAIL_VERIFICATION_SUCCESS",
+  EMAIL_VERIFICATION_INVALID = "EMAIL_VERIFICATION_INVALID",
   MUST_CHANGE_PASSWORD = "MUST_CHANGE_PASSWORD",
   NETWORK_ERROR = "NETWORK_ERROR",
   EXPECTED_JSON_PAYLOAD = "EXPECTED_JSON_PAYLOAD",
@@ -160,6 +162,7 @@ export const AppEventMessage: Record<Language, Record<AppEventMessageType, strin
     WRONG_CREDENTIALS: "Wrong credentials.",
     MUST_VERIFY_EMAIL: "You need to verify your email first. We've just sent you a unique verification link in your inbox.",
     EMAIL_VERIFICATION_SUCCESS: "Your email was verified. You can login.",
+    EMAIL_VERIFICATION_INVALID: "Email verification code was invalid.",
     MUST_CHANGE_PASSWORD: "You must change your password before accessing your area.",
     NETWORK_ERROR: "There was a network error. Either you are offline, or the server is offline.",
     EXPECTED_JSON_PAYLOAD: "Internal error (expected JSON payload)",
@@ -185,6 +188,7 @@ export const AppEventMessage: Record<Language, Record<AppEventMessageType, strin
     WRONG_CREDENTIALS: "Credenziali errate.",
     MUST_VERIFY_EMAIL: "Devi verificare la tua email prima di continuare. Ti abbiamo appena inviato un link di verifica.",
     EMAIL_VERIFICATION_SUCCESS: "La tua email è stata verificata. Puoi fare login.",
+    EMAIL_VERIFICATION_INVALID: "Il codice di verifica dell'email non era valido.",
     MUST_CHANGE_PASSWORD: "Devi cambiare la tua passwod prima di accedere alla tua area.",
     NETWORK_ERROR: "Errore di rete. Sei offline o il server non è raggiungibile.",
     EXPECTED_JSON_PAYLOAD: "Errore interno (payload JSON atteso).",

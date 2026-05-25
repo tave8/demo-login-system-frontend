@@ -47,7 +47,7 @@ import AddShiftPage from "./components/user_pages/admin/add_shift/AddShiftPage.t
 import ContractExpectationPage from "./components/user_pages/admin/client_addresses/ContractExpectationPage.tsx";
 import DashboardPage from "./components/DashboardPage.tsx";
 import InvalidEmailVerificationPage from "./components/auth_pages/InvalidEmailVerificationPage.tsx";
-import RootPage from "./components/RootPage.tsx";
+import ShortcutPage from "./components/ShortcutPage.tsx";
 
 
 function App() {
@@ -84,9 +84,9 @@ function App() {
                               {/*<Route path="/" element={<Navigate to={AppRoutes.login} replace />} />*/}
 
                               <Route
-                                  path={AppRoutes.root}
+                                  path={AppRoutes.shortcut}
                                   element={
-                                          <RootPage />
+                                          <ShortcutPage />
                                   }
                               />
 
