@@ -5,7 +5,7 @@ import {AppEvent} from "../js/my_types.ts";
 type ToastType = "app-error" | "app-success" | "invalid-fields";
 
 interface ToastMessage {
-    id: number;
+    id: string;
     text: string;
     toastType: ToastType;
 }
@@ -39,7 +39,18 @@ export default function AppToast() {
                 setEventType(actualEventType)
 
                 const detail = (e as CustomEvent).detail ?? "";
-                setMessages((prev) => [{ id: Date.now(), text: detail, toastType }, ...prev]);
+                setMessages((prev) => {
+
+                    // generate random ID
+
+                    return [
+                        {
+                            id: crypto.randomUUID(),
+                            text: detail,
+                            toastType
+                        },
+                        ...prev]
+                });
 
             }
 
@@ -65,7 +76,7 @@ export default function AppToast() {
         };
     }, []);
 
-    const dismiss = (id: number) =>
+    const dismiss = (id: string) =>
         setMessages((prev) => prev.filter((m) => m.id !== id));
 
     return (
