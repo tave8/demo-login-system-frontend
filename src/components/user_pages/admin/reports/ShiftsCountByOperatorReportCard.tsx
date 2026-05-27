@@ -33,7 +33,7 @@ export function ShiftsCountByOperatorReportCard() {
                 FileHelper.downloadCsv(blob, "report_turni")
 
             })
-            .catch(err => {
+            .catch((err: Error) => {
                 appEventDispatcher.dispatchStandard(
                     AppEvent.APP_ERROR,
                     AppEventMessageType.FILE_DOWNLOAD_ERROR

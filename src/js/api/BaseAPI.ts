@@ -86,7 +86,7 @@ export default abstract class BaseAPI {
     public async parseJSON<T_FROM_API>(resp: Response): Promise<T_FROM_API>
     {
 
-        return await APIHelper.parseJSONButIfError(resp, (err: Error)=> {
+        return await APIHelper.parseJSONButIfError<T_FROM_API>(resp, (err: Error)=> {
             console.error(err)
 
             if(err instanceof ExpectedJSONPayloadError) {
@@ -119,5 +119,42 @@ export default abstract class BaseAPI {
         })
 
     }
+
+
+
+    /**
+     * Parse a blob, with errors handled for you.
+     *
+     * @param resp
+     */
+    // public async parseBlob(resp: Response): Promise<Blob>
+    // {
+    //
+    //     return await APIHelper.parseBlobButIfError(resp, (err: Error)=> {
+    //         console.error(err)
+    //
+    //         if (err instanceof BadRequestError) {
+    //
+    //             this.appEventDispatcher.dispatchStandard(
+    //                 AppEvent.APP_ERROR,
+    //                 AppEventMessageType.BAD_REQUEST
+    //             )
+    //
+    //         } else if (err instanceof ShouldLogoutError) {
+    //
+    //         } else if (err instanceof ServerError) {
+    //
+    //             this.appEventDispatcher.dispatchStandard(
+    //                 AppEvent.APP_ERROR,
+    //                 AppEventMessageType.SERVER_ERROR
+    //             )
+    //
+    //         }
+    //
+    //         // handle other errors here...
+    //
+    //     })
+    //
+    // }
 
 }

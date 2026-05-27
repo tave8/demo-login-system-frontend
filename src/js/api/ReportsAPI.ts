@@ -16,6 +16,7 @@ import {
 } from "../my_types"
 import TimeHelper from "../helpers/TimeHelper.ts";
 import UserRoleHelper from "../helpers/UserRoleHelper.ts";
+import {replace} from "react-router-dom";
 
 export default class ReportsAPI extends BaseAPI {
 
@@ -48,7 +49,11 @@ export default class ReportsAPI extends BaseAPI {
 
         const resp: Response = await this.doFetchAt(endpoint, config)
 
-        return await resp.blob()
+        // const blob = await this.parseBlob(resp)
+
+        const blob = await resp.blob()
+
+        return blob
 
     }
 

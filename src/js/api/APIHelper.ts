@@ -121,6 +121,29 @@ export default class APIHelper {
     return accessToken
   }
 
+  /**
+   * Parse a blob.
+   *
+   * @param resp
+   * @param callbackOnError
+   */
+  // public static async parseBlobButIfError(resp: Response,
+  //                                         callbackOnError: Function): Promise<Blob>
+  // {
+  //
+  //   try {
+  //
+  //     return await APIHelper.parseBlob(resp)
+  //
+  //   } catch(err) {
+  //
+  //     callbackOnError(err)
+  //     throw err
+  //
+  //   }
+  //
+  // }
+
 
   /**
    *
@@ -134,7 +157,7 @@ export default class APIHelper {
     try {
 
       // if all good, return the JSON directly
-      return await APIHelper.parseJSON(resp)
+      return await APIHelper.parseJSON<T_FROM_API>(resp)
 
       // otherwise the catch block will be executed,
       //   and in it, the custom callback on error
@@ -213,74 +236,85 @@ export default class APIHelper {
         )
       }
 
-    // ***************************
-    // PROBLEMATIC RESPONSE STATUS CODES
-    // ***************************
+      // this will throw with non-successful status code
+      this.requireOkResponse<T_FROM_API>(resp, jsonPayload)
 
-
-      const isBadRequest = resp.status == 400
-      const isUnauthorized = resp.status == 401
-      const isForbidden = resp.status == 403
-      const isNotFound = resp.status == 404
-      const isServerError = resp.status == 500
-
-      const isProblem = isBadRequest || isUnauthorized || isForbidden || isNotFound || isServerError
-
-      // if response is not problematic, return payload
-      if (!isProblem) {
-        return jsonPayload
-      }
-
-      // if we get here, we assume we have a problem
-
-      // we cast whatever json the server as sent,
-      // into a custom type that models just that json
-      // @ts-ignore
-      jsonPayload = jsonPayload as ErrorPayloadFromAPI;
-
-
-      if (isBadRequest) {
-        // @ts-ignore
-        throw new BadRequestError(resp.statusText, jsonPayload)
-      }
-
-      if (isUnauthorized) {
-        // @ts-ignore
-        throw new UnauthorizedError(resp.statusText, jsonPayload)
-      }
-
-      if (isForbidden) {
-        // @ts-ignore
-        throw new ForbiddenError(resp.statusText, jsonPayload)
-      }
-
-      if (isNotFound) {
-        // @ts-ignore
-        throw new NotFoundError(resp.statusText, jsonPayload)
-      }
-
-      if (isServerError) {
-        // @ts-ignore
-        throw new ServerError(resp.statusText, jsonPayload)
-      }
-
-      // ***************************
-      // GENERIC NON-OK RESPONSE?
-      // ***************************
-
-      // generic error in request or response
-      // if the response status code, or anything else about the response,
-      // should throw a custom exception, it should be done before this moment
-      if (!resp.ok) {
-        // @ts-ignore
-        throw new HttpError(resp.status, resp.statusText, jsonPayload)
-      }
-
-      // if no problematic status code was detected,
-      // we return the json payload
+      // return json payload
       return jsonPayload
 
   }
+
+
+
+  /**
+   * Require the response to be successful,
+   * else throw custom HTTP-specific exceptions.
+   */
+  public static requireOkResponse<T_FROM_API>(resp: Response,
+                                              jsonPayload: T_FROM_API): void
+  {
+
+    const isBadRequest = resp.status == 400
+    const isUnauthorized = resp.status == 401
+    const isForbidden = resp.status == 403
+    const isNotFound = resp.status == 404
+    const isServerError = resp.status == 500
+
+    // const isProblem = isBadRequest || isUnauthorized || isForbidden || isNotFound || isServerError
+
+
+    // if we get here, we assume we have a problem
+
+    // we cast whatever json the server as sent,
+    // into a custom type that models just that json
+    // @ts-ignore
+    jsonPayload = jsonPayload as ErrorPayloadFromAPI;
+
+
+    if (isBadRequest) {
+      // @ts-ignore
+      throw new BadRequestError(resp.statusText, jsonPayload)
+    }
+
+    if (isUnauthorized) {
+      // @ts-ignore
+      throw new UnauthorizedError(resp.statusText, jsonPayload)
+    }
+
+    if (isForbidden) {
+      // @ts-ignore
+      throw new ForbiddenError(resp.statusText, jsonPayload)
+    }
+
+    if (isNotFound) {
+      // @ts-ignore
+      throw new NotFoundError(resp.statusText, jsonPayload)
+    }
+
+    if (isServerError) {
+      // @ts-ignore
+      throw new ServerError(resp.statusText, jsonPayload)
+    }
+
+    // ***************************
+    // GENERIC NON-OK RESPONSE?
+    // ***************************
+
+    // generic error in request or response
+    // if the response status code, or anything else about the response,
+    // should throw a custom exception, it should be done before this moment
+    if (!resp.ok) {
+      throw new HttpError(
+          resp.status,
+          resp.statusText,
+          // @ts-ignore
+          jsonPayload
+      )
+    }
+
+  }
+
+
 
   /**
    * Is the API server ok?
