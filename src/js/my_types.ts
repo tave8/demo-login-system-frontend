@@ -152,7 +152,8 @@ export enum AppEventMessageType {
   SERVER_ERROR = "SERVER_ERROR",
   BAD_REQUEST = "BAD_REQUEST",
   AUTHORIZATION_SET_PASSWORD_SUCCESS = "AUTHORIZATION_SET_PASSWORD_SUCCESS",
-  SET_PASSWORD_SUCCESS = "SET_PASSWORD_SUCCESS"
+  SET_PASSWORD_SUCCESS = "SET_PASSWORD_SUCCESS",
+  FILE_DOWNLOAD_ERROR = "FILE_DOWNLOAD_ERROR"
 }
 
 
@@ -181,7 +182,8 @@ export const AppEventMessage: Record<Language, Record<AppEventMessageType, strin
     AUTHORIZATION_SET_PASSWORD_SUCCESS: "We've just sent you an email with a unique authorization link. "
                                         +"For your security, the link will expire soon and can only be used once.",
     SET_PASSWORD_SUCCESS: "You've successfully reset your password. "
-                            +"You can now login with this new password."
+                            +"You can now login with this new password.",
+    FILE_DOWNLOAD_ERROR: "Error during file download."
   },
 
   [Language.IT]: {
@@ -207,7 +209,8 @@ export const AppEventMessage: Record<Language, Record<AppEventMessageType, strin
     AUTHORIZATION_SET_PASSWORD_SUCCESS: "Ti abbiamo appena mandato un email con un link unico di autorizzazione. "
                                         + "Per la tua sicurezza, il link scadrà a breve e può essere usato solo una volta.",
     SET_PASSWORD_SUCCESS: "Hai reimpostato la tua password con successo. "
-                          + "Ora puoi accedere con la nuova password."
+                          + "Ora puoi accedere con la nuova password.",
+    FILE_DOWNLOAD_ERROR: "Errore durante il download del file."
   },
 
 }
@@ -449,6 +452,7 @@ export interface ForgotPasswordNewPasswordFromAPI {
 }
 
 
+// *********************
 // USERS
 
 export interface UpdatedUserToAPI {
@@ -457,36 +461,15 @@ export interface UpdatedUserToAPI {
 }
 
 
-
-// ARTICLES
-
-export interface ArticleToAPI {
-  title: string
-  content: string
+// *************************
+// REPORTS
+export interface ShiftsCountByOperatorReportParamsToAPI {
+  startDate: string
+  endDate: string
 }
 
-export interface UpdatedArticleToAPI {
-  title: string
-  content: string
-}
 
-export interface ArticleFromAPI {
-  articleId: string
-  title: string
-  content: string
-  coverUrl: string
-  createdAt: string
-}
-
-export interface EnrichedArticleFromAPI extends ArticleFromAPI {
-  relativeTimeFormatted: string
-}
-
-export interface ArticlesPageFromAPI extends Pagination<ArticleFromAPI> {}
-
-export interface EnrichedArticlesPageFromAPI extends Pagination<EnrichedArticleFromAPI> {}
-
-
+// *********************
 // CLIENT
 
 export interface ClientToAPI {

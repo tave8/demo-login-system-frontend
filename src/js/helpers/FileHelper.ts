@@ -127,4 +127,32 @@ export default class FileHelper {
 
   }
 
+
+  /**
+   * Download a file.
+   *
+   * @param blob
+   * @param filename
+   */
+  public static downloadFile = (blob: Blob, filename: string): void => {
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    // the file will be download with this name
+    a.download = filename
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  /**
+   * Download csv.
+   * Provide csv filename, without .csv extension.
+   *
+   * @param blob
+   * @param filenameWithoutExt
+   */
+  public static downloadCsv(blob: Blob, filenameWithoutExt: string): void {
+    this.downloadFile(blob, filenameWithoutExt + ".csv")
+  }
+
 }
