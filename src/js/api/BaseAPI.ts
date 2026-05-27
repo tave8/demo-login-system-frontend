@@ -7,6 +7,7 @@ import {AppEvent, AppEventMessage, AppEventMessageType} from "../my_types.ts";
 import ServerError from "../exceptions/ServerError.ts";
 import BadRequestError from "../exceptions/BadRequestError.ts";
 import InvalidErrorInfoPayloadError from "../exceptions/InvalidErrorInfoPayloadError.ts";
+import BlobParsingError from "../exceptions/BlobParsingError.ts";
 
 
 /**
@@ -138,34 +139,52 @@ export default abstract class BaseAPI {
      *
      * @param resp
      */
-    // public async parseBlob(resp: Response): Promise<Blob>
-    // {
-    //
-    //     return await APIHelper.parseBlobButIfError(resp, (err: Error)=> {
-    //         console.error(err)
-    //
-    //         if (err instanceof BadRequestError) {
-    //
-    //             this.appEventDispatcher.dispatchStandard(
-    //                 AppEvent.APP_ERROR,
-    //                 AppEventMessageType.BAD_REQUEST
-    //             )
-    //
-    //         } else if (err instanceof ShouldLogoutError) {
-    //
-    //         } else if (err instanceof ServerError) {
-    //
-    //             this.appEventDispatcher.dispatchStandard(
-    //                 AppEvent.APP_ERROR,
-    //                 AppEventMessageType.SERVER_ERROR
-    //             )
-    //
-    //         }
-    //
-    //         // handle other errors here...
-    //
-    //     })
-    //
-    // }
+    public async parseBlob(resp: Response): Promise<Blob>
+    {
+
+        return await APIHelper.parseBlobButIfError(resp, (err: Error)=> {
+            console.error(err)
+
+            // fatal errors first
+            if (err instanceof InvalidErrorInfoPayloadError) {
+
+                this.appEventDispatcher.dispatchStandard(
+                    AppEvent.APP_ERROR,
+                    AppEventMessageType.INVALID_ERROR_INFO_PAYLOAD,
+                    `DETAILS: ${err.message}`
+
+                )
+
+            } else if (err instanceof BlobParsingError) {
+
+                this.appEventDispatcher.dispatchStandard(
+                    AppEvent.APP_ERROR,
+                    AppEventMessageType.FILE_DOWNLOAD_ERROR
+
+                )
+
+            } else if (err instanceof BadRequestError) {
+
+                this.appEventDispatcher.dispatchStandard(
+                    AppEvent.APP_ERROR,
+                    AppEventMessageType.BAD_REQUEST
+                )
+
+            } else if (err instanceof ShouldLogoutError) {
+
+            } else if (err instanceof ServerError) {
+
+                this.appEventDispatcher.dispatchStandard(
+                    AppEvent.APP_ERROR,
+                    AppEventMessageType.SERVER_ERROR
+                )
+
+            }
+
+            // handle other errors here...
+
+        })
+
+    }
 
 }

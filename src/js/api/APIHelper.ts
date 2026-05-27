@@ -10,6 +10,7 @@ import {ErrorPayloadFromAPI, FetchConfigType, RequestHeaderContentType, RequestM
 import ForbiddenError from "../exceptions/ForbiddenError.ts";
 import NotFoundError from "../exceptions/NotFoundError.ts";
 import ExpectedJSONPayloadError from "../exceptions/ExpectedJSONPayloadError.ts";
+import BlobParsingError from "../exceptions/BlobParsingError.ts";
 
 // import {logout} from "../auth/AuthContext.tsx"
 
@@ -128,33 +129,46 @@ export default class APIHelper {
    * @param resp
    * @param callbackOnError
    */
-  // public static async parseBlobButIfError(resp: Response,
-  //                                         callbackOnError: Function): Promise<Blob>
-  // {
-  //
-  //   try {
-  //
-  //     return await APIHelper.parseBlob(resp)
-  //
-  //   } catch(err) {
-  //
-  //     callbackOnError(err)
-  //     throw err
-  //
-  //   }
-  //
-  // }
+  public static async parseBlobButIfError(resp: Response,
+                                          callbackOnError: Function): Promise<Blob>
+  {
+
+    try {
+
+      return await APIHelper.parseBlob(resp)
+
+    } catch(err) {
+
+      callbackOnError(err)
+      throw err
+
+    }
+
+  }
 
 
   /**
    * Parse a blob.
    */
-  // public static async parseBlob(resp: Response): Promise<Blob>
-  // {
-  //
-  //
-  //
-  // }
+  public static async parseBlob(resp: Response): Promise<Blob>
+  {
+
+    await this.requireOkResponse(resp)
+
+    try {
+
+      return await resp.blob()
+
+    } catch (err) {
+
+      const error = err instanceof Error ? err : new Error(String(err))
+
+      throw new BlobParsingError(error.message)
+
+    }
+
+
+  }
 
 
   /**

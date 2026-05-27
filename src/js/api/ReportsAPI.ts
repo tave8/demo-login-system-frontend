@@ -49,9 +49,7 @@ export default class ReportsAPI extends BaseAPI {
 
         const resp: Response = await this.doFetchAt(endpoint, config)
 
-        // const blob = await this.parseBlob(resp)
-
-        const blob = await resp.blob()
+        const blob = await this.parseBlob(resp)
 
         return blob
 

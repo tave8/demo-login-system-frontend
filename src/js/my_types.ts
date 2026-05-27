@@ -184,7 +184,7 @@ export const AppEventMessage: Record<Language, Record<AppEventMessageType, strin
                                         +"For your security, the link will expire soon and can only be used once.",
     SET_PASSWORD_SUCCESS: "You've successfully reset your password. "
                             +"You can now login with this new password.",
-    FILE_DOWNLOAD_ERROR: "Error during file download.",
+    FILE_DOWNLOAD_ERROR: "Error during file download. Make sure your input is valid and complete.",
     INVALID_ERROR_INFO_PAYLOAD: "Fatal error: While processing a response with non-ok status code, "
                                 +"the server has not sent a valid payload that conforms to what the frontend expects. "
                                 +"Make sure frontend and backend are agreeing on the same payload schema, "
@@ -215,7 +215,7 @@ export const AppEventMessage: Record<Language, Record<AppEventMessageType, strin
                                         + "Per la tua sicurezza, il link scadrà a breve e può essere usato solo una volta.",
     SET_PASSWORD_SUCCESS: "Hai reimpostato la tua password con successo. "
                           + "Ora puoi accedere con la nuova password.",
-    FILE_DOWNLOAD_ERROR: "Errore durante il download del file.",
+    FILE_DOWNLOAD_ERROR: "Errore durante il download del file. Assicurati che il tuo input sia valido e completo.",
     INVALID_ERROR_INFO_PAYLOAD: "Fatal error: While processing a response with non-ok status code, "
                                 +"the server has not sent a valid payload that conforms to what the frontend expects. "
                                 +"Make sure frontend and backend are agreeing on the same payload schema, "

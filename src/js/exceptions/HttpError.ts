@@ -113,7 +113,7 @@ export default class HttpError extends Error {
     }
 
     // body must have exactly these fields, no more, no less
-    const expectedKeys = ["errors", "message", "timestamp", "fieldShouldbtBeHere"];
+    const expectedKeys = ["errors", "message", "timestamp"];
     const actualKeys = Object.keys(body);
 
     const missingKeys = expectedKeys.filter(k => !actualKeys.includes(k));
