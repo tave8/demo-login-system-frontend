@@ -3,8 +3,8 @@ import {ErrorPayloadFromAPI} from "../my_types.ts";
 
 export default class NotFoundError extends HttpError {
 
-    constructor(details?: string, body: ErrorPayloadFromAPI | null = null) {
-        super(404, details, body)
+    constructor(body: ErrorPayloadFromAPI, details?: string) {
+        super(404, body, details)
     }
 
 }

@@ -121,8 +121,9 @@ export default class APIHelper {
     return accessToken
   }
 
+
   /**
-   * Parse a blob.
+   * Parse a blob with custom error callback.
    *
    * @param resp
    * @param callbackOnError
@@ -141,6 +142,17 @@ export default class APIHelper {
   //     throw err
   //
   //   }
+  //
+  // }
+
+
+  /**
+   * Parse a blob.
+   */
+  // public static async parseBlob(resp: Response): Promise<Blob>
+  // {
+  //
+  //
   //
   // }
 
@@ -221,26 +233,44 @@ export default class APIHelper {
       )
     }
 
-    let jsonPayload: T_FROM_API
+
+    // throws if non-ok status code
+
+    // ***********************************
+    //
+    //     THROWS?     | HAS READ RESPONSE STREAM?    |     CAN MOVE ON?
+    // -----------------------------------------------------------------
+    //       YES             YES                             NO
+    //       NO              NO                              YES
+    //
+    // **********************************
+
+    // Either we throw because non-ok status code
+    //  OR we move on.
+
+    // Reason: if it throws, it will have read the stream
+    // and thus code execution CANNOT move on, because
+    // stream will be tried to be read again
+    // (and can only be read once)
+    await this.requireOkResponse(resp)
+
 
     try {
 
-      // try to parse the response body
-      jsonPayload = await resp.json()
+        // try to parse the response body
+        return await resp.json()
 
     } catch (err) {
+
         throw new ExpectedJSONPayloadError(
-          `After parsing JSON from a response body, it was assumed ` +
-            `that this would be valid JSON, however the parsing into JSON failed. URL was: ${url}. Details of error: ` +
+            `After parsing JSON from a response body, it was assumed ` +
+            `that this would be valid JSON, however the parsing into JSON failed. `
+            +`Likely cause: response strem was already read - Maybe the json payload was already parsed? `
+            +`URL was: ${url}. Details of error: ` +
             err,
         )
-      }
 
-      // this will throw with non-successful status code
-      this.requireOkResponse<T_FROM_API>(resp, jsonPayload)
-
-      // return json payload
-      return jsonPayload
+    }
 
   }
 
@@ -250,8 +280,7 @@ export default class APIHelper {
    * Require the response to be successful,
    * else throw custom HTTP-specific exceptions.
    */
-  public static requireOkResponse<T_FROM_API>(resp: Response,
-                                              jsonPayload: T_FROM_API): void
+  public static async requireOkResponse(resp: Response): Promise<void>
   {
 
     const isBadRequest = resp.status == 400
@@ -262,38 +291,24 @@ export default class APIHelper {
 
     // const isProblem = isBadRequest || isUnauthorized || isForbidden || isNotFound || isServerError
 
-
-    // if we get here, we assume we have a problem
-
-    // we cast whatever json the server as sent,
-    // into a custom type that models just that json
-    // @ts-ignore
-    jsonPayload = jsonPayload as ErrorPayloadFromAPI;
-
-
     if (isBadRequest) {
-      // @ts-ignore
-      throw new BadRequestError(resp.statusText, jsonPayload)
+      throw new BadRequestError(await resp.json(), resp.statusText)
     }
 
     if (isUnauthorized) {
-      // @ts-ignore
-      throw new UnauthorizedError(resp.statusText, jsonPayload)
+      throw new UnauthorizedError(await resp.json(), resp.statusText)
     }
 
     if (isForbidden) {
-      // @ts-ignore
-      throw new ForbiddenError(resp.statusText, jsonPayload)
+      throw new ForbiddenError(await resp.json(), resp.statusText)
     }
 
     if (isNotFound) {
-      // @ts-ignore
-      throw new NotFoundError(resp.statusText, jsonPayload)
+      throw new NotFoundError(await resp.json(), resp.statusText)
     }
 
     if (isServerError) {
-      // @ts-ignore
-      throw new ServerError(resp.statusText, jsonPayload)
+      throw new ServerError(await resp.json(), resp.statusText)
     }
 
     // ***************************
@@ -306,9 +321,8 @@ export default class APIHelper {
     if (!resp.ok) {
       throw new HttpError(
           resp.status,
-          resp.statusText,
-          // @ts-ignore
-          jsonPayload
+          await resp.json(),
+          resp.statusText
       )
     }
 

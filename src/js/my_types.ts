@@ -153,7 +153,8 @@ export enum AppEventMessageType {
   BAD_REQUEST = "BAD_REQUEST",
   AUTHORIZATION_SET_PASSWORD_SUCCESS = "AUTHORIZATION_SET_PASSWORD_SUCCESS",
   SET_PASSWORD_SUCCESS = "SET_PASSWORD_SUCCESS",
-  FILE_DOWNLOAD_ERROR = "FILE_DOWNLOAD_ERROR"
+  FILE_DOWNLOAD_ERROR = "FILE_DOWNLOAD_ERROR",
+  INVALID_ERROR_INFO_PAYLOAD = "INVALID_ERROR_INFO_PAYLOAD"
 }
 
 
@@ -183,7 +184,11 @@ export const AppEventMessage: Record<Language, Record<AppEventMessageType, strin
                                         +"For your security, the link will expire soon and can only be used once.",
     SET_PASSWORD_SUCCESS: "You've successfully reset your password. "
                             +"You can now login with this new password.",
-    FILE_DOWNLOAD_ERROR: "Error during file download."
+    FILE_DOWNLOAD_ERROR: "Error during file download.",
+    INVALID_ERROR_INFO_PAYLOAD: "Fatal error: While processing a response with non-ok status code, "
+                                +"the server has not sent a valid payload that conforms to what the frontend expects. "
+                                +"Make sure frontend and backend are agreeing on the same payload schema, "
+                                +"when dealing with non-ok responses, either with this specific response or in general. "
   },
 
   [Language.IT]: {
@@ -210,7 +215,11 @@ export const AppEventMessage: Record<Language, Record<AppEventMessageType, strin
                                         + "Per la tua sicurezza, il link scadrà a breve e può essere usato solo una volta.",
     SET_PASSWORD_SUCCESS: "Hai reimpostato la tua password con successo. "
                           + "Ora puoi accedere con la nuova password.",
-    FILE_DOWNLOAD_ERROR: "Errore durante il download del file."
+    FILE_DOWNLOAD_ERROR: "Errore durante il download del file.",
+    INVALID_ERROR_INFO_PAYLOAD: "Fatal error: While processing a response with non-ok status code, "
+                                +"the server has not sent a valid payload that conforms to what the frontend expects. "
+                                +"Make sure frontend and backend are agreeing on the same payload schema, "
+                                +"when dealing with non-ok responses, either with this specific response or in general. "
   },
 
 }

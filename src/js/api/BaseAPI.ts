@@ -6,6 +6,7 @@ import AppEventDispatcher from "../AppEventDispatcher.ts";
 import {AppEvent, AppEventMessage, AppEventMessageType} from "../my_types.ts";
 import ServerError from "../exceptions/ServerError.ts";
 import BadRequestError from "../exceptions/BadRequestError.ts";
+import InvalidErrorInfoPayloadError from "../exceptions/InvalidErrorInfoPayloadError.ts";
 
 
 /**
@@ -89,7 +90,17 @@ export default abstract class BaseAPI {
         return await APIHelper.parseJSONButIfError<T_FROM_API>(resp, (err: Error)=> {
             console.error(err)
 
-            if(err instanceof ExpectedJSONPayloadError) {
+            // fatal errors first
+            if (err instanceof InvalidErrorInfoPayloadError) {
+
+                this.appEventDispatcher.dispatchStandard(
+                    AppEvent.APP_ERROR,
+                    AppEventMessageType.INVALID_ERROR_INFO_PAYLOAD,
+                    `DETAILS: ${err.message}`
+
+                )
+
+            } else if(err instanceof ExpectedJSONPayloadError) {
 
                 this.appEventDispatcher.dispatchStandard(
                     AppEvent.APP_ERROR,
