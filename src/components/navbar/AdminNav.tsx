@@ -43,67 +43,67 @@ export default function AdminNav({ setNavExpanded }: Props) {
                         to={AppRoutes.dashboardOf(user.role)}
                         onClick={closeNav}
                         className="nav-item nav-link">
-                        <Speedometer2 className="me-2" />Panoramica
+                        Panoramica
                     </Link>
 
                     {/* TEAM */}
                     <NavDropdown title="Team" id="basic-nav-dropdown" align="end">
                         <NavDropdown.Item onClick={() => { navigate(AppRoutes.users); closeNav() }}>
-                            <People className="me-2" />Il mio Team
+                            Il mio Team
                         </NavDropdown.Item>
                         <NavDropdown.Divider />
                         <NavDropdown.Item onClick={() => { navigate(AppRoutes.addUser); closeNav() }}>
-                            <PersonPlus className="me-2" />Aggiungi utente
+                            Aggiungi utente
                         </NavDropdown.Item>
                     </NavDropdown>
 
                     {/* CLIENTS */}
                     <NavDropdown title="Clienti" id="basic-nav-dropdown" align="end">
                         <NavDropdown.Item onClick={() => { navigate(AppRoutes.clients); closeNav() }}>
-                            <Building className="me-2" />Vedi clienti
+                            Vedi clienti
                         </NavDropdown.Item>
                         <NavDropdown.Divider />
                         <NavDropdown.Item onClick={() => { navigate(AppRoutes.addClient); closeNav() }}>
-                            <BuildingAdd className="me-2" />Aggiungi cliente
+                            Aggiungi cliente
                         </NavDropdown.Item>
                     </NavDropdown>
 
                     {/* CLIENTS ADDRESSES */}
                     <NavDropdown title="Cantieri" id="basic-nav-dropdown" align="end">
                         <NavDropdown.Item onClick={() => { navigate(AppRoutes.clientAddresses); closeNav() }}>
-                            <GeoAlt className="me-2" />Vedi cantieri
+                            Vedi cantieri
                         </NavDropdown.Item>
                         <NavDropdown.Divider />
                         <NavDropdown.Item onClick={() => { navigate(AppRoutes.addClientAddress); closeNav() }}>
-                            <GeoAltFill className="me-2" />Aggiungi cantiere
+                            Aggiungi cantiere
                         </NavDropdown.Item>
                     </NavDropdown>
 
                     {/* TASKS */}
                     <NavDropdown title="Attività" id="basic-nav-dropdown" align="end">
                         <NavDropdown.Item onClick={() => { navigate(AppRoutes.addChecklistToClientAddress); closeNav() }}>
-                            <PlusCircle className="me-2" />Aggiungi scheda a sede cliente
+                            Aggiungi scheda a sede cliente
                         </NavDropdown.Item>
                         <NavDropdown.Divider />
                         <NavDropdown.Item onClick={() => { navigate(AppRoutes.checklists); closeNav() }}>
-                            <ListCheck className="me-2" />Vedi schede
+                            Vedi schede
                         </NavDropdown.Item>
                         <NavDropdown.Item onClick={() => { navigate(AppRoutes.addChecklist); closeNav() }}>
-                            <PlusCircle className="me-2" />Aggiungi scheda
+                            Aggiungi scheda
                         </NavDropdown.Item>
                         <NavDropdown.Divider />
                         <NavDropdown.Item onClick={() => { navigate(AppRoutes.tasks); closeNav() }}>
-                            <ListUl className="me-2" />Vedi attività
+                            Vedi attività
                         </NavDropdown.Item>
                         <NavDropdown.Item onClick={() => { navigate(AppRoutes.addTask); closeNav() }}>
-                            <PlusCircle className="me-2" />Aggiungi attività
+                            Aggiungi attività
                         </NavDropdown.Item>
                     </NavDropdown>
 
                     {/* SHIFTS */}
                     <NavDropdown title="Turni" id="basic-nav-dropdown" align="end">
                         <NavDropdown.Item onClick={() => { navigate(AppRoutes.addShift); closeNav() }}>
-                            <CalendarPlus className="me-2" />Aggiungi turno
+                            Aggiungi turno
                         </NavDropdown.Item>
                     </NavDropdown>
 
@@ -113,7 +113,7 @@ export default function AdminNav({ setNavExpanded }: Props) {
                         to={AppRoutes.reports}
                         onClick={closeNav}
                         className="nav-item nav-link">
-                        <FileEarmarkSpreadsheet className="me-2" />Report
+                        Report
                     </Link>
 
                 </Nav>

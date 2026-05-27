@@ -50,7 +50,9 @@ export function ShiftsCountByOperatorReportCard() {
         <Card>
             <Card.Body>
                 <Card.Title>Numero turni per operatore</Card.Title>
-
+                <p className="text-muted small">
+                    Scopri il carico lavorativo di ogni operatore nel periodo selezionato.
+                </p>
                 <Form>
                     <Row className="mb-3">
                         <Col>
@@ -93,6 +95,7 @@ export function ShiftsCountByOperatorReportCard() {
                         Scarica CSV
                     </Button>
                 </Form>
+
             </Card.Body>
         </Card>
     )
