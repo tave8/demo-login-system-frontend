@@ -48,7 +48,7 @@ import ContractExpectationPage from "./components/user_pages/admin/client_addres
 import DashboardPage from "./components/DashboardPage.tsx";
 import InvalidEmailVerificationPage from "./components/auth_pages/InvalidEmailVerificationPage.tsx";
 import ShortcutPage from "./components/ShortcutPage.tsx";
-import ReportsPage from "./components/user_pages/admin/ReportsPage.tsx";
+import ReportsPage from "./components/user_pages/admin/reports/ReportsPage.tsx";
 
 
 function App() {

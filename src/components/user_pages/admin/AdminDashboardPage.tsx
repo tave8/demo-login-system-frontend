@@ -53,12 +53,16 @@ export default function AdminDashboardPage() {
 
         setOperators([])
 
+
         usersAPI
             .findOperators()
             .then(operatorsFromAPI => {
+
                 setOperators(operatorsFromAPI)
+
             })
             .catch(err => {
+
                 console.error(err)
             })
 
@@ -80,15 +84,24 @@ export default function AdminDashboardPage() {
                 .then(conflictsInfo => ({ operator, conflictsInfo }))
         )
 
+        setIsLoading(true)
+        setIsError(false)
+
         Promise
             .all(promises)
             .then((results) => {
+
+                setIsLoading(false)
+                setIsError(false)
+
                 const stats = results.map(({ operator, conflictsInfo }) =>
                     getOperatorStat(operator, conflictsInfo)
                 )
                 setOperatorStats(stats)
             })
             .catch(err => {
+                setIsLoading(false)
+                setIsError(true)
                 console.error(err)
             })
 
@@ -142,7 +155,7 @@ export default function AdminDashboardPage() {
 
                         {/* table    */}
 
-                        {operatorStats.length > 0 && (
+                        {!isLoading && operatorStats.length > 0 && (
                             <Row>
                                 <Col>
 
@@ -180,7 +193,7 @@ export default function AdminDashboardPage() {
                             </Row>
                         )}
 
-                        {operatorStats.length == 0 && (
+                        {!isLoading && operatorStats.length == 0 && (
                             <Row>
                                 <Col className={"text-center"}>
                                     <p>Nessun turno</p>
