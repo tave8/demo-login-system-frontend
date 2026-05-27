@@ -93,6 +93,8 @@ export const AppRoutes = {
   shifts: "/u/shifts",
   addShift: "/u/shifts/add",
 
+  reports: "/u/reports",
+
   // DASHBOARDS
   // use this when you don't know the user role
   // (for example backend should use it)

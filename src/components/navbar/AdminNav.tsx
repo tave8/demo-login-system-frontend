@@ -3,7 +3,20 @@ import {AppRoutes, UserRole} from "../../js/my_types.ts";
 import {useEffect, useState} from "react";
 import {useAuth} from "../../auth/AuthContext.tsx";
 import {Nav, NavDropdown} from "react-bootstrap";
-import { People, PersonPlus, Building, BuildingAdd, GeoAlt, GeoAltFill, ListCheck, ListUl, PlusCircle, Calendar, CalendarPlus } from 'react-bootstrap-icons'
+import {
+    People,
+    PersonPlus,
+    Building,
+    BuildingAdd,
+    GeoAlt,
+    GeoAltFill,
+    ListCheck,
+    ListUl,
+    PlusCircle,
+    Calendar,
+    CalendarPlus,
+    File, FileEarmarkSpreadsheet, Speedometer2
+} from 'react-bootstrap-icons'
 
 
 interface Props {
@@ -30,7 +43,7 @@ export default function AdminNav({ setNavExpanded }: Props) {
                         to={AppRoutes.dashboardOf(user.role)}
                         onClick={closeNav}
                         className="nav-item nav-link">
-                        Panoramica
+                        <Speedometer2 className="me-2" />Panoramica
                     </Link>
 
                     {/* TEAM */}
@@ -93,6 +106,15 @@ export default function AdminNav({ setNavExpanded }: Props) {
                             <CalendarPlus className="me-2" />Aggiungi turno
                         </NavDropdown.Item>
                     </NavDropdown>
+
+
+                    {/* REPORTS */}
+                    <Link
+                        to={AppRoutes.reports}
+                        onClick={closeNav}
+                        className="nav-item nav-link">
+                        <FileEarmarkSpreadsheet className="me-2" />Report
+                    </Link>
 
                 </Nav>
 

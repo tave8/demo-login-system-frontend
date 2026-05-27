@@ -48,6 +48,7 @@ import ContractExpectationPage from "./components/user_pages/admin/client_addres
 import DashboardPage from "./components/DashboardPage.tsx";
 import InvalidEmailVerificationPage from "./components/auth_pages/InvalidEmailVerificationPage.tsx";
 import ShortcutPage from "./components/ShortcutPage.tsx";
+import ReportsPage from "./components/user_pages/admin/ReportsPage.tsx";
 
 
 function App() {
@@ -267,6 +268,15 @@ function App() {
                                   element={
                                       <ProtectedRoute allowOnlyRoles={[UserRole.ADMIN]}>
                                           <AddShiftPage />
+                                      </ProtectedRoute>
+                                  }
+                              />
+
+                              <Route
+                                  path={AppRoutes.reports}
+                                  element={
+                                      <ProtectedRoute allowOnlyRoles={[UserRole.ADMIN]}>
+                                          <ReportsPage />
                                       </ProtectedRoute>
                                   }
                               />
