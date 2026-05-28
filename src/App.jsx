@@ -49,6 +49,7 @@ import DashboardPage from "./components/DashboardPage.tsx";
 import InvalidEmailVerificationPage from "./components/auth_pages/InvalidEmailVerificationPage.tsx";
 import ShortcutPage from "./components/ShortcutPage.tsx";
 import ReportsPage from "./components/user_pages/admin/reports/ReportsPage.tsx";
+import AutomationsPage from "./components/user_pages/admin/AutomationsPage.tsx";
 
 
 function App() {
@@ -281,7 +282,14 @@ function App() {
                                   }
                               />
 
-
+                              <Route
+                                  path={AppRoutes.automations}
+                                  element={
+                                      <ProtectedRoute allowOnlyRoles={[UserRole.ADMIN]}>
+                                          <AutomationsPage />
+                                      </ProtectedRoute>
+                                  }
+                              />
 
                               {/*-----------------------------------*/}
 

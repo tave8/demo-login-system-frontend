@@ -95,6 +95,8 @@ export const AppRoutes = {
 
   reports: "/u/reports",
 
+  automations: "/u/automations",
+
   // DASHBOARDS
   // use this when you don't know the user role
   // (for example backend should use it)

@@ -116,6 +116,14 @@ export default function AdminNav({ setNavExpanded }: Props) {
                         Report
                     </Link>
 
+                    {/* AUTOMATIONS */}
+                    <Link
+                        to={AppRoutes.automations}
+                        onClick={closeNav}
+                        className="nav-item nav-link">
+                        Automazioni
+                    </Link>
+
                 </Nav>
 
 
