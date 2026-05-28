@@ -3,6 +3,7 @@ import AddShiftForm from "../add_shift/AddShiftForm.tsx";
 import {ShiftsCountByOperatorReportCard} from "./ShiftsCountByOperatorReportCard.tsx";
 import {Example1ReportCard} from "./Example1ReportCard.tsx";
 import {Example2ReportCard} from "./Example2ReportCard.tsx";
+import {Example3ReportCard} from "./Example3ReportCard.tsx";
 
 export default function ReportsPage() {
     return (
@@ -28,6 +29,9 @@ export default function ReportsPage() {
                         </Col>
                         <Col>
                             <Example2ReportCard />
+                        </Col>
+                        <Col>
+                            <Example3ReportCard />
                         </Col>
                         {/* add new report here...   */}
                     </Row>

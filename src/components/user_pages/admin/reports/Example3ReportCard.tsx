@@ -22,8 +22,11 @@ export function Example3ReportCard() {
     return (
         <Card>
             <Card.Body>
-                <Card.Title></Card.Title>
-                <p>Ottieni una lista</p>
+                <Card.Title>Cantieri non coperti</Card.Title>
+                <p className="text-muted small">
+                    Cantieri che non hanno turni assegnati nel periodo selezionato.
+                    Un cantiere senza copertura è un cliente che sta pagando senza ricevere il servizio.
+                </p>
                 <p>...</p>
             </Card.Body>
         </Card>

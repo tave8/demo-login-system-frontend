@@ -87,13 +87,19 @@ export function ShiftsCountByOperatorReportCard() {
                         </Col>
                     </Row>
 
-                    <Button
-                        variant="outline-primary"
-                        size="sm"
-                        onClick={handleDownloadCsv}>
-                        <FileEarmarkSpreadsheet className="me-2" />
-                        Scarica CSV
-                    </Button>
+                    {/* submit */}
+                    <Row>
+                        <Col className={"text-center"}>
+                            <Button
+                                variant="outline-primary"
+                                size="sm"
+                                onClick={handleDownloadCsv}>
+                                <FileEarmarkSpreadsheet className="me-2" />
+                                Scarica CSV
+                            </Button>
+                        </Col>
+                    </Row>
+
                 </Form>
 
             </Card.Body>
