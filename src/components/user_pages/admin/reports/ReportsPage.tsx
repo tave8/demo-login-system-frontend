@@ -1,7 +1,7 @@
 import {Button, Card, Col, Container, Row} from "react-bootstrap";
 import AddShiftForm from "../add_shift/AddShiftForm.tsx";
 import {ShiftsCountByOperatorReportCard} from "./ShiftsCountByOperatorReportCard.tsx";
-import {Example1ReportCard, ExampleReportCard} from "./Example1ReportCard.tsx";
+import {Example1ReportCard} from "./Example1ReportCard.tsx";
 import {Example2ReportCard} from "./Example2ReportCard.tsx";
 
 export default function ReportsPage() {

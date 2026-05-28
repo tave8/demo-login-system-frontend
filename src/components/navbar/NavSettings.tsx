@@ -4,6 +4,8 @@ import {Nav, NavDropdown} from "react-bootstrap";
 import AppNotificationBell from "../AppNotificationBell.tsx";
 import {AppEvent, AppEventMessageType, AppRoutes, UserRole} from "../../js/my_types.ts";
 import AppEventDispatcher from "../../js/AppEventDispatcher.ts";
+import {QuestionCircle, Whatsapp} from "react-bootstrap-icons";
+import WhatsappHelper from "../../js/helpers/WhatsappHelper.ts";
 
 const appEventDispatcher: AppEventDispatcher = AppEventDispatcher.getInstance()
 
@@ -26,11 +28,30 @@ export default function NavSettings({ setNavExpanded }: Props) {
 
     const closeNav = () => setNavExpanded(false);
 
+    const whatsappHelp = WhatsappHelper.askMeHelp()
+
+
     return (
         <>
             {/* settings */}
             {authenticated && (
                 <Nav className="align-items-center">
+
+                    {/* support */}
+                    <Nav.Item>
+                            <div style={{
+                            }}>
+                                <a
+                                    href={whatsappHelp}
+                                    target="_blank"
+                                    rel="noreferrer">
+                                    <Whatsapp
+                                        size={20}
+                                        color="#25D366" />
+                                </a>
+                            </div>
+                    </Nav.Item>
+
                     {/* notifications */}
                     <Nav.Item>
                         <AppNotificationBell  />
