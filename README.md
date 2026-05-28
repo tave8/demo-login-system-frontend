@@ -5,7 +5,7 @@ of a specific Cloudflare Pages project:
 
 ```
 
-wrangler pages deployment list --project-name demo-login-system-frontend --json | jq '.[0:1]'
+wrangler pages deployment list --project-name operavion-crm-frontend --json | jq '.[0:1]' 
 
 ```
 

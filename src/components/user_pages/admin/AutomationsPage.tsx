@@ -27,31 +27,39 @@ export default function AutomationsPage() {
 
                             <hr />
 
-                            <h6>Sei notificato automaticamente di:</h6>
+                            <h6>Sei notificato automaticamente in questo modo:</h6>
 
                             <Table bordered hover size="sm" className="mt-3">
                                 <thead className="table-light">
                                 <tr>
                                     <th>Situazione</th>
-                                    <th>Azione automatica</th>
+                                    <th>Soluzione</th>
+                                    <th>Come</th>
                                     <th>Quando</th>
+                                    <th>Inviato a</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr>
                                     <td>Discrepanza tra contratto e dati inseriti</td>
-                                    <td>Ricevi un report via email con le differenze</td>
+                                    <td>Report con le differenze</td>
+                                    <td>Email</td>
                                     <td>Ogni lunedì mattina</td>
+                                    <td>Tu</td>
                                 </tr>
                                 <tr>
-                                    <td>Turno del giorno dopo</td>
-                                    <td>Ogni operatore riceve una notifica</td>
+                                    <td>Sapere il turno del giorno dopo</td>
+                                    <td>Viene notificato</td>
+                                    <td>Notifica</td>
                                     <td>Ogni mattina del giorno prima</td>
+                                    <td>Operatore</td>
                                 </tr>
                                 <tr>
-                                    <td>Operatori con turni mancanti del giorno dopo</td>
-                                    <td>Ricevi un avviso per intervenire in tempo</td>
+                                    <td>Quali sono gli operatori con turni mancanti del giorno dopo</td>
+                                    <td>Ricevi un avviso</td>
+                                    <td>Notifica</td>
                                     <td>Ogni mattina del giorno prima</td>
+                                    <td>Tu</td>
                                 </tr>
                                 </tbody>
                             </Table>
