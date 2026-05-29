@@ -67,6 +67,7 @@ function App() {
 
         <BrowserRouter>
           <AuthGuard>
+
             <header>
               <AppNav />
             </header>
@@ -88,7 +89,7 @@ function App() {
                               <Route
                                   path={AppRoutes.shortcut}
                                   element={
-                                          <ShortcutPage />
+                                      <ShortcutPage />
                                   }
                               />
 

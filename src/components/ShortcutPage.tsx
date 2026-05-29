@@ -71,7 +71,34 @@ export default function ShortcutPage() {
                 navigate(AppRoutes.dashboard);
                 break;
 
-            // handle more cases here...
+
+            case "operator.shift.start":
+
+                // if the token query param is missing
+                const token = params.get("token");
+
+                if(!token) {
+                    appEventDispatcher.dispatch(
+                        AppEvent.APP_ERROR,
+                        `Missing 'token' query param for shortcut 'operator.shift.start'.`
+                    )
+                    navigate(AppRoutes.login);
+                    return
+                }
+
+                // verify that the token is valid
+
+                // appEventDispatcher.dispatch(
+                //     AppEvent.APP_SUCCESS,
+                //     "hello, gotta start your shift?"
+                // );
+
+                // navigate(AppRoutes.dashboard);
+                break;
+
+            // add more cases here...
+
+
             //  invalid or not recognized shortcut
             default:
                 appEventDispatcher.dispatch(
@@ -86,5 +113,42 @@ export default function ShortcutPage() {
 
     }, []);
 
-    return (<></>)
+
+        return (
+            <div style={{
+                position: "fixed",
+                inset: 0,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "#fff",
+                gap: "1.2rem"
+            }}>
+                <style>{`
+                @keyframes spin {
+                    to { transform: rotate(360deg); }
+                }
+                .qr-spinner {
+                    width: 48px;
+                    height: 48px;
+                    border: 3px solid #e5e7eb;
+                    border-top-color: #111;
+                    border-radius: 50%;
+                    animation: spin 0.75s linear infinite;
+                }
+            `}</style>
+
+                <div className="qr-spinner" />
+
+                <span style={{
+                    fontSize: "0.85rem",
+                    color: "#9ca3af",
+                    letterSpacing: "0.05em",
+                    fontFamily: "monospace"
+                }}>
+                un attimo...
+            </span>
+            </div>
+        );
 }
