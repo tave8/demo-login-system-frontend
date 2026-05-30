@@ -3,7 +3,10 @@ import {AppEvent, AppEventMessageType, AppRoutes} from "../js/my_types.ts";
 import AppEventDispatcher from "../js/AppEventDispatcher.ts";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../auth/AuthContext.tsx";
+import QrCodeAPI from "../js/api/QrCodeAPI.ts";
+import UnauthorizedError from "../js/exceptions/UnauthorizedError.ts";
 
+const qrCodeAPI = QrCodeAPI.getInstance()
 const appEventDispatcher = AppEventDispatcher.getInstance()
 
 /**
@@ -85,6 +88,25 @@ export default function ShortcutPage() {
                     navigate(AppRoutes.login);
                     return
                 }
+
+                qrCodeAPI
+                    .verify(token)
+                    .then((_) => {
+                        appEventDispatcher.dispatch(
+                            AppEvent.APP_SUCCESS,
+                            `Codice QR valido.`
+                        )
+                    })
+                    .catch((err: Error) => {
+                        if(err instanceof UnauthorizedError) {
+
+                            appEventDispatcher.dispatch(
+                                AppEvent.APP_ERROR,
+                                `Il codice QR non è valido.`
+                            )
+
+                        }
+                    })
 
                 // verify that the token is valid
 

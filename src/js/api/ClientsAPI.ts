@@ -4,9 +4,8 @@ import APIHelper from "./APIHelper"
 import BaseAPI from "./BaseAPI"
 import FileHelper from "../helpers/FileHelper"
 import {
-    ArticleFromAPI,
-    ArticlesPageFromAPI, ClientFromAPI, ClientQueryParamsToAPI, ClientsPageFromAPI,
-    ClientToAPI, EnrichedArticleFromAPI, EnrichedArticlesPageFromAPI,
+    ClientFromAPI, ClientQueryParamsToAPI, ClientsPageFromAPI,
+    ClientToAPI,
     EnrichedClientFromAPI,
     EnrichedClientsPageFromAPI,
     EnrichedUserFromAPI, EnrichedUsersPageFromAPI,

@@ -209,10 +209,7 @@ export default class APIHelper {
    */
   public static async parseJSON<T_FROM_API>(resp: Response): Promise<T_FROM_API> {
 
-    // the url the request was made to
-    const url: string = resp.url
     const isNoContentStatusCode = resp.status == 204
-    const contentTypeHeader: string | null = resp.headers.get("content-type")
 
     // if the status code is 204, then there's no response body and
     // no content-type header (for example with a successful DELETE request)
@@ -225,27 +222,8 @@ export default class APIHelper {
     }
 
 
-    // if the content-type is not even there
-
-    if (!contentTypeHeader) {
-      throw new ExpectedJSONPayloadError(
-        `Before parsing JSON from a response, the Content-type header from the response was not even there, ` +
-          `therefore it is not possible to determine if this response contains JSON. URL was: ${url}`,
-      )
-    }
-
-    const hasSentJSON = contentTypeHeader.includes("application/json")
-
-    // if the content-type is different from application/json,
-    // this will definitely not be a valid JSON
-
-    if (!hasSentJSON) {
-      throw new ExpectedJSONPayloadError(
-        `Before parsing JSON from a response, the Content-type header from the response ` +
-          `was not 'application/json', therefore it is not possible to parse the response body into JSON. ` +
-          `Content-type header value is '${contentTypeHeader}' instead. URL was: ${url}`,
-      )
-    }
+    // require that this reponse contains an actual JSON payload
+    this.requireJSONResponse(resp);
 
 
     // throws if non-ok status code
@@ -280,7 +258,7 @@ export default class APIHelper {
             `After parsing JSON from a response body, it was assumed ` +
             `that this would be valid JSON, however the parsing into JSON failed. `
             +`Likely cause: response strem was already read - Maybe the json payload was already parsed? `
-            +`URL was: ${url}. Details of error: ` +
+            +`URL was: ${resp.url}. Details of error: ` +
             err,
         )
 
@@ -306,22 +284,27 @@ export default class APIHelper {
     // const isProblem = isBadRequest || isUnauthorized || isForbidden || isNotFound || isServerError
 
     if (isBadRequest) {
+      this.requireJSONResponse(resp);
       throw new BadRequestError(await resp.json(), resp.statusText)
     }
 
     if (isUnauthorized) {
+      this.requireJSONResponse(resp);
       throw new UnauthorizedError(await resp.json(), resp.statusText)
     }
 
     if (isForbidden) {
+      this.requireJSONResponse(resp);
       throw new ForbiddenError(await resp.json(), resp.statusText)
     }
 
     if (isNotFound) {
+      this.requireJSONResponse(resp);
       throw new NotFoundError(await resp.json(), resp.statusText)
     }
 
     if (isServerError) {
+      this.requireJSONResponse(resp);
       throw new ServerError(await resp.json(), resp.statusText)
     }
 
@@ -333,6 +316,7 @@ export default class APIHelper {
     // if the response status code, or anything else about the response,
     // should throw a custom exception, it should be done before this moment
     if (!resp.ok) {
+      this.requireJSONResponse(resp);
       throw new HttpError(
           resp.status,
           await resp.json(),
@@ -342,6 +326,30 @@ export default class APIHelper {
 
   }
 
+
+  /**
+   * Require that the response's Content-type header
+   * indicates that this response contains a JSON payload.
+   *
+   * @param resp
+   */
+  public static requireJSONResponse(resp: Response): void {
+
+    const hasSentJSON = this.hasContentTypeJSON(resp)
+
+    // the response's content-type header could either
+    // be there, or not. we don't make this distinction
+    if (!hasSentJSON) {
+
+      throw new ExpectedJSONPayloadError(
+          `Before parsing JSON from a response, the Content-type header from the response ` +
+          `was not 'application/json', therefore it is not possible to parse the response body into JSON. ` +
+          `Content-type header value is '${this.getContentTypeHeader(resp)}' instead. URL was: ${resp.url}`,
+      )
+
+    }
+
+  }
 
 
   /**
@@ -751,4 +759,25 @@ export default class APIHelper {
     }
     return method == RequestMethod.GET || method == RequestMethod.DELETE
   }
+
+
+  /**
+   * Get the Content-type header of a response.
+   */
+  public static getContentTypeHeader(resp: Response): string|null {
+    return resp.headers.get("content-type")
+  }
+
+  /**
+   * Does the response's Content-type header tell it's a JSON payload?
+   */
+  public static hasContentTypeJSON(resp: Response): boolean {
+    const contentType = this.getContentTypeHeader(resp)
+    // if this header is not even there
+    if (!contentType) {
+      return false
+    }
+    return contentType.includes("application/json")
+  }
+
 }
