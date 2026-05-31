@@ -5,6 +5,7 @@ import {ChangeEvent} from "react";
 import {ExclamationTriangleFill, EyeFill, Upload} from "react-bootstrap-icons";
 import {useNavigate} from "react-router-dom";
 import AppEventDispatcher from "../../../../js/AppEventDispatcher.ts";
+import BadRequestError from "../../../../js/exceptions/BadRequestError.ts";
 
 const appEventDispatcher = AppEventDispatcher.getInstance()
 
@@ -57,10 +58,24 @@ export default function ClientAddressRow({ clientAddress }: ComponentProps) {
             })
             .catch(err => {
 
-                appEventDispatcher.dispatch(
-                    AppEvent.APP_ERROR,
-                    `Errore nel caricamento del contratto di ${clientAddress.clientName}.`
-                )
+                if(err instanceof BadRequestError) {
+
+                    appEventDispatcher.dispatch(
+                        AppEvent.APP_ERROR,
+                        `Errore nel caricamento del contratto di ${clientAddress.clientName}. `
+                        +`Verifica che il contratto: 1) sia veramente un contratto 2) sia un file contenente testo.`
+                    )
+
+
+                } else {
+
+                    appEventDispatcher.dispatch(
+                        AppEvent.APP_ERROR,
+                        `Errore generico nel caricamento del contratto di ${clientAddress.clientName}.`
+                    )
+
+                }
+
 
             })
 
@@ -104,7 +119,7 @@ export default function ClientAddressRow({ clientAddress }: ComponentProps) {
                     type="file"
                     id={`file-upload-${clientAddress.id}`}
                     style={{ display: 'none' }}
-                    accept=".pdf"
+                    accept=".pdf,.docx,.txt"
                     onChange={handleFileChange(clientAddress)}
                     disabled={clientAddress.contractExpectation.pending}
                 />
@@ -119,7 +134,7 @@ export default function ClientAddressRow({ clientAddress }: ComponentProps) {
                         className="d-inline-flex align-items-center gap-2"
                         style={{ cursor: 'pointer' }}
                     >
-                        <Upload size={16} /> Carica PDF contratto
+                        <Upload size={16} /> Carica contratto
                     </Button>
                 )}
 

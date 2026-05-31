@@ -184,7 +184,7 @@ export default class ClientAddressesAPI extends BaseAPI {
                                              contract: File): Promise<BackgroundJobAcceptedFromAPI>
     {
         // all checks that must be passed to upload this avatar image
-        FileHelper.requireValidPdf(contract)
+        // FileHelper.requireValidPdf(contract)
 
         const endpoint = `/client-addresses/${clientAddressId}/contract-expectations`
 
